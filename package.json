@@ -1,6 +1,6 @@
 {
   "name": "@jigjoy-io/mosaic",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A TypeScript library for building multi-agent AI workflows",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -8,6 +8,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jigjoy-io/mosaic.git"
