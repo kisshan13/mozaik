@@ -30,7 +30,7 @@ export class OpenAITools implements ToolUse {
                 toolCalls: [] as any[] 
             }
         }
-
+        
         // 2) Execute tool calls (narrow the union on tc.type)
         const indexByName = new Map(tools.map((t) => [t.name, t]))
         const toolResults: ChatCompletionMessageParam[] = []

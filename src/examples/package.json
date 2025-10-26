@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/examples/index.js",
-    "dev": "tsc && node dist/examples/index.js",
+    "dev": "tsx ./index.ts",
     "watch": "tsc --watch",
     "clean": "rimraf dist"
   },
