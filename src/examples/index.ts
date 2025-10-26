@@ -17,7 +17,6 @@ class PlannerAgent {
 
 }
 
-// --- Sub-Agent exposed as a Tool -------------------------------------------
 class WeatherDB {
     async run({ city }: { city: string }) {
         const db: Record<string, { tempC: number; condition: string }> = {
@@ -31,7 +30,11 @@ class WeatherDB {
 function weatherTool(db: WeatherDB): ToolSpec {
     return {
         name: "getWeather",
-        schema: { type: "object", properties: { city: { type: "string" } }, required: ["city"] },
+        schema: { 
+            type: "object", 
+            properties: { city: { type: "string" } }, 
+            required: ["city"] 
+        },
         invoke: (args: any) => db.run(args)
     }
 }
@@ -44,6 +47,7 @@ const message = "I'm planning a weekend trip. What's the weather in Novi Sad?"
 const output = await planner.plan(message)
 console.log("Answer →", output.text)
 console.log("--------------------")
+
 class WeatherAgent {
 
     constructor(private llm: ToolUse, private tools: ToolSpec[]) {}
@@ -53,8 +57,9 @@ class WeatherAgent {
     }
 }
 
-const router  = new WeatherAgent(mosaic, [weatherTool(new WeatherDB())])
+const weather  = new WeatherAgent(mosaic, [weatherTool(new WeatherDB())])
 
-const exec = await router.execute(message)
+const exec = await weather.execute(message)
+
 console.log("ToolCalls →", exec.toolCalls)
 console.log("Answer →", exec.text)

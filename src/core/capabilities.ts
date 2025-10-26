@@ -51,7 +51,7 @@ export interface TextGen {
     text(messages: Message[], opts?: GenOpts): Promise<TextOut>
 }
 
-export interface ToolSpec { name: string; description?: string, schema: Record<string, any>; invoke?: (args: any) => Promise<any>}
+export interface ToolSpec { name: string; description?: string, schema: Record<string, any>; invoke: (args: any) => Promise<any>}
 export interface ToolCall { name: string; args: unknown }
 export interface ToolUse {
     withTools(messages: Message[], tools: ToolSpec[], opts?: GenOpts): Promise<{ text: string; toolCalls: ToolCall[] }>
