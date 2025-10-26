@@ -109,7 +109,7 @@ See [mosaic-examples](https://github.com/Mijura/mosaic-examples) for working dem
 
 ## Philosophy
 
-- **Object-oriented**: JBy structuring Mosaic as a network of objects instead of a chain of functions, developers can debug, trace, and reason about agents with the same clarity as any production system.
+- **Object-oriented**: By structuring Mosaic as a network of objects instead of a chain of functions, developers can debug, trace, and reason about agents with the same clarity as any production system.
 - **Composition over Abstraction**: Agents are built by wiring capabilities, not by wrapping them. Each capability is explicit and composable, making behavior observable and predictable.
 - **Pragmatic Polyglotism**: Different models serve different purposes; Mosaic coordinates them instead of forcing one dominant design.
 
