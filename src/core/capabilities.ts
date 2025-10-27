@@ -8,7 +8,6 @@ export type Provider = "openai" | "anthropic" | "local"
   
 export interface TextPart { type: "text"; text: string }
 export interface ImagePart { type: "image_url"; url: string }
-export interface GenOpts { temperature?: number; maxTokens?: number }
 export interface TextOut { text: string }
 
 
@@ -48,15 +47,15 @@ export interface ToolResultPart {
 }
 
 export interface TextGen {
-    text(messages: Message[], opts?: GenOpts): Promise<TextOut>
+    text(messages: Message[]): Promise<TextOut>
 }
 
 export interface ToolSpec { name: string; description?: string, schema: Record<string, any>; invoke: (args: any) => Promise<any>}
 export interface ToolCall { name: string; args: unknown }
 export interface ToolUse {
-    withTools(messages: Message[], tools: ToolSpec[], opts?: GenOpts): Promise<{ text: string; toolCalls: ToolCall[] }>
+    withTools(messages: Message[], tools: ToolSpec[]): Promise<{ text: string; toolCalls: ToolCall[] }>
 }
 
 export interface Vision {
-    vision(messages: Message[], opts?: GenOpts): Promise<TextOut>
+    vision(messages: Message[]): Promise<TextOut>
 }
