@@ -38,8 +38,18 @@ export interface TextGen {
     text(messages: Message[]): Promise<TextOut>
 }
 
-export interface ToolSpec { name: string; description?: string, schema: Record<string, any>; invoke: (args: any) => Promise<any>}
-export interface ToolCall { name: string; args: unknown }
+export interface ToolSpec { 
+    name: string
+    description: string
+    schema: Record<string, any>
+    invoke: (args: any) => Promise<any>
+}
+
+export interface ToolCall { 
+    name: string
+    args: unknown 
+}
+
 export interface ToolUse {
     withTools(messages: Message[], tools: ToolSpec[]): Promise<{ text: string; toolCalls: ToolCall[] }>
 }

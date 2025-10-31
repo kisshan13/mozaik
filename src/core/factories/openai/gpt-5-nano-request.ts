@@ -1,46 +1,31 @@
-import { OpenAIMessageMapper } from "../../../mappers/openai/message-mapper"
+import { OpenAIMapper } from "../../../mappers/oai-mapper"
 import { ToolSpec } from "../../capabilities"
 import { Descriptor } from "../../descriptor"
 import { Message } from "../../message"
-
-export enum ReasoningEffort {
-    LOW='low',
-    MEDIUM='medium',
-    HIGH='high'
-}
+import { OpenAIRequest } from "./openai-request"
+import OpenAI from "openai/index"
 
 export class Gpt5NanoRequest {
 
-    private request: any
+    private oaiRequest: OpenAIRequest
 
-    constructor(private modelDescriptor: Descriptor, private mapper = new OpenAIMessageMapper()){
-        this.request.model = this.modelDescriptor.model
+    constructor(modelDescriptor: Descriptor, mapper = new OpenAIMapper(), private client = new OpenAI()){
+        this.oaiRequest = new OpenAIRequest(modelDescriptor, mapper)
     }
   
     messages(messages: Message[]): Gpt5NanoRequest { 
-        const oaiMsgs = this.mapper.toProvider(messages)
-        this.request = {
-            ...this.request,
-            messages: oaiMsgs
-        }
+        this.oaiRequest.messages(messages)
         return this
     }
 
-    tools(tools: ToolSpec[]){ 
-        const oaiTools = tools.map(t => ({ 
-            type: "function", 
-            function: { 
-                name: t.name, 
-                description: t.description, 
-                parameters: t.schema 
-            } 
-        }))
-
-        this.request = {
-            ...this.request,
-            tools: oaiTools
-        }
+    tools(tools: ToolSpec[]): Gpt5NanoRequest { 
+        this.oaiRequest.tools(tools)
         return this
+    }
+
+    async send(){
+        const request = this.oaiRequest.getRequest()
+        return await this.client.chat.completions.create(request)
     }
 
 }
