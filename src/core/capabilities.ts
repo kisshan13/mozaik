@@ -1,26 +1,14 @@
-export interface Message {
-    role: "system" | "user" | "assistant" | "tool"
-    content: string | Array<TextPart | ImagePart>
-  }
+import { Message } from "./message"
 
-
-export type Provider = "openai" | "anthropic" | "local"
-  
-export interface TextPart { type: "text"; text: string }
-export interface ImagePart { type: "image_url"; url: string }
 export interface TextOut { text: string }
-
 
 export interface ToolDef {
     name: string
     description?: string
     schema: Record<string, any>
 }
-  
-export interface ToolCall {
-    name: string
-    args: unknown
-}
+
+export type Provider = "openai" | "anthropic" | "local"
   
 export interface Trace {
     model: string
