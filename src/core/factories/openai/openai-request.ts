@@ -1,5 +1,5 @@
 import { OpenAIMapper } from "../../../mappers/oai-mapper"
-import { ToolSpec } from "../../capabilities"
+import { CustomToolSpec } from "../../tool"
 import { Descriptor } from "../../descriptor"
 import { Message } from "../../message"
 
@@ -20,7 +20,7 @@ export class OpenAIRequest {
         return this
     }
 
-    tools(tools: ToolSpec[]): OpenAIRequest { 
+    tools(tools: (CustomToolSpec | 'browse_internet')[]): OpenAIRequest { 
         const oaiTools = this.mapper.toTools(tools)
 
         this.request = {

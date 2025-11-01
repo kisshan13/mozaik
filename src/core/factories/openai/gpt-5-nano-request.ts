@@ -1,5 +1,5 @@
 import { OpenAIMapper } from "../../../mappers/oai-mapper"
-import { ToolSpec } from "../../capabilities"
+import { CustomToolSpec } from "../../tool"
 import { Descriptor } from "../../descriptor"
 import { Message } from "../../message"
 import { OpenAIRequest } from "./openai-request"
@@ -18,7 +18,7 @@ export class Gpt5NanoRequest {
         return this
     }
 
-    tools(tools: ToolSpec[]): Gpt5NanoRequest { 
+    tools(tools: (CustomToolSpec | 'browse_internet')[]): Gpt5NanoRequest { 
         this.oaiRequest.tools(tools)
         return this
     }

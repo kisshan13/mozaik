@@ -10,7 +10,7 @@ import type {
     ChatCompletionContentPartText,
     ChatCompletionContentPartImage,
   } from "openai/resources/chat/completions" // path matches your pasted file
-import { ToolResultPart, ToolSpec } from "../core/capabilities"
+import { ToolResultPart, CustomToolSpec } from "../core/tool"
 import { ImagePart, Message, TextPart } from "../core/message"
   
   // --- tiny utils ---
@@ -142,7 +142,7 @@ export class OpenAIMapper {
 		return out
     }
 
-	toTools(tools: ToolSpec[]){
+	toTools(tools: (CustomToolSpec | 'browse_internet')[]){
         return tools.map(t => ({ 
             type: "function", 
             function: { 
