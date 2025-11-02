@@ -1,8 +1,8 @@
-import { OpenAIMapper } from "../../../../mappers/oai-mapper"
-import { Descriptor } from "../../../descriptor"
-import { Message } from "../../../message"
-import { CustomToolSpec } from "../../../tool"
-import { EndpointStrategy } from "../../../strategy"
+import { OpenAIMapper } from "../mapper"
+import { Descriptor } from "../../../core/descriptor"
+import { Message } from "../../../core/message"
+import { CustomToolSpec } from "../../../core/tool"
+import { EndpointStrategy } from "../../../core/strategy"
 import OpenAI from "openai"
 
 export class ChatCompletion extends EndpointStrategy {

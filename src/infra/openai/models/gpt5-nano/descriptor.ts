@@ -1,4 +1,4 @@
-import { CapabilityKind, Descriptor } from "../../../../descriptor"
+import { CapabilityKind, Descriptor } from "../../../../core/descriptor"
 
 export class Gpt5NanoDescriptor implements Descriptor {
 

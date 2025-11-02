@@ -10,8 +10,8 @@ import type {
     ChatCompletionContentPartText,
     ChatCompletionContentPartImage,
   } from "openai/resources/chat/completions" // path matches your pasted file
-import { ToolResultPart, CustomToolSpec } from "../core/tool"
-import { ImagePart, Message, TextPart } from "../core/message"
+import { ToolResultPart, CustomToolSpec } from "../../core/tool"
+import { ImagePart, Message, TextPart } from "../../core/message"
   
   // --- tiny utils ---
 	function safeJSON(x: unknown): string {
