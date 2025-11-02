@@ -1,5 +1,5 @@
-import { Message } from "../../../message"
-import { CustomToolSpec } from "../../../tool"
+import { Message } from "./message"
+import { CustomToolSpec } from "./tool"
 
 export abstract class EndpointStrategy {
     abstract setContext(messages: Message[]): EndpointStrategy
