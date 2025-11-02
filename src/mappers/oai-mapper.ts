@@ -142,7 +142,7 @@ export class OpenAIMapper {
 		return out
     }
 
-	toTools(tools: (CustomToolSpec | 'browse_internet')[]){
+	toTools(tools: CustomToolSpec[]){
         return tools.map(t => ({ 
             type: "function", 
             function: { 
