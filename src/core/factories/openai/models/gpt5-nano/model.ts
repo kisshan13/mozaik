@@ -1,7 +1,7 @@
 import { Message } from "../../../../message"
 import { CustomToolSpec } from "../../../../tool"
 import { ChatCompletion } from "../../endpoints/chat-completion"
-import { EndpointStrategy } from "../../endpoints/strategy"
+import { EndpointStrategy } from "../../../../strategy"
 import { Gpt5NanoDescriptor } from "./descriptor"
   
 export class Gpt5Nano {
