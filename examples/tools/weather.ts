@@ -1,4 +1,4 @@
-import { ToolSpec } from "@jigjoy-io/mosaic"
+import { CustomToolSpec } from "@jigjoy-io/mosaic"
 
 class WeatherDB {
     async run({ city }: { city: string }) {
@@ -10,7 +10,7 @@ class WeatherDB {
     }
 }
   
-class WeatherTool implements ToolSpec {
+class WeatherTool implements CustomToolSpec {
 
     constructor(private db: WeatherDB){}
 
@@ -19,7 +19,7 @@ class WeatherTool implements ToolSpec {
     }
     
     name: string = 'getWeather'
-    description?: string | undefined
+    description: string = 'Tool for fetching weather info from db'
     schema: Record<string, any> = { 
         type: "object", 
         properties: { city: { type: "string" } }, 

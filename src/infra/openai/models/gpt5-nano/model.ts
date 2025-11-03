@@ -6,9 +6,12 @@ import { Gpt5NanoDescriptor } from "./descriptor"
   
 export class Gpt5Nano {
     
-    readonly desc: Gpt5NanoDescriptor = new Gpt5NanoDescriptor()
+    readonly desc = new Gpt5NanoDescriptor()
+    private strategy: EndpointStrategy
 
-    constructor(private strategy: EndpointStrategy = new ChatCompletion(this.desc)){}
+    constructor(strategy?: EndpointStrategy){
+        this.strategy = strategy ?? new ChatCompletion(this.desc)
+    }
   
     context(messages: Message[]): Gpt5Nano { 
         this.strategy.setContext(messages)
