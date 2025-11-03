@@ -11,7 +11,7 @@ const gpt5Nano = new Gpt5Nano()
 let weatherTool: WeatherTool = new WeatherTool(new WeatherDB())
 
 gpt5Nano
-    .context([{role: 'user', content: message}])
+    .conversation([{role: 'user', content: message}])
     .tools([weatherTool])
 
 const exec = await gpt5Nano.send()

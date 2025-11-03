@@ -18,7 +18,7 @@ export class ChatCompletion extends EndpointStrategy {
         this.client = new OpenAI()
     }
 
-    setContext(messages: Message[]): ChatCompletion { 
+    setConversation(messages: Message[]): ChatCompletion { 
         const oaiMsgs = this.mapper.toMessages(messages)
         this.request = {
             ...this.request,
