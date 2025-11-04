@@ -25,10 +25,6 @@ class WeatherTool implements CustomToolSpec {
         properties: { city: { type: "string" } }, 
         required: ["city"] 
     }
-
-    
-
-
     
 }
 

@@ -3,7 +3,7 @@ export type CapabilityKind = "text" | "tools" | "vision" | "structured"
 export interface Descriptor {
     model: string
     supports: ReadonlySet<CapabilityKind>
-    maxContext: number
+    contextWindow: number
     pricing: {
         type: string,
         input: number
