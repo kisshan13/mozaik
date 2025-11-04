@@ -2,21 +2,23 @@ import { OpenAIMapper } from "../mapper"
 import { Descriptor } from "../../../core/descriptor"
 import { Message } from "../../../core/message"
 import { CustomToolSpec } from "../../../core/tool"
-import { EndpointStrategy } from "../../../core/strategy"
+import { RuntimeStrategy } from "../../../core/runtime"
 import OpenAI from "openai"
+import { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from "openai/resources/index"
 
-export class ChatCompletion extends EndpointStrategy {
+export class ChatCompletion extends RuntimeStrategy {
 
-    private request: any
+    private request: any = {}
     private client: OpenAI
+    private tools: CustomToolSpec[] = []
 
-    constructor(private modelDescriptor: Descriptor, private mapper = new OpenAIMapper()){
+    constructor(modelDescriptor: Descriptor, private mapper = new OpenAIMapper()){
         super()
-        this.request.model = this.modelDescriptor.model
+        this.request.model = modelDescriptor.model
         this.client = new OpenAI()
     }
 
-    setContext(messages: Message[]): ChatCompletion { 
+    setConversation(messages: Message[]): ChatCompletion { 
         const oaiMsgs = this.mapper.toMessages(messages)
         this.request = {
             ...this.request,
@@ -25,7 +27,8 @@ export class ChatCompletion extends EndpointStrategy {
         return this
     }
 
-    setTools(tools: CustomToolSpec[]): ChatCompletion { 
+    setTools(tools: CustomToolSpec[]): ChatCompletion {
+        this.tools = tools
         const oaiTools = this.mapper.toTools(tools)
 
         this.request = {
@@ -36,8 +39,17 @@ export class ChatCompletion extends EndpointStrategy {
         return this
     }
 
-    send(): Promise<any> {
-        return this.client.chat.completions.create(this.request)
+    async send(): Promise<any> {
+        const r = await this.client.chat.completions.create(this.request)
+
+        const aMsg = r.choices?.[0]?.message
+        const calls = aMsg?.tool_calls ?? []
+      
+        return { 
+            text: aMsg?.content ?? "", 
+            toolCalls: calls
+        }
+
     }
 
 }

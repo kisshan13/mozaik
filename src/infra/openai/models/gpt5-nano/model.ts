@@ -1,26 +1,29 @@
 import { Message } from "../../../../core/message"
 import { CustomToolSpec } from "../../../../core/tool"
 import { ChatCompletion } from "../../endpoints/chat-completion"
-import { EndpointStrategy } from "../../../../core/strategy"
+import { RuntimeStrategy } from "../../../../core/runtime"
 import { Gpt5NanoDescriptor } from "./descriptor"
   
 export class Gpt5Nano {
     
-    readonly desc: Gpt5NanoDescriptor = new Gpt5NanoDescriptor()
+    readonly desc = new Gpt5NanoDescriptor()
+    private runtime: RuntimeStrategy
 
-    constructor(private strategy: EndpointStrategy = new ChatCompletion(this.desc)){}
+    constructor(runtime?: RuntimeStrategy){
+        this.runtime = runtime ?? new ChatCompletion(this.desc)
+    }
   
-    context(messages: Message[]): Gpt5Nano { 
-        this.strategy.setContext(messages)
+    conversation(messages: Message[]): Gpt5Nano { 
+        this.runtime.setConversation(messages)
         return this
     }
 
     tools(tools: CustomToolSpec[]): Gpt5Nano { 
-        this.strategy.setTools(tools)
+        this.runtime.setTools(tools)
         return this
     }
 
     async send(){
-        return await this.strategy.send()
+        return await this.runtime.send()
     }
 }
