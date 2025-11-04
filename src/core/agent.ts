@@ -42,7 +42,7 @@ export class Agent<M extends BaseModel<any>> {
 }
 
 // === Example Models ===
-const gpt4Turbo: NonReasoningModel = {
+export const gpt4Turbo: NonReasoningModel = {
     name: "gpt-4-turbo",
     capabilities: {
       toolCalls: true,
@@ -53,7 +53,7 @@ const gpt4Turbo: NonReasoningModel = {
     send: async payload => ({ ok: true, payload })
 }
   
-const gpt5Reasoning: ReasoningModel = {
+export const gpt5Reasoning: ReasoningModel = {
     name: "gpt-5-reasoning",
     capabilities: {
         toolCalls: true,
@@ -63,12 +63,3 @@ const gpt5Reasoning: ReasoningModel = {
     },
     send: async payload => ({ ok: true, payload })
 }
-
-// === Usage ===
-const chatAgent = new Agent(gpt4Turbo)
-await chatAgent.conversation("Summarize this text.")
-// await chatAgent.execute("Research topic")         // ❌ compile-time error
-
-const reasoningAgent = new Agent(gpt5Reasoning)
-await reasoningAgent.conversation("Hello!")
-await reasoningAgent.execute("Research and draft brief.")

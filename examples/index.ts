@@ -1,20 +1,16 @@
 import 'dotenv/config'
 
-const message = "I'm planning a weekend trip. What's the weather in Belgrade?"
+import { Agent, gpt4Turbo, gpt5Reasoning } from "@jigjoy-io/mosaic"
 
-import { Gpt5 } from "@jigjoy-io/mosaic"
-import { WeatherDB, WeatherTool } from "./tools/weather"
+// === Usage ===
+const chatAgent = new Agent(gpt4Turbo)
+const response = await chatAgent.conversation("Summarize this text.")
+console.log(response)
+// await chatAgent.execute("Research topic")         // ❌ compile-time error
 
-const gpt5 = new Gpt5()
+const reasoningAgent = new Agent(gpt5Reasoning)
+const response1 = await reasoningAgent.conversation("Hello!")
+const response2 = await reasoningAgent.execute("Research and draft brief.")
 
-//tools
-let weatherTool: WeatherTool = new WeatherTool(new WeatherDB())
-
-gpt5
-    .conversation([{role: 'user', content: message}])
-    .tools([weatherTool])
-
-const exec = await gpt5.send()
-
-console.log("ToolCalls →", exec.toolCalls)
-console.log("Answer →", exec.text)
+console.log(response1)
+console.log(response2)
