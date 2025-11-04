@@ -4,7 +4,6 @@ import { Message } from "../../../core/message"
 import { CustomToolSpec } from "../../../core/tool"
 import { RuntimeStrategy } from "../../../core/runtime"
 import OpenAI from "openai"
-import { ChatCompletionMessageParam, ChatCompletionMessageToolCall } from "openai/resources/index"
 
 export class ChatCompletion extends RuntimeStrategy {
 

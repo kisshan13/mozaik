@@ -1,15 +1,15 @@
 import { Message } from "../../../../core/message"
 import { CustomToolSpec } from "../../../../core/tool"
 import { ChatCompletion } from "../../endpoints/chat-completion"
-import { EndpointStrategy } from "../../../../core/strategy"
+import { RuntimeStrategy } from "../../../../core/runtime"
 import { Gpt5Descriptor } from "./descriptor"
   
 export class Gpt5 {
     
     readonly desc = new Gpt5Descriptor()
-    private strategy: EndpointStrategy
+    private strategy: RuntimeStrategy
 
-    constructor(strategy?: EndpointStrategy){
+    constructor(strategy?: RuntimeStrategy){
         this.strategy = strategy ?? new ChatCompletion(this.desc)
     }
   
