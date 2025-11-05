@@ -23,7 +23,6 @@ interface BaseModel<Capabilities extends BaseCapabilities> {
     name: string
     capabilities: Capabilities
     endpoints: Map<EndpointKind, EndpointAdapter>
-    send(payload: any): Promise<any>
 }
   
 type NonReasoningModel = BaseModel<NonReasoningCapabilities>
@@ -81,7 +80,6 @@ export const gpt4Turbo: NonReasoningModel = {
         supportsChatJSON: true,
         reasoningEffort: "none"
     },
-    send: async (payload) => ({ ok: true, payload }),
     endpoints: openaiEndpoints
 }
   
@@ -93,6 +91,5 @@ export const gpt5Reasoning: ReasoningModel = {
         supportsChatJSON: true,
         reasoningEffort: "high"
     },
-    send: async payload => ({ ok: true, payload }),
     endpoints: openaiEndpoints
 }
