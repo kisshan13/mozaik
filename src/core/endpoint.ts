@@ -1,7 +1,6 @@
 import { Provider } from "@/core/provider"
-import { BaseRequest, ChatRequest, TaskRequest } from "@core/request"
+import { BaseRequest } from "@core/request"
 import { Model } from "@core/model"
-import { OpenAIProvider } from "@providers/openai"
 
 export abstract class Endpoint {
 
