@@ -12,8 +12,9 @@ const chatCompletion: Endpoint = new ChatCompletion()
 
 const task: TaskRequest = {
     task: '',
-    model: 'gpt-5',
+    model: 'gpt-5-nano',
     steps: ["Analyze", "Plan", "Execute"]
 }
-chatCompletion.accept(chat)
-responses.accept(task)
+
+await chatCompletion.accept(chat)
+await responses.accept(task)
