@@ -1,6 +1,6 @@
 export type CapabilityKind = "text" | "tools" | "vision" | "structured"
 
-export interface Descriptor {
+export interface Specification {
     model: string
     supports: ReadonlySet<CapabilityKind>
     contextWindow: number

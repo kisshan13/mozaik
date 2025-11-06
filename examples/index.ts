@@ -1,20 +1,18 @@
 import 'dotenv/config'
 
-const message = "I'm planning a weekend trip. What's the weather in Belgrade?"
+const chat: ChatRequest = {
+    messages: [{role: 'assistant', content: ''}],
+    prompt: 'What is the capital of Serbia',
+    model: 'gpt-5-nano'
+}
 
-import { Gpt5 } from "@jigjoy-io/mosaic"
-import { WeatherDB, WeatherTool } from "./tools/weather"
+const responses: Endpoint = new Responses()
+const chatCompletion: Endpoint = new ChatCompletion()
 
-const gpt5 = new Gpt5()
-
-//tools
-let weatherTool: WeatherTool = new WeatherTool(new WeatherDB())
-
-gpt5
-    .conversation([{role: 'user', content: message}])
-    .tools([weatherTool])
-
-const exec = await gpt5.send()
-
-console.log("ToolCalls →", exec.toolCalls)
-console.log("Answer →", exec.text)
+const task: TaskRequest = {
+    task: '',
+    model: 'gpt-5',
+    steps: ["Analyze", "Plan", "Execute"]
+}
+chatCompletion.accept(chat)
+responses.accept(task)

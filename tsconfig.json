@@ -10,10 +10,16 @@
     "rootDir": "./src",
     "strict": true,
     "moduleResolution": "node",
+    "baseUrl": ".", 
+    "paths": {
+      "@core/*": ["src/core/*"],
+      "@providers/*": ["src/providers/*"],
+      "@/*": ["src/*"]              // if you’re using aliases like '@/types/type'
+    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
+  "include": ["src", "src/types"],
   "exclude": ["node_modules", "dist", "examples"]
 } 
