@@ -1,3 +1,4 @@
+import { Endpoint, ChatRequest, TaskRequest, Responses, ChatCompletion } from '@jigjoy-io/mosaic'
 import 'dotenv/config'
 
 const chat: ChatRequest = {
