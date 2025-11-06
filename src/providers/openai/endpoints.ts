@@ -3,6 +3,7 @@ import { OpenAIProvider } from "@providers/openai/index"
 import { ChatRequest, TaskRequest } from "@core/request"
 
 export class ChatCompletion extends Endpoint {
+
     provider = new OpenAIProvider()
 
     constructor(){
@@ -16,6 +17,7 @@ export class ChatCompletion extends Endpoint {
 }
 
 export class Responses extends Endpoint {
+    
     provider = new OpenAIProvider()
 
     constructor(){
