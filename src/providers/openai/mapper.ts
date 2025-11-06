@@ -1,4 +1,6 @@
 // Install types from your SDK file:
+import { ImagePart, Message, TextPart } from "@/types/messages"
+import { CustomToolSpec, ToolResultPart } from "@/types/tools"
 import type {
     ChatCompletionMessageParam,
     ChatCompletionToolMessageParam,
@@ -10,8 +12,6 @@ import type {
     ChatCompletionContentPartText,
     ChatCompletionContentPartImage,
   } from "openai/resources/chat/completions" // path matches your pasted file
-import { ToolResultPart, CustomToolSpec } from "../../core/tool"
-import { ImagePart, Message, TextPart } from "../../core/message"
   
   // --- tiny utils ---
 	function safeJSON(x: unknown): string {
