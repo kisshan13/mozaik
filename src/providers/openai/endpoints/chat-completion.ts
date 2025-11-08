@@ -10,7 +10,7 @@ export class ChatCompletion extends Endpoint {
     provider: Provider
 
     constructor(provider = new OpenAIProvider(), private client = new OpenAI(), private mapper = new OpenAIMapper()){
-        const supportedModels = new Set(["gpt-5-nano"])
+        const supportedModels = new Set(["gpt-5", "gpt-5-mini", "gpt-5-nano"])
         super(supportedModels)
         this.provider = provider
     }
