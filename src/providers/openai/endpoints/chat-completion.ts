@@ -15,7 +15,7 @@ export class ChatCompletion extends Endpoint {
         this.provider = provider
     }
 
-    async processRequest(req: ChatRequest) {
+    async processRequest(req: ChatRequest): Promise<string> {
         const oaiMsgs = this.mapper.toMessages(req.messages)
         oaiMsgs.push({
             role: 'user',
@@ -27,6 +27,6 @@ export class ChatCompletion extends Endpoint {
             messages: oaiMsgs
         })
         
-        return { text: r.choices?.[0]?.message?.content ?? "" }
+        return r.choices?.[0]?.message?.content ?? ""
     }
 }

@@ -9,7 +9,7 @@ const chat: ChatRequest = {
         content: 'You are the weather assistent'
     }],
     prompt: 'What is the weather in Serbia',
-    model: 'gpt-5-nano'
+    model: 'gpt-5'
 }
 
 const chatCompletion: Endpoint = new ChatCompletion()

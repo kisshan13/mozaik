@@ -12,7 +12,7 @@ export abstract class Endpoint {
       if (!this.models.has(model.name)) throw new Error("Model not supported")
     }
 
-    abstract processRequest(req: BaseRequest): any
+    abstract processRequest(req: BaseRequest): Promise<string>
 
     async accept(req: BaseRequest): Promise<any> {
         const model = this.provider.registry.get(req.model)
