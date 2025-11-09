@@ -1,9 +1,7 @@
-import { ChatRequest, Endpoint } from '@jigjoy-io/mosaic/core'
-import { ChatCompletion } from '@jigjoy-io/mosaic/providers/openai'
-
 import 'dotenv/config'
+import { gateway, InvocationRequest } from '@jigjoy-io/mosaic'
 
-const chat: ChatRequest = {
+const request: InvocationRequest = {
     messages: [{
         role: 'system', 
         content: 'You are the weather assistent'
@@ -12,7 +10,5 @@ const chat: ChatRequest = {
     model: 'gpt-5'
 }
 
-const chatCompletion: Endpoint = new ChatCompletion()
-
-const response = await chatCompletion.accept(chat)
+const response = await gateway.invoke(request)
 console.log(response)

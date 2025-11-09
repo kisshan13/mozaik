@@ -1,22 +1,10 @@
 {
   "name": "@jigjoy-io/mosaic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A TypeScript library for building multi-agent AI workflows",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "exports": {
-    "./core": {
-      "import": "./dist/core/index.mjs",
-      "types": "./dist/core/index.d.ts",
-      "require": "./dist/core/index.js"
-    },
-    "./providers/openai": {
-      "import": "./dist/providers/openai/index.js",
-      "types": "./dist/providers/openai/index.d.ts",
-      "require": "./dist/providers/openai/index.cjs"
-    }
-  },
   "typesVersions": {
     "*": {
       "core": [
