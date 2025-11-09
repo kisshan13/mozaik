@@ -4,7 +4,7 @@ A TypeScript library that provides a unified, provider-agnostic API for interact
 
 ---
 
-## Installation
+## 📦 Installation
 
 ```bash
 yarn add @jigjoy-io/mosaic
@@ -81,7 +81,7 @@ const response = await gateway.invoke(request)
 console.log(response)
 ```
 
-## 👥 Author & License
+## Author & License
 
 Created by [JigJoy](https://jigjoy.io) team  
 Licensed under the MIT License.
