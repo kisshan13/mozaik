@@ -14,9 +14,10 @@
     wrap-ansi "^8.1.0"
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
-"@jigjoy-io/mosaic@file:..":
-  version "0.0.2"
-  resolved "file:.."
+"@jigjoy-io/mosaic@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.npmjs.org/@jigjoy-io/mosaic/-/mosaic-0.0.4.tgz"
+  integrity sha512-6jMP7cOPcbXbB0YHhpHt7b0m3Qd8pouoURDcCGq8jB3Z9vU7lv0qwbbWv2zDuPRgRXyoXoft2osbieuCa5eZuw==
   dependencies:
     openai "^6.6.0"
 
@@ -162,6 +163,11 @@ minimatch@^9.0.4:
   version "7.1.2"
   resolved "https://registry.npmjs.org/minipass/-/minipass-7.1.2.tgz"
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
+
+openai@^6.6.0:
+  version "6.8.1"
+  resolved "https://registry.npmjs.org/openai/-/openai-6.8.1.tgz"
+  integrity sha512-ACifslrVgf+maMz9vqwMP4+v9qvx5Yzssydizks8n+YUJ6YwUoxj51sKRQ8HYMfR6wgKLSIlaI108ZwCk+8yig==
 
 package-json-from-dist@^1.0.0:
   version "1.0.1"

@@ -74,7 +74,7 @@ const request: InvocationRequest = {
         content: 'You are a helpful weather assistant'
     }],
     prompt: 'What is the weather in Serbia?',
-    model: 'gpt-4'
+    model: 'gpt-5'
 }
 
 const response = await gateway.invoke(request)
