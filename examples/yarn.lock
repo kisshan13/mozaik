@@ -15,7 +15,7 @@
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
 "@jigjoy-io/mosaic@file:..":
-  version "0.0.1"
+  version "0.0.2"
   resolved "file:.."
   dependencies:
     openai "^6.6.0"

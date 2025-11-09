@@ -2,8 +2,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: [
-    'src/core/index.ts',
-    'src/providers/openai/index.ts'
+    'src/index.ts'
   ],
   format: ['cjs', 'esm'],
   dts: true,
