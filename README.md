@@ -23,19 +23,19 @@ OPENAI_API_KEY=your-api-key-here
 ## Quick Start
 
 ```typescript
-import { ChatRequest, Endpoint } from '@jigjoy-io/mosaic/core'
-import { ChatCompletion } from '@jigjoy-io/mosaic/providers/openai'
 import 'dotenv/config'
+import { gateway, InvocationRequest } from '@jigjoy-io/mosaic'
 
-const chat: ChatRequest = {
-  messages: [{ role: 'system', content: 'You are the weather assistent' }],
-  prompt: 'What is the weather in Serbia',
-  model: 'gpt-5-nano'
+const request: InvocationRequest = {
+    messages: [{
+        role: 'system', 
+        content: 'You are the weather assistent'
+    }],
+    prompt: 'What is the weather in Serbia',
+    model: 'gpt-5'
 }
 
-const chatCompletion: Endpoint = new ChatCompletion()
-const response = await chatCompletion.accept(chat)
-
+const response = await gateway.invoke(request)
 console.log(response)
 ```
 
