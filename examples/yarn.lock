@@ -14,10 +14,17 @@
     wrap-ansi "^8.1.0"
     wrap-ansi-cjs "npm:wrap-ansi@^7.0.0"
 
+<<<<<<< Updated upstream
 "@jigjoy-io/mosaic@^0.0.4":
   version "0.0.4"
   resolved "https://registry.npmjs.org/@jigjoy-io/mosaic/-/mosaic-0.0.4.tgz"
   integrity sha512-6jMP7cOPcbXbB0YHhpHt7b0m3Qd8pouoURDcCGq8jB3Z9vU7lv0qwbbWv2zDuPRgRXyoXoft2osbieuCa5eZuw==
+=======
+"@jigjoy-io/mosaic@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@jigjoy-io/mosaic/-/mosaic-0.0.3.tgz"
+  integrity sha512-054RODjv7VGyj19VPiJCY/Imaj9gKJronnTcI+C/zI1wuHdSAGEMyxPwOCHPXCq0VTXG6BRGNPTElMvsZ4AEjA==
+>>>>>>> Stashed changes
   dependencies:
     openai "^6.6.0"
 
@@ -293,3 +300,8 @@ wrap-ansi@^8.1.0:
     ansi-styles "^6.1.0"
     string-width "^5.0.1"
     strip-ansi "^7.0.1"
+
+"zod@^3.25 || ^4.0":
+  version "3.25.76"
+  resolved "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz"
+  integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==
