@@ -1,12 +1,15 @@
-export const OPENAI_MODELS = ['gpt-5', 'gpt-5-mini', 'gpt-5-nano'] as const
+export const OPENAI_MODELS = [
+  'gpt-5', 
+  'gpt-5-mini', 
+  'gpt-5-nano'
+] as const
+
 export type OpenAIModels = typeof OPENAI_MODELS[number]
 
 export const ANTHROPIC_MODELS = [
-  'claude-sonnet-4-20250522',
   'claude-sonnet-4-5-20250929',
-  'claude-opus-4-20250522',
-  'claude-opus-4-1-20250805',
-  'claude-haiku-4-5-20251015'
+  'claude-haiku-4-5-20251001',
+  'claude-opus-4-1-20250805'
 ] as const
 
 export type AnthropicModels = typeof ANTHROPIC_MODELS[number]

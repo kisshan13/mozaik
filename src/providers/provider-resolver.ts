@@ -13,10 +13,6 @@ export class MosaicProviderResolver extends ProviderResolver {
     isAnthropicModel(value: string): boolean {
         return (ANTHROPIC_MODELS as readonly string[]).includes(value)
     }
-    
-    defaultProvider(): ModelProvider {
-        return new OpenAIProvider()
-    }
 
     resolve(model: string): ModelProvider {
         if(this.isOpenAIModel(model)){

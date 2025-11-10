@@ -5,14 +5,14 @@ import { ProviderResolver } from "./provider-resolver"
 
 export class RequestGateway {
 
-    provider: ModelProvider
+    provider!: ModelProvider
 
-    constructor(readonly providerRespolver: ProviderResolver){
-        this.provider = providerRespolver.defaultProvider()
+    constructor(readonly providerResolver: ProviderResolver){
+
     }
 
     invoke(request: InvocationRequest): any {
-        this.providerRespolver.resolve(request.model)
+        this.provider = this.providerResolver.resolve(request.model)
         const providerRequest = this.provider.buildRequest(request)
         return this.provider.sendRequest(providerRequest)
     }
