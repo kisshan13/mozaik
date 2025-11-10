@@ -1,4 +1,4 @@
-import { Message } from "@/types/messages"
+import { Message } from "@/types/message"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIMapper } from "./mapper"
 

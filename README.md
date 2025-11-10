@@ -30,11 +30,13 @@ Creates an abstraction layer between your application and AI model providers, al
 
 ### How It Works
 
-1. You submit an `InvocationRequest` with messages, prompt, and model
-2. Gateway resolves the appropriate provider (OpenAI or Anthropic)
-3. Provider builds the request through a chain of handlers
-4. Request is sent to the AI provider's API
-5. Response is returned as a simple string
+1. You create a `Mosaic` object with messages and model
+2. You instantiate a `MosaicAgent` with the `Mosaic` object
+3. You call `agent.act(prompt)` to send a request
+4. Gateway resolves the appropriate provider (OpenAI or Anthropic)
+5. Provider builds the request through a chain of handlers
+6. Request is sent to the AI provider's API
+7. Response is returned as a simple string
 
 ### Design Patterns
 
@@ -88,18 +90,18 @@ The following models are supported out of the box.
 
 ```typescript
 import 'dotenv/config'
-import { gateway, InvocationRequest } from '@jigjoy-io/mosaic'
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
 
-const request: InvocationRequest = {
+const request: Mosaic = {
     messages: [{
         role: 'system', 
         content: 'You are a helpful weather assistant'
     }],
-    prompt: 'What is the weather in Serbia?',
     model: 'gpt-5'
 }
 
-const response = await gateway.invoke(request)
+const agent = new MosaicAgent(request)
+const response = await agent.act('What is the weather in Serbia?')
 console.log(response)
 ```
 
@@ -107,14 +109,16 @@ console.log(response)
 
 ```typescript
 import 'dotenv/config'
-import { gateway } from '@jigjoy-io/mosaic'
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
 
 // Using Claude Sonnet 4.5 (latest, best for coding/vision)
-const codingResponse = await gateway.invoke({
+const request: Mosaic = {
     messages: [],
-    prompt: 'Write a React component for a todo list',
     model: 'claude-sonnet-4-5-20250929'
-})
+}
+
+const agent = new MosaicAgent(request)
+const codingResponse = await agent.act('Write a React component for a todo list')
 ```
 
 ## Usage Examples
@@ -122,46 +126,55 @@ const codingResponse = await gateway.invoke({
 ### Simple Chat Completion
 
 ```typescript
-import { gateway } from '@jigjoy-io/mosaic'
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
 
-const response = await gateway.invoke({
+const request: Mosaic = {
     messages: [],
-    prompt: 'Explain quantum computing in simple terms',
     model: 'gpt-5-nano'
-})
+}
+
+const agent = new MosaicAgent(request)
+const response = await agent.act('Explain quantum computing in simple terms')
 ```
 
 ### Multi-turn Conversation
 
 ```typescript
-const response = await gateway.invoke({
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+
+const request: Mosaic = {
     messages: [
         { role: 'system', content: 'You are a coding assistant' },
         { role: 'user', content: 'How do I sort an array in TypeScript?' },
-        { role: 'assistant', content: 'You can use the .sort() method...' },
-        { role: 'user', content: 'Can you show me an example?' }
+        { role: 'assistant', content: 'You can use the .sort() method...' }
     ],
-    prompt: '',
     model: 'claude-haiku-4-5-20251001'
-})
+}
+
+const agent = new MosaicAgent(request)
+const response = await agent.act('Can you show me an example?')
 ```
 
 ### Using Different Models
 
 ```typescript
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+
 // OpenAI GPT-5
-const gptResponse = await gateway.invoke({
+const gptRequest: Mosaic = {
     messages: [],
-    prompt: 'Write a haiku about coding',
     model: 'gpt-5'
-})
+}
+const gptAgent = new MosaicAgent(gptRequest)
+const gptResponse = await gptAgent.act('Write a haiku about coding')
 
 // Anthropic Claude Opus 4
-const opusResponse = await gateway.invoke({
+const opusRequest: Mosaic = {
     messages: [],
-    prompt: 'Analyze this complex problem...',
-    model: 'claude-opus-4-20250522'
-})
+    model: 'claude-opus-4-1-20250805'
+}
+const opusAgent = new MosaicAgent(opusRequest)
+const opusResponse = await opusAgent.act('Analyze this complex problem...')
 ```
 
 ---
@@ -178,7 +191,9 @@ When using Anthropic Claude models with images, note that:
 
 Example:
 ```typescript
-const response = await gateway.invoke({
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+
+const request: Mosaic = {
     messages: [{
         role: 'user',
         content: [
@@ -192,9 +207,11 @@ const response = await gateway.invoke({
             }
         ]
     }],
-    prompt: '',
     model: 'claude-opus-4-1-20250805'
-})
+}
+
+const agent = new MosaicAgent(request)
+const response = await agent.act()
 ```
 
 ---

@@ -1,4 +1,4 @@
-import { InvocationRequest } from "@/types/request"
+import { Mosaic } from "@/types/mosaic"
 import { RequestBuilder } from "./request-builder"
 import { CapabilityHandler } from "./handlers/capability"
 import { MessagesHandler } from "./handlers/messages"
@@ -9,7 +9,7 @@ export abstract class ModelProvider {
 
     abstract requestBuilder: RequestBuilder
 
-    buildRequest(request: InvocationRequest): any {
+    buildRequest(request: Mosaic): any {
 
         this.requestBuilder.initialize()
         

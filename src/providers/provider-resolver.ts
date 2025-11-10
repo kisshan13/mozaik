@@ -1,6 +1,6 @@
 import { ProviderResolver } from "@core/provider-resolver"
 import { ModelProvider } from "@core/model-provider"
-import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/types/models"
+import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/types/model"
 import { OpenAIProvider } from "./openai/provider"
 import { AnthropicProvider } from "./anthropic/provider"
 

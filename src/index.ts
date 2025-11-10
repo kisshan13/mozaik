@@ -1,12 +1,11 @@
-import { ProviderResolver } from "@core/provider-resolver"
-import { RequestGateway } from "@core/request-gateway"
-import { MosaicProviderResolver } from "@providers/provider-resolver"
-import { InvocationRequest } from "./types/request"
-
-const resolver: ProviderResolver = new MosaicProviderResolver()
-const gateway: RequestGateway = new RequestGateway(resolver)
+import { MosaicAgent } from './mosaic'
+import { Message } from './types/message'
+import { Model } from './types/model'
+import { Mosaic } from './types/mosaic'
 
 export {
-    gateway,
-    InvocationRequest
+    Model,
+    Message,
+    Mosaic,
+    MosaicAgent
 }
