@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/examples/index.js",
-    "dev": "tsx ./anthropic-example.ts",
+    "dev": "tsx ./anthropic/simple-prompt.ts",
     "watch": "tsc --watch",
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@jigjoy-io/mosaic": "^0.0.6",
+    "@jigjoy-io/mosaic": "^0.0.8",
     "dotenv": "^17.2.3"
   },
   "devDependencies": {

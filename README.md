@@ -66,6 +66,22 @@ ANTHROPIC_API_KEY=your-anthropic-key-here
 
 ---
 
+## Supported Models
+
+The following models are supported out of the box. 
+
+### OpenAI
+- gpt-5
+- gpt-5-mini
+- gpt-5-nano
+
+### Anthropic Claude
+- claude-sonnet-4-5-20250929
+- claude-haiku-4-5-20251001
+- claude-opus-4-1-20250805
+
+---
+
 ## Quick Start
 
 ### OpenAI Example
@@ -93,16 +109,6 @@ console.log(response)
 import 'dotenv/config'
 import { gateway } from '@jigjoy-io/mosaic'
 
-// Using Claude 3.7 Sonnet (latest 3.x, best for reasoning)
-const response = await gateway.invoke({
-    messages: [{ 
-        role: 'system', 
-        content: 'You are a helpful assistant' 
-    }],
-    prompt: 'Explain quantum computing in simple terms',
-    model: 'claude-3-7-sonnet-20250224'
-})
-
 // Using Claude Sonnet 4.5 (latest, best for coding/vision)
 const codingResponse = await gateway.invoke({
     messages: [],
@@ -121,7 +127,7 @@ import { gateway } from '@jigjoy-io/mosaic'
 const response = await gateway.invoke({
     messages: [],
     prompt: 'Explain quantum computing in simple terms',
-    model: 'gpt-4'
+    model: 'gpt-5-nano'
 })
 ```
 
@@ -136,7 +142,7 @@ const response = await gateway.invoke({
         { role: 'user', content: 'Can you show me an example?' }
     ],
     prompt: '',
-    model: 'claude-3-7-sonnet-20250224'
+    model: 'claude-haiku-4-5-20251001'
 })
 ```
 
@@ -148,13 +154,6 @@ const gptResponse = await gateway.invoke({
     messages: [],
     prompt: 'Write a haiku about coding',
     model: 'gpt-5'
-})
-
-// Anthropic Claude 3.7 Sonnet
-const claudeResponse = await gateway.invoke({
-    messages: [],
-    prompt: 'Write a haiku about coding',
-    model: 'claude-3-7-sonnet-20250224'
 })
 
 // Anthropic Claude Opus 4
@@ -194,7 +193,7 @@ const response = await gateway.invoke({
         ]
     }],
     prompt: '',
-    model: 'claude-3-7-sonnet-20250224'
+    model: 'claude-opus-4-1-20250805'
 })
 ```
 
