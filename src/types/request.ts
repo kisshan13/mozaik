@@ -1,8 +1,8 @@
 import { Message } from "./messages"
-import { OpenAIModels } from "./models"
+import { OpenAIModels, AnthropicModels } from "./models"
 
 export type InvocationRequest = {
     prompt: string,
-    model: OpenAIModels,
+    model: OpenAIModels | AnthropicModels,
     messages: Message[]
 }
