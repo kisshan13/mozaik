@@ -199,7 +199,7 @@ const response = await gateway.invoke({
 
 ---
 
-Working examples are available on the GitHub [repo](https://github.com/jigjoy-io/mosaic-examples).
+Working examples are available on the [GitHub repo](https://github.com/jigjoy-io/mosaic-examples).
 
 ---
 
