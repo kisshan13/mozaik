@@ -199,9 +199,11 @@ const response = await gateway.invoke({
 
 ---
 
+Working examples are available on the GitHub [repo](https://github.com/jigjoy-io/mosaic-examples).
+
+---
+
 ## Author & License
 
 Created by [JigJoy](https://jigjoy.io) team  
 Licensed under the MIT License.
-
-Working examples are available on the GitHub repo: https://github.com/jigjoy-io/mosaic-examples.
