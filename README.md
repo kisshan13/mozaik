@@ -95,7 +95,10 @@ import { gateway } from '@jigjoy-io/mosaic'
 
 // Using Claude 3.7 Sonnet (latest 3.x, best for reasoning)
 const response = await gateway.invoke({
-    messages: [{ role: 'system', content: 'You are a helpful assistant' }],
+    messages: [{ 
+        role: 'system', 
+        content: 'You are a helpful assistant' 
+    }],
     prompt: 'Explain quantum computing in simple terms',
     model: 'claude-3-7-sonnet-20250224'
 })
