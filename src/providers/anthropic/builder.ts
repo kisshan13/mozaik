@@ -1,4 +1,4 @@
-import { Message } from "@/types/messages"
+import { Message } from "@/types/message"
 import { RequestBuilder } from "@core/request-builder"
 import { AnthropicMapper } from "./mapper"
 
@@ -10,11 +10,11 @@ export class AnthropicRequestBuilder extends RequestBuilder {
     return this
   }
 
-  addPrompt(prompt: string): RequestBuilder {
-    // Add prompt as a user message
+  addTask(task: string): RequestBuilder {
+    // Add task as a user message
     const message = {
       role: 'user' as const,
-      content: prompt
+      content: task
     }
 
     if (!this.request.messages) {

@@ -26,13 +26,13 @@ Creates an abstraction layer between your application and AI model providers, al
 2. **ProviderResolver** - Determines which provider to use based on the model
 3. **ModelProvider** - Abstract base for provider implementations (OpenAI, Anthropic)
 4. **RequestBuilder** - Constructs provider-specific requests using chain-of-responsibility pattern
-5. **Capability Handlers** - Modular handlers (messages, prompt, model) that build requests step-by-step
+5. **Capability Handlers** - Modular handlers (messages, task, model) that build requests step-by-step
 
 ### How It Works
 
 1. You create a `Mosaic` object with messages and model
 2. You instantiate a `MosaicAgent` with the `Mosaic` object
-3. You call `agent.act(prompt)` to send a request
+3. You call `agent.act(task)` to send a request
 4. Gateway resolves the appropriate provider (OpenAI or Anthropic)
 5. Provider builds the request through a chain of handlers
 6. Request is sent to the AI provider's API
@@ -47,7 +47,7 @@ Creates an abstraction layer between your application and AI model providers, al
 
 ### Extensibility
 
-The architecture supports adding new providers (Anthropic, Google, etc.) by:
+The architecture supports adding new providers (Google, etc.) by:
 - Implementing `ModelProvider` abstract class
 - Creating provider-specific `RequestBuilder` and mapper
 - Registering in `ProviderResolver`
@@ -175,6 +175,32 @@ const opusRequest: Mosaic = {
 }
 const opusAgent = new MosaicAgent(opusRequest)
 const opusResponse = await opusAgent.act('Analyze this complex problem...')
+```
+
+### Parallel Task Execution
+
+```typescript
+import 'dotenv/config'
+import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+
+const openaiRequest: Mosaic = {
+    model: 'gpt-5'
+}
+
+const anthropicRequest: Mosaic = {
+    model: 'claude-sonnet-4-5-20250929'
+}
+
+const openaiAgent = new MosaicAgent(openaiRequest)
+const anthropicAgent = new MosaicAgent(anthropicRequest)
+
+const task = 'What are the key differences between TypeScript and JavaScript? Provide a concise answer.'
+
+// Execute both agents in parallel using Promise.all()
+const [openaiResponse, anthropicResponse] = await Promise.all([
+    openaiAgent.act(task),
+    anthropicAgent.act(task)
+])
 ```
 
 ---

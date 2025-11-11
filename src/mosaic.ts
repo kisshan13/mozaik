@@ -21,9 +21,9 @@ export class MosaicAgent {
         this.mosaic.messages = messages
     }
 
-    async act(prompt?: string){
-        if(prompt){
-            this.mosaic.prompt = prompt
+    async act(task?: string){
+        if(task){
+            this.mosaic.task = task
         }
         return await this.gateway.invoke(this.mosaic)
     }

@@ -1,5 +1,5 @@
 // Install types from your SDK file:
-import { ImagePart, Message, TextPart } from "@/types/messages"
+import { ImagePart, Message, TextPart } from "@/types/message"
 import { CustomToolSpec, ToolResultPart } from "@/types/tools"
 
 import type {

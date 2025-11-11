@@ -9,7 +9,7 @@ export abstract class RequestBuilder {
     }
 
     abstract addModel(model: string): RequestBuilder
-    abstract addPrompt(prompt: string): RequestBuilder
+    abstract addTask(task: string): RequestBuilder
     abstract addMessages(messages: Message[]): RequestBuilder
 
     build(){
