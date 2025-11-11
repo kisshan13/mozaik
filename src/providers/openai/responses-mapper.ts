@@ -1,64 +1,69 @@
-import { Message, TextPart, ImagePart } from "@/types/message"
+import { Message } from "@/types/message"
 import { CustomToolSpec } from "@/types/tools"
-import { ResponseInput, ContentPart } from "@/types/openai-responses"
+import { ToolDefinition } from "@/types/openai-responses"
 
 export class OpenAIResponsesMapper {
   constructor(private model?: string) {}
 
   /**
-   * Convert domain Messages to Responses API input format
-   * Unlike Chat Completions which uses messages[], Responses uses input object
+   * Convert domain Messages to Responses API instructions format
    * 
-   * Note: Currently only maps the last message as the input.
-   * The Responses API manages conversation state server-side, so previous
-   * messages are tracked via response_id in stateful conversations.
-   * For multi-turn conversations without state, consider using Chat Completions.
+   * The Responses API uses 'instructions' (system prompt) rather than messages array.
+   * For multi-turn conversations, use conversation.id or previous_response_id parameters.
    */
-  toResponseInput(messages: Message[]): ResponseInput {
+  toInstructions(messages: Message[]): string {
     if (messages.length === 0) {
-      throw new Error('[ResponsesMapper] Cannot create input from empty messages')
+      throw new Error('[ResponsesMapper] Cannot create instructions from empty messages')
     }
 
-    const lastMessage = messages[messages.length - 1]
+    // Find system message if exists, otherwise use first user message as context
+    const systemMessage = messages.find(m => m.role === 'system')
     
-    // Map to Responses API input format
-    return {
-      type: 'message',
-      role: lastMessage.role as 'user' | 'assistant' | 'system',
-      content: this.mapContent(lastMessage.content)
-    }
-  }
-
-  private mapContent(content: string | Array<TextPart | ImagePart>): ContentPart[] {
-    if (typeof content === 'string') {
-      return [{ type: 'input_text', text: content }]
+    if (systemMessage) {
+      return typeof systemMessage.content === 'string' 
+        ? systemMessage.content 
+        : this.extractTextFromContent(systemMessage.content)
     }
 
-    return content.map(part => {
-      if ((part as any).type === 'text') {
-        return { type: 'input_text', text: (part as TextPart).text }
-      }
-      if ((part as any).type === 'image_url') {
-        return { 
-          type: 'input_image', 
-          image_url: { url: (part as ImagePart).url } 
-        }
-      }
-      throw new Error(`[ResponsesMapper] Unsupported content type: ${(part as any).type}`)
-    })
+    // Fallback: create instructions from context
+    return "You are a helpful assistant."
   }
 
   /**
-   * Map tools to Responses API format (similar to Chat Completions)
+   * Extract the user's input from messages
+   * Returns the last user message content for use in prompt variables.
+   * In Responses API, the actual user query is typically passed via prompt variables
+   * or handled through conversation continuation.
    */
-  toTools(tools: CustomToolSpec[]) {
+  extractUserInput(messages: Message[]): string {
+    const userMessages = messages.filter(m => m.role === 'user')
+    if (userMessages.length === 0) {
+      return ""
+    }
+
+    const lastUserMessage = userMessages[userMessages.length - 1]
+    return typeof lastUserMessage.content === 'string'
+      ? lastUserMessage.content
+      : this.extractTextFromContent(lastUserMessage.content)
+  }
+
+  private extractTextFromContent(content: any[]): string {
+    return content
+      .filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join(' ')
+  }
+
+  /**
+   * Map tools to Responses API format
+   */
+  toTools(tools: CustomToolSpec[]): ToolDefinition[] {
     return tools.map(t => ({
       type: 'function',
-      function: {
-        name: t.name,
-        description: t.description,
-        parameters: t.schema
-      }
+      name: t.name,
+      description: t.description,
+      parameters: t.schema,
+      strict: true  // Enable strict mode by default for better validation
     }))
   }
 }

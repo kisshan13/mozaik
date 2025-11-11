@@ -18,7 +18,7 @@ export class OpenAIProvider extends ModelProvider {
     /**
      * Send request to OpenAI API
      * Auto-detects whether to use Responses API or Chat Completions API
-     * based on request structure (presence of 'input' vs 'messages' field)
+     * based on request structure (presence of 'instructions' vs 'messages' field)
      */
     async sendRequest(providerRequest: any) {
         // Detect which API to use based on request structure
@@ -30,27 +30,38 @@ export class OpenAIProvider extends ModelProvider {
     }
 
     private isResponsesApiRequest(request: any): boolean {
-        // Responses API has 'input' field, Chat Completions has 'messages'
-        return 'input' in request
+        // Responses API has 'instructions' field, Chat Completions has 'messages'
+        return 'instructions' in request
     }
 
     /**
-     * Send request to the new Responses API endpoint
-     * Note: This endpoint is in preview and may require API access
+     * Send request to the Responses API endpoint
+     * Uses client.responses.create() SDK method
      */
     private async sendResponsesRequest(providerRequest: any) {
         try {
-            // Use new /v1/responses endpoint
-            // Note: The OpenAI SDK may not support this natively yet
-            const response = await this.client.post('/v1/responses', {
-                body: providerRequest
-            }) as any
+            // Use the SDK's responses.create method
+            // @ts-ignore - responses.create may not be in older SDK types
+            const response = await this.client.responses.create(providerRequest)
             
             // Extract text from Responses API format
-            return response.output?.[0]?.content?.[0]?.text ?? ""
+            // Response structure: { output_text, output: [...] }
+            if (response.output_text) {
+                return response.output_text
+            }
+            
+            // Fallback: extract from output array if output_text not available
+            const firstOutput = response.output?.[0]
+            if (firstOutput && 'content' in firstOutput) {
+                const firstContent = firstOutput.content?.[0]
+                if (firstContent && 'text' in firstContent) {
+                    return firstContent.text
+                }
+            }
+            
+            return ""
         } catch (error) {
-            // If Responses API fails, log and fall back to Chat Completions
-            console.warn('[OpenAIProvider] Responses API request failed, consider using Chat Completions:', error)
+            console.warn('[OpenAIProvider] Responses API request failed:', error)
             throw error
         }
     }
