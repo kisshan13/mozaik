@@ -1,9 +1,9 @@
-import { ModelProvider } from "@core/model-provider"
+import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIRequestBuilder } from "./builder"
 import OpenAI from "openai"
 
-export class OpenAIProvider extends ModelProvider {
+export class ChatCompletionEndpoint extends Endpoint {
     requestBuilder: RequestBuilder = new OpenAIRequestBuilder()
 
     constructor(private client = new OpenAI()){

@@ -5,7 +5,7 @@ import { MessagesHandler } from "./handlers/messages"
 import { TaskHandler } from "./handlers/task"
 import { ModelHandler } from "./handlers/model"
 
-export abstract class ModelProvider {
+export abstract class Endpoint {
 
     abstract requestBuilder: RequestBuilder
 

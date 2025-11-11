@@ -1,10 +1,10 @@
 import { Message } from "@/types/message"
 import { RequestBuilder } from "@core/request-builder"
-import { OpenAIMapper } from "./mapper"
+import { OpenAIChatCompletionMapper } from "./chat-completion-mapper"
 
-export class OpenAIRequestBuilder extends RequestBuilder {
+export class OpenAIChatCompletionBuilder extends RequestBuilder {
 
-    constructor(private mapper = new OpenAIMapper()){
+    constructor(private mapper = new OpenAIChatCompletionMapper()){
         super()
 
     }

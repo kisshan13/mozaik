@@ -30,7 +30,7 @@ import type {
 		return !!model && model.startsWith("o1")
 	}
   
-export class OpenAIMapper {
+export class OpenAIChatCompletionMapper {
 
     constructor(private model?: string) {}
   
