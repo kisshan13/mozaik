@@ -1,10 +1,10 @@
-import { ProviderResolver } from "@core/provider-resolver"
-import { ModelProvider } from "@core/model-provider"
+import { EndpointResolver } from "@core/endpoint-resolver"
+import { Endpoint } from "@core/endpoint"
 import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/types/model"
-import { OpenAIProvider } from "./openai/provider"
-import { AnthropicProvider } from "./anthropic/provider"
+import { OpenAIResponses } from "./openai/responses-endpoint"
+import { AnthropicEndpoint } from "./anthropic/endpoint"
 
-export class MosaicProviderResolver extends ProviderResolver {
+export class MosaicEndpointResolver extends EndpointResolver {
 
     isOpenAIModel(value: string): boolean {
         return (OPENAI_MODELS as readonly string[]).includes(value)
@@ -14,12 +14,12 @@ export class MosaicProviderResolver extends ProviderResolver {
         return (ANTHROPIC_MODELS as readonly string[]).includes(value)
     }
 
-    resolve(model: string): ModelProvider {
+    resolve(model: string): Endpoint {
         if(this.isOpenAIModel(model)){
-            return new OpenAIProvider()
+            return new OpenAIResponses()
         }
         if(this.isAnthropicModel(model)){
-            return new AnthropicProvider()
+            return new AnthropicEndpoint()
         }
         throw new Error('Provider not found')
     }

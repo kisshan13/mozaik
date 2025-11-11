@@ -1,18 +1,18 @@
 
 import { Mosaic } from "@/types/mosaic"
-import { ModelProvider } from "./model-provider"
-import { ProviderResolver } from "./provider-resolver"
+import { Endpoint } from "./endpoint"
+import { EndpointResolver } from "./endpoint-resolver"
 
 export class RequestGateway {
 
-    provider!: ModelProvider
+    endpoint!: Endpoint
 
-    constructor(readonly providerResolver: ProviderResolver){}
+    constructor(readonly endpointResolver: EndpointResolver){}
 
     invoke(request: Mosaic): any {
-        this.provider = this.providerResolver.resolve(request.model)
-        const providerRequest = this.provider.buildRequest(request)
-        return this.provider.sendRequest(providerRequest)
+        this.endpoint = this.endpointResolver.resolve(request.model)
+        const endpointRequest = this.endpoint.buildRequest(request)
+        return this.endpoint.sendRequest(endpointRequest)
     }
 
 }

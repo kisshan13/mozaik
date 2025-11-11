@@ -1,13 +1,13 @@
 import { RequestGateway } from "@core/request-gateway"
 import { Mosaic } from "./types/mosaic"
-import { MosaicProviderResolver } from "@providers/provider-resolver"
+import { MosaicEndpointResolver } from "@providers/endpoint-resolver"
 import { Message } from "./types/message"
 import { Model } from "./types/model"
 
 export class MosaicAgent {
 
     private mosaic: Mosaic
-    gateway: RequestGateway = new RequestGateway(new MosaicProviderResolver())
+    gateway: RequestGateway = new RequestGateway(new MosaicEndpointResolver())
 
     constructor(mosaic: Mosaic){
         this.mosaic = mosaic

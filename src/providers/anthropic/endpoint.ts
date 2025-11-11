@@ -1,14 +1,12 @@
-import { ModelProvider } from "@core/model-provider"
+import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
 import { AnthropicRequestBuilder } from "./builder"
 import Anthropic from "@anthropic-ai/sdk"
 
-export class AnthropicProvider extends ModelProvider {
+export class AnthropicEndpoint extends Endpoint {
   requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
-  constructor(private client = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-  })) {
+  constructor(private client = new Anthropic()) {
     super()
   }
 
