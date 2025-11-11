@@ -2,7 +2,7 @@ import { Mosaic } from "@/types/mosaic"
 import { RequestBuilder } from "./request-builder"
 import { CapabilityHandler } from "./handlers/capability"
 import { MessagesHandler } from "./handlers/messages"
-import { PromptHandler } from "./handlers/prompt"
+import { TaskHandler } from "./handlers/task"
 import { ModelHandler } from "./handlers/model"
 
 export abstract class ModelProvider {
@@ -14,11 +14,11 @@ export abstract class ModelProvider {
         this.requestBuilder.initialize()
         
         const messagesHandler: CapabilityHandler = new MessagesHandler()
-        const promptHandler: CapabilityHandler = new PromptHandler()
+        const taskHandler: CapabilityHandler = new TaskHandler()
         const modelHandler: CapabilityHandler = new ModelHandler()
 
         messagesHandler
-            .setNextHandler(promptHandler)
+            .setNextHandler(taskHandler)
             .setNextHandler(modelHandler)
 
         messagesHandler.handle(request, this.requestBuilder)

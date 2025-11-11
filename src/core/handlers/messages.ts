@@ -1,12 +1,12 @@
 import { RequestBuilder } from "@core/request-builder"
 import { CapabilityHandler } from "./capability"
-import { InvocationRequest } from "@/types/request"
+import { Mosaic } from "@/types/mosaic"
 
 export class MessagesHandler extends CapabilityHandler {
     
     nextHandler!: CapabilityHandler
 
-    apply(request: InvocationRequest, builder: RequestBuilder) {
+    apply(request: Mosaic, builder: RequestBuilder) {
         if(request.messages){
             builder.addMessages(request.messages)
         }

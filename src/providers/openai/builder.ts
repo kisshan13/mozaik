@@ -13,10 +13,10 @@ export class OpenAIRequestBuilder extends RequestBuilder {
         return this
     }
 
-    addPrompt(prompt: string): RequestBuilder {
+    addTask(task: string): RequestBuilder {
         const message = {
             role: 'user',
-            content: prompt
+            content: task
         }
 
         let messages = this.request.messages

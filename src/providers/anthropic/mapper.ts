@@ -1,4 +1,4 @@
-import { Message, TextPart, ImagePart } from "@/types/messages"
+import { Message, TextPart, ImagePart } from "@/types/message"
 import type { MessageParam, TextBlockParam, ImageBlockParam } from "@anthropic-ai/sdk/resources/messages"
 
 export class AnthropicMapper {
