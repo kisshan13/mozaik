@@ -1,10 +1,10 @@
 import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
-import { OpenAIRequestBuilder } from "./builder"
+import { OpenAIChatCompletionBuilder } from "./chat-completion-builder"
 import OpenAI from "openai"
 
 export class ChatCompletionEndpoint extends Endpoint {
-    requestBuilder: RequestBuilder = new OpenAIRequestBuilder()
+    requestBuilder: RequestBuilder = new OpenAIChatCompletionBuilder()
 
     constructor(private client = new OpenAI()){
         super()
