@@ -1,8 +1,8 @@
 import { RequestGateway } from "@core/request-gateway"
-import { Mosaic } from "./types/mosaic"
+import { Mosaic } from "@/types/mosaic"
 import { MosaicEndpointResolver } from "@providers/endpoint-resolver"
-import { Message } from "./types/message"
-import { Model } from "./types/model"
+import { Message } from "@/types/message"
+import { Model } from "@/types/model"
 
 export class MosaicAgent {
 
