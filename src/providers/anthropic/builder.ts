@@ -1,48 +1,56 @@
 import { Message } from "@/types/message"
 import { RequestBuilder } from "@core/request-builder"
 import { AnthropicMapper } from "./mapper"
+import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
 
 export class AnthropicRequestBuilder extends RequestBuilder {
-  private mapper = new AnthropicMapper()
 
-  addModel(model: string): RequestBuilder {
-    this.request.model = model
-    return this
-  }
+	private mapper = new AnthropicMapper()
 
-  addTask(task: string): RequestBuilder {
-    // Add task as a user message
-    const message = {
-      role: 'user' as const,
-      content: task
-    }
+	addModel(model: string): RequestBuilder {
+		this.request.model = model
+		return this
+	}
 
-    if (!this.request.messages) {
-      this.request.messages = []
-    }
-    
-    this.request.messages.push(message)
-    return this
-  }
+	addTask(task: string): RequestBuilder {
+		// Add task as a user message
+		const message = {
+			role: 'user' as const,
+			content: task
+		}
 
-  addMessages(messages: Message[]): RequestBuilder {
-    const { messages: anthropicMessages, system } = this.mapper.toMessages(messages)
-    
-    this.request.messages = anthropicMessages
-    
-    if (system) {
-      this.request.system = system
-    }
-    
-    return this
-  }
+		if (!this.request.messages) {
+			this.request.messages = []
+		}
+		
+		this.request.messages.push(message)
+		return this
+	}
 
-  build() {
-    // Anthropic requires max_tokens parameter
-    if (!this.request.max_tokens) {
-      this.request.max_tokens = 1024
-    }
-    
-    return this.request
-  }
+	addMessages(messages: Message[]): RequestBuilder {
+		const { messages: anthropicMessages, system } = this.mapper.toMessages(messages)
+		
+		this.request.messages = anthropicMessages
+		
+		if (system) {
+			this.request.system = system
+		}
+		
+		return this
+	}
+
+	addStructuredOutput(schema: any): RequestBuilder {
+		this.request.betas = ["structured-outputs-2025-11-13"]
+		this.request.output_format = betaZodOutputFormat(schema)
+		return this
+	}
+
+	build() {
+		// Anthropic requires max_tokens parameter
+		if (!this.request.max_tokens) {
+			this.request.max_tokens = 1024
+		}
+		
+		return this.request
+	}
 }

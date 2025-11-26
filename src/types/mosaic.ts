@@ -5,4 +5,5 @@ export type Mosaic = {
     model: Model,
     messages?: Message[]
     task?: string
+    structuredOutput?: any
 }

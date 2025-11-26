@@ -4,23 +4,22 @@ import { OpenAIResponsesBuilder } from "./responses-builder"
 import OpenAI from "openai"
 
 export class OpenAIResponses extends Endpoint {
-    // Default to Responses API
     requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
 
     constructor(private client = new OpenAI()){
         super()
     }
 
-    /**
-     * Send request to OpenAI API
-     * Auto-detects whether to use Responses API or Chat Completions API
-     * based on request structure (presence of 'instructions' vs 'messages' field)
-     */
+
     async sendRequest(providerRequest: any) {
         
         try {
-            // Use the SDK's responses.create method
-            // @ts-ignore - responses.create may not be in older SDK types
+
+            if(providerRequest.text && providerRequest.text.format){
+                const response = await this.client.responses.parse(providerRequest)
+                return response.output_parsed
+            }
+
             const response = await this.client.responses.create(providerRequest)
             
             // Extract text from Responses API format
