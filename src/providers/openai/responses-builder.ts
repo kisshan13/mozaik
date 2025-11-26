@@ -2,6 +2,7 @@ import { Message } from "@/types/message"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIResponsesMapper } from "./responses-mapper"
 import { zodTextFormat } from "openai/helpers/zod"
+import z from "zod"
 
 export class OpenAIResponsesBuilder extends RequestBuilder {
 
@@ -30,7 +31,7 @@ export class OpenAIResponsesBuilder extends RequestBuilder {
 		return this
 	}
 
-	addStructuredOutput(schema: any): RequestBuilder {
+	addStructuredOutput(schema: z.ZodObject): RequestBuilder {
 
 		this.request.text = {
 			format: zodTextFormat(schema, "outputSchema"),
