@@ -4,20 +4,21 @@ import { AnthropicRequestBuilder } from "./builder"
 import Anthropic from "@anthropic-ai/sdk"
 
 export class AnthropicEndpoint extends Endpoint {
+	
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
 	constructor(private client = new Anthropic()) {
 		super()
 	}
 
-	async sendRequest(providerRequest: any) {
+	async sendRequest(request: any) {
 
-		if(providerRequest.output_format){
-			const response = await this.client.beta.messages.parse(providerRequest)
+		if(request.output_format){
+			const response = await this.client.beta.messages.parse(request)
 			return response.parsed_output
 		}
 
-		const response = await this.client.messages.create(providerRequest)
+		const response = await this.client.messages.create(request)
 
 		// Extract text from content blocks
 		return response.content

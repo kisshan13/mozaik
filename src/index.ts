@@ -1,11 +1,11 @@
-import { MosaicAgent } from './mosaic'
+import { Agent } from './agent'
 import { Message } from './types/message'
 import { Model } from './types/model'
-import { Mosaic } from './types/mosaic'
+import { Command } from './types/command'
 
 export {
     Model,
     Message,
-    Mosaic,
-    MosaicAgent
+    Command,
+    Agent
 }

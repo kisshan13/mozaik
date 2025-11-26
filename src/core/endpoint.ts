@@ -1,16 +1,17 @@
-import { Mosaic } from "@/types/mosaic"
+
 import { RequestBuilder } from "./request-builder"
 import { CapabilityHandler } from "./handlers/capability"
 import { MessagesHandler } from "./handlers/messages"
 import { TaskHandler } from "./handlers/task"
 import { ModelHandler } from "./handlers/model"
 import { StructuredOutputlHandler } from "./handlers/structured-output"
+import { Command } from "@/types/command"
 
 export abstract class Endpoint {
 
     abstract requestBuilder: RequestBuilder
 
-    buildRequest(request: Mosaic): any {
+    buildRequest(command: Command): any {
 
         this.requestBuilder.initialize()
         
@@ -24,7 +25,7 @@ export abstract class Endpoint {
             .setNextHandler(modelHandler)
             .setNextHandler(structuredOutputHandler)
 
-        messagesHandler.handle(request, this.requestBuilder)
+        messagesHandler.handle(command, this.requestBuilder)
 
         return this.requestBuilder.build()
     }

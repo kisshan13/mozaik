@@ -1,4 +1,4 @@
-import { Mosaic } from "@/types/mosaic"
+import { Command } from "@/types/command"
 import { RequestBuilder } from "../request-builder"
 
 export abstract class CapabilityHandler {
@@ -10,13 +10,13 @@ export abstract class CapabilityHandler {
         return this.nextHandler
     }
 
-    abstract apply(request: Mosaic, requestBuilder: RequestBuilder): any
+    abstract apply(command: Command, requestBuilder: RequestBuilder): any
 
-    handle(request: Mosaic, builder: RequestBuilder){
-        this.apply(request, builder)
+    handle(command: Command, builder: RequestBuilder){
+        this.apply(command, builder)
 
         if (this.nextHandler) {
-            this.nextHandler.handle(request, builder)
+            this.nextHandler.handle(command, builder)
         }
     }
 }

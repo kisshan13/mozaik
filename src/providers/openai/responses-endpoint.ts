@@ -11,19 +11,17 @@ export class OpenAIResponses extends Endpoint {
     }
 
 
-    async sendRequest(providerRequest: any) {
+    async sendRequest(request: any) {
         
         try {
 
-            if(providerRequest.text && providerRequest.text.format){
-                const response = await this.client.responses.parse(providerRequest)
+            if(request.text && request.text.format){
+                const response = await this.client.responses.parse(request)
                 return response.output_parsed
             }
 
-            const response = await this.client.responses.create(providerRequest)
+            const response = await this.client.responses.create(request)
             
-            // Extract text from Responses API format
-            // Response structure: { output_text, output: [...] }
             if (response.output_text) {
                 return response.output_text
             }
