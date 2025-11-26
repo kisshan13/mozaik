@@ -30,8 +30,8 @@ Creates an abstraction layer between your application and AI model providers, al
 
 ### How It Works
 
-1. You create a `Mosaic` object with messages and model
-2. You instantiate a `MosaicAgent` with the `Mosaic` object
+1. You create a `Command` object with messages and model
+2. You instantiate an `Agent` with the `Command` object
 3. You call `agent.act(task)` to send a request
 4. Gateway resolves the appropriate provider (OpenAI or Anthropic)
 5. Provider builds the request through a chain of handlers
@@ -90,9 +90,9 @@ The following models are supported out of the box.
 
 ```typescript
 import 'dotenv/config'
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
-const request: Mosaic = {
+const command: Command = {
     messages: [{
         role: 'system', 
         content: 'You are a helpful weather assistant'
@@ -100,7 +100,7 @@ const request: Mosaic = {
     model: 'gpt-5'
 }
 
-const agent = new MosaicAgent(request)
+const agent = new Agent(command)
 const response = await agent.act('What is the weather in Serbia?')
 console.log(response)
 ```
@@ -109,40 +109,68 @@ console.log(response)
 
 ```typescript
 import 'dotenv/config'
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
 // Using Claude Sonnet 4.5 (latest, best for coding/vision)
-const request: Mosaic = {
+const command: Command = {
     messages: [],
     model: 'claude-sonnet-4-5-20250929'
 }
 
-const agent = new MosaicAgent(request)
+const agent = new Agent(command)
 const codingResponse = await agent.act('Write a React component for a todo list')
 ```
 
 ## Usage Examples
 
-### Simple Chat Completion
+### Simple Chat
 
 ```typescript
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
-const request: Mosaic = {
+const command: Command = {
     messages: [],
     model: 'gpt-5-nano'
 }
 
-const agent = new MosaicAgent(request)
+const agent = new Agent(command)
 const response = await agent.act('Explain quantum computing in simple terms')
+```
+
+### Structured Output
+
+```typescript
+import { z } from 'zod'
+import { Agent, Command } from '@jigjoy-io/mosaic'
+
+const mealPlanSchema = z.object({
+    calories: z.number(),
+    meals: z.array(
+        z.object({
+            name: z.string(),
+            description: z.string(),
+            ingredients: z.array(z.string()).min(3)
+        })
+    ).length(3),
+    shoppingList: z.array(z.string())
+})
+
+const command: Command = {
+    model: 'gpt-5-mini',
+    task: 'Create a 1-day vegetarian meal plan with breakfast, lunch, and dinner.',
+    structuredOutput: mealPlanSchema
+}
+
+const agent = new Agent(command)
+const response = await agent.act()
 ```
 
 ### Multi-turn Conversation
 
 ```typescript
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
-const request: Mosaic = {
+const command: Command = {
     messages: [
         { role: 'system', content: 'You are a coding assistant' },
         { role: 'user', content: 'How do I sort an array in TypeScript?' },
@@ -151,29 +179,29 @@ const request: Mosaic = {
     model: 'claude-haiku-4-5-20251001'
 }
 
-const agent = new MosaicAgent(request)
+const agent = new Agent(command)
 const response = await agent.act('Can you show me an example?')
 ```
 
 ### Using Different Models
 
 ```typescript
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
 // OpenAI GPT-5
-const gptRequest: Mosaic = {
+const gptCommand: Command = {
     messages: [],
     model: 'gpt-5'
 }
-const gptAgent = new MosaicAgent(gptRequest)
+const gptAgent = new Agent(gptCommand)
 const gptResponse = await gptAgent.act('Write a haiku about coding')
 
 // Anthropic Claude Opus 4
-const opusRequest: Mosaic = {
+const opusCommand: Command = {
     messages: [],
     model: 'claude-opus-4-1-20250805'
 }
-const opusAgent = new MosaicAgent(opusRequest)
+const opusAgent = new Agent(opusCommand)
 const opusResponse = await opusAgent.act('Analyze this complex problem...')
 ```
 
@@ -181,18 +209,18 @@ const opusResponse = await opusAgent.act('Analyze this complex problem...')
 
 ```typescript
 import 'dotenv/config'
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
-const openaiRequest: Mosaic = {
+const openaiCommand: Command = {
     model: 'gpt-5'
 }
 
-const anthropicRequest: Mosaic = {
+const anthropicCommand: Command = {
     model: 'claude-sonnet-4-5-20250929'
 }
 
-const openaiAgent = new MosaicAgent(openaiRequest)
-const anthropicAgent = new MosaicAgent(anthropicRequest)
+const openaiAgent = new Agent(openaiCommand)
+const anthropicAgent = new Agent(anthropicCommand)
 
 const task = 'What are the key differences between TypeScript and JavaScript? Provide a concise answer.'
 
@@ -217,9 +245,9 @@ When using Anthropic Claude models with images, note that:
 
 Example:
 ```typescript
-import { MosaicAgent, Mosaic } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-io/mosaic'
 
-const request: Mosaic = {
+const command: Command = {
     messages: [{
         role: 'user',
         content: [
@@ -236,7 +264,7 @@ const request: Mosaic = {
     model: 'claude-opus-4-1-20250805'
 }
 
-const agent = new MosaicAgent(request)
+const agent = new Agent(command)
 const response = await agent.act()
 ```
 
