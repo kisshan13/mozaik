@@ -3,7 +3,7 @@ import { Command } from "./types/command"
 import { MosaicEndpointResolver } from "@providers/endpoint-resolver"
 import { Message } from "./types/message"
 import { Model } from "./types/model"
-import z from "zod"
+import { ZodObject } from "zod"
 
 export class Agent {
 
@@ -26,7 +26,7 @@ export class Agent {
         this.command.task = task
     }
 
-    setStructuredOutput(schema: z.ZodObject<any>){
+    setStructuredOutput(schema: ZodObject<any>){
         this.command.structuredOutput = schema
     }
 

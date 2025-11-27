@@ -78,9 +78,9 @@ The following models are supported out of the box.
 - gpt-5-nano
 
 ### Anthropic Claude
-- claude-sonnet-4-5-20250929
-- claude-haiku-4-5-20251001
-- claude-opus-4-1-20250805
+- claude-sonnet-4.5
+- claude-haiku-4.5
+- claude-opus-4.5
 
 ---
 
@@ -114,7 +114,7 @@ import { Agent, Command } from '@jigjoy-io/mosaic'
 // Using Claude Sonnet 4.5 (latest, best for coding/vision)
 const command: Command = {
     messages: [],
-    model: 'claude-sonnet-4-5-20250929'
+    model: 'claude-sonnet-4.5'
 }
 
 const agent = new Agent(command)
@@ -176,7 +176,7 @@ const command: Command = {
         { role: 'user', content: 'How do I sort an array in TypeScript?' },
         { role: 'assistant', content: 'You can use the .sort() method...' }
     ],
-    model: 'claude-haiku-4-5-20251001'
+    model: 'claude-haiku-4.5'
 }
 
 const agent = new Agent(command)
@@ -196,10 +196,10 @@ const gptCommand: Command = {
 const gptAgent = new Agent(gptCommand)
 const gptResponse = await gptAgent.act('Write a haiku about coding')
 
-// Anthropic Claude Opus 4
+// Anthropic Claude Opus 4.5
 const opusCommand: Command = {
     messages: [],
-    model: 'claude-opus-4-1-20250805'
+    model: 'claude-opus-4.5'
 }
 const opusAgent = new Agent(opusCommand)
 const opusResponse = await opusAgent.act('Analyze this complex problem...')
@@ -216,7 +216,7 @@ const openaiCommand: Command = {
 }
 
 const anthropicCommand: Command = {
-    model: 'claude-sonnet-4-5-20250929'
+    model: 'claude-sonnet-4.5'
 }
 
 const openaiAgent = new Agent(openaiCommand)
@@ -261,7 +261,7 @@ const command: Command = {
             }
         ]
     }],
-    model: 'claude-opus-4-1-20250805'
+    model: 'claude-opus-4.5'
 }
 
 const agent = new Agent(command)
