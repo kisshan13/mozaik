@@ -1,14 +1,14 @@
 import { RequestBuilder } from "@core/request-builder"
 import { CapabilityHandler } from "./capability"
-import { Mosaic } from "@/types/mosaic"
+import { Command } from "@/types/command"
 
 export class ModelHandler extends CapabilityHandler {
     
     nextHandler!: CapabilityHandler
 
-    apply(request: Mosaic, builder: RequestBuilder) {
-        if(request.model){
-            builder.addModel(request.model)
+    apply(command: Command, builder: RequestBuilder) {
+        if(command.model){
+            builder.addModel(command.model)
         }
             
     }

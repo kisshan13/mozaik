@@ -1,5 +1,5 @@
 
-import { Mosaic } from "@/types/mosaic"
+import { Command } from "@/types/command"
 import { Endpoint } from "./endpoint"
 import { EndpointResolver } from "./endpoint-resolver"
 
@@ -9,10 +9,10 @@ export class RequestGateway {
 
     constructor(readonly endpointResolver: EndpointResolver){}
 
-    invoke(request: Mosaic): any {
-        this.endpoint = this.endpointResolver.resolve(request.model)
-        const endpointRequest = this.endpoint.buildRequest(request)
-        return this.endpoint.sendRequest(endpointRequest)
+    invoke(command: Command): any {
+        this.endpoint = this.endpointResolver.resolve(command.model)
+        const request = this.endpoint.buildRequest(command)
+        return this.endpoint.sendRequest(request)
     }
 
 }

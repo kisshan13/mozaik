@@ -3,8 +3,8 @@ import { Plan, PlanNode } from "@/types/plan"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { Task } from "@core/workflow/task"
 import { Workflow } from "@core/workflow/workflow"
-import { MosaicAgent } from "./mosaic"
-import { Mosaic } from "@/types/mosaic"
+import { Agent } from "./agent"
+import { Command } from "@/types/command"
 
 const PROMPT = `You are a planner.
 Return STRICT JSON only, no prose.
@@ -25,10 +25,10 @@ Rules:
 - Don't ask user for any input, just do the thing with available data you have.
 `
 
-export class PlanningAgent extends MosaicAgent {
+export class PlanningAgent extends Agent {
 
-	constructor(mosaic: Mosaic){
-		super(mosaic)
+	constructor(command: Command){
+		super(command)
 	}
 
 	async planFromGoal(goal: string): Promise<Workflow> {
