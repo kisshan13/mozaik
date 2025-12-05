@@ -76,6 +76,7 @@ The following models are supported out of the box.
 - gpt-5
 - gpt-5-mini
 - gpt-5-nano
+- gpt-5.1
 
 ### Anthropic Claude
 - claude-sonnet-4.5

@@ -6,7 +6,8 @@ import { Workflow } from "@core/workflow/workflow"
 import { Agent } from "./agent"
 import { Command } from "@/types/command"
 
-const PROMPT = `You are a planner.
+const PROMPT = 
+`You are a planner.
 Return STRICT JSON only, no prose.
 Schema:
 {
