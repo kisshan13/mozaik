@@ -1,9 +1,9 @@
 import { RequestGateway } from "@core/request-gateway"
-import { Command } from "./types/command"
+import { Command } from "@/types/command"
 import { MosaicEndpointResolver } from "@providers/endpoint-resolver"
-import { Message } from "./types/message"
-import { Model } from "./types/model"
 import { ZodObject } from "zod"
+import { Model } from "@/types/model"
+import { Message } from "@/types/message"
 
 export class Agent {
 
