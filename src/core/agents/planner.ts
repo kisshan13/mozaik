@@ -1,4 +1,4 @@
-import { PlanNode } from "@/types/plan"
+import { Plan, PlanNode } from "@/types/plan"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { Task } from "@core/workflow/task"
 import { Workflow } from "@core/workflow/workflow"
@@ -37,7 +37,7 @@ export const WorkflowPlanNodeSchema: z.ZodType<Extract<PlanNode, { kind: "workfl
 		units: z.array(PlanNodeSchema), // recursion
 	  })
 )
-export type WorkflowPlanNode = z.infer<typeof WorkflowPlanNodeSchema>;
+export type WorkflowPlanNode = z.infer<typeof WorkflowPlanNodeSchema>
    
 export const PlanNodeSchema: z.ZodType<PlanNode> =  TaskPlanNodeSchema.or(WorkflowPlanNodeSchema)
   
@@ -53,7 +53,7 @@ export class PlanningAgent extends Agent {
 
 	async planFromGoal(goal: string): Promise<Workflow> {
 		this.setStructuredOutput(PlanSchema)
-		const plan = await this.act(`${PROMPT}\nGoal: ${goal}`)
+		const plan: Plan = await this.act(`${PROMPT}\nGoal: ${goal}`)
 		return buildWorkflow(plan.root)
 	}
 }
