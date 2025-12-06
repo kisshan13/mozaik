@@ -21,7 +21,7 @@ Schema:
 }
 Rules:
 - Use 'parallel' for the task that can be run in parallel.
-- Pick model based on the task complexity ('gpt-5', 'gpt-5-mini', 'gpt-5-nano')
+- Pick model based on the task complexity ('gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-5.1', 'claude-sonnet-4.5', 'claude-haiku-4.5', 'claude-opus-4.5')
 - Keep prompts actionable.
 - Don't ask user for any input, just do the thing with available data you have.
 `
