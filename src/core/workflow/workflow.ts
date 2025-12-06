@@ -2,7 +2,7 @@ import { WorkUnit } from "@core/workflow/work-unit"
 
 export class Workflow extends WorkUnit {
 	
-    constructor(private mode: 'parallel' | 'sequential', private units: WorkUnit[]) {
+    constructor(readonly mode: 'parallel' | 'sequential', readonly units: WorkUnit[]) {
 		super()
     }
   
