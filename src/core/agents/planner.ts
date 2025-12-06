@@ -34,7 +34,7 @@ export const WorkflowPlanNodeSchema: z.ZodType<Extract<PlanNode, { kind: "workfl
 	  z.object({
 		kind: z.literal("workflow"),
 		mode: z.enum(["sequential", "parallel"]),
-		children: z.array(PlanNodeSchema), // recursion
+		units: z.array(PlanNodeSchema), // recursion
 	  })
 )
 export type WorkflowPlanNode = z.infer<typeof WorkflowPlanNodeSchema>;
@@ -65,7 +65,7 @@ function buildWorkflow(node: PlanNode): Workflow {
 	
 	return new Workflow(
 		node.mode ?? "sequential",
-		node.children.map(mapNode)
+		node.units.map(mapNode)
 	)
 }
 
@@ -77,6 +77,6 @@ function mapNode(node: PlanNode): WorkUnit {
 	
 	return new Workflow(
 		node.mode ?? "sequential",
-		node.children.map(mapNode)
+		node.units.map(mapNode)
 	)
 }
