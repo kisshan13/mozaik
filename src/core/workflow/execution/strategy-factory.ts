@@ -1,5 +1,5 @@
-import { ParallelExecution } from "./parallel-execution"
-import { SequentalExecution } from "./sequential-execution"
+import { ParallelExecution } from "./parallel"
+import { SequentalExecution } from "./sequential"
 import { WorkflowExecutionStrategy } from "./strategy"
 
 export class ExecutionStrategyFactory {
