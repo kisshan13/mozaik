@@ -1,4 +1,6 @@
 import { WorkUnit } from "@core/workflow/work-unit"
+import { ExecutionStrategyFactory } from "./execution-strategy-factory"
+import { WorkflowExecutionStrategy } from "./workflow-execution-strategy"
 
 export class Workflow extends WorkUnit {
 	
@@ -7,10 +9,8 @@ export class Workflow extends WorkUnit {
     }
   
     async execute(): Promise<any> {
-		const results = []
-		for (const u of this.units) {
-			results.push(await u.execute())
-		}
-		return { ok: true, data: results }
+		const executionStrategy: WorkflowExecutionStrategy = ExecutionStrategyFactory.create(this.mode)
+		const result = await executionStrategy.execute(this)
+		return { ok: true, data: result }
     }
 }

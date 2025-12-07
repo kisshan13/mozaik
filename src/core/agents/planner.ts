@@ -35,7 +35,7 @@ function buildWorkflow(node: PlanNode): Workflow {
 		throw new Error("Root must be workflow")
 	
 	return new Workflow(
-		node.mode ?? "sequential",
+		node.mode,
 		node.units.map(mapNode)
 	)
 }
@@ -47,7 +47,7 @@ function mapNode(node: PlanNode): WorkUnit {
 	}
 	
 	return new Workflow(
-		node.mode ?? "sequential",
+		node.mode,
 		node.units.map(mapNode)
 	)
 }
