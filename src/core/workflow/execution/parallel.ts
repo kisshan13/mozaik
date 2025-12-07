@@ -1,12 +1,13 @@
-import { Workflow } from "./workflow";
-import { WorkflowExecutionStrategy } from "./workflow-execution-strategy";
+
+import { Workflow } from "@core/workflow/workflow"
+import { WorkflowExecutionStrategy } from "@core/workflow/execution/strategy"
 
 export class ParallelExecution implements WorkflowExecutionStrategy {
     
-    async execute(worfklow: Workflow): Promise<any> {
+    async execute(workflow: Workflow): Promise<any> {
 
         const promises = []
-		for (const u of worfklow.units) {
+		for (const u of workflow.units) {
 			promises.push(u.execute())
 		}
 

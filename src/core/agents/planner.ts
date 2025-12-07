@@ -4,7 +4,7 @@ import { Task } from "@core/workflow/task"
 import { Workflow } from "@core/workflow/workflow"
 import { Agent } from "./agent"
 import { Command } from "@/types/command"
-import { PlanSchema } from "@core/schemas/plan"
+import { PlanSchema } from "@core/workflow/schema/plan"
 
 const PROMPT = 
 `You are a planner.
