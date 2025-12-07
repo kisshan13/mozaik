@@ -275,6 +275,14 @@ const response = await agent.act()
 
 Mosaic provides a powerful workflow system that enables autonomous agent execution through intelligent planning and task orchestration. This guide explains how to use the `PlanningAgent` to break down complex goals into executable workflows.
 
+## Overview
+
+Workflows allow you to:
+- **Compose multiple AI tasks** into a single execution plan
+- **Run tasks in parallel** for speed, or **sequentially** when order matters
+- **Nest workflows** to create complex execution trees
+- **Auto-generate workflows** from goals using the `PlanningAgent`
+
 ### Core Concepts
 
 #### 1. **WorkUnit** (Base Abstraction)
