@@ -8,7 +8,7 @@ export interface ToolResultPart {
     name?: string
 }
 
-export interface CustomToolSpec { 
+export interface ToolSpec { 
     name: string
     description: string
     schema: Record<string, any>

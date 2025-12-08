@@ -4,6 +4,7 @@ import { AnthropicMapper } from "./mapper"
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
 import { ANTHROPIC_MODEL_MAP, AnthropicModel } from "@/types/model"
 import { ZodObject } from "zod"
+import { ToolSpec } from "@/types/tools"
 
 export class AnthropicRequestBuilder extends RequestBuilder {
 
@@ -44,6 +45,15 @@ export class AnthropicRequestBuilder extends RequestBuilder {
 	addStructuredOutput(schema: ZodObject): RequestBuilder {
 		this.request.betas = ["structured-outputs-2025-11-13"]
 		this.request.output_format = betaZodOutputFormat(schema)
+		return this
+	}
+
+	addTools(tools: ToolSpec[]): RequestBuilder {
+		this.request.tools = tools.map(tool => ({
+			name: tool.name,
+			description: tool.description,
+			input_schema: tool.schema
+		}))
 		return this
 	}
 

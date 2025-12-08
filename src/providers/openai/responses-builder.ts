@@ -3,6 +3,7 @@ import { RequestBuilder } from "@core/request-builder"
 import { OpenAIResponsesMapper } from "./responses-mapper"
 import { zodTextFormat } from "openai/helpers/zod"
 import { ZodObject } from "zod"
+import { ToolSpec } from "@/types/tools"
 
 export class OpenAIResponsesBuilder extends RequestBuilder {
 
@@ -36,6 +37,17 @@ export class OpenAIResponsesBuilder extends RequestBuilder {
 		this.request.text = {
 			format: zodTextFormat(schema, "outputSchema"),
 		}
+		return this
+	}
+
+	addTools(tools: ToolSpec[]): RequestBuilder {
+		
+		this.request.tools = tools.map(tool => ({
+			type: 'function' as const,
+			name: tool.name,
+			description: tool.description,
+			parameters: tool.schema
+		}))
 		return this
 	}
 }
