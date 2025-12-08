@@ -26,6 +26,8 @@ ANTHROPIC_API_KEY=your-anthropic-key-here
 
 ---
 
+## Features 
+
 ### Work Across Models
 - Use different models for different tasks
 - Combine multiple providers in one system
@@ -47,17 +49,6 @@ ANTHROPIC_API_KEY=your-anthropic-key-here
 - Generate agent workflows from high-level goals
 - Combine manual and AI-generated workflows
 - Tune the level of autonomy per agent
-
-### Execute Work Reliably
-- Run multi-step agent workflows
-- Control execution order
-- Run independent work in parallel
-- Execute complex, nested workflows
-
-### Build Complex Systems
-- Decompose large goals into smaller tasks
-- Coordinate multiple agents
-- Scale from simple agents to multi-agent systems
 
 ### Handle Real Inputs
 - Work with text and images
