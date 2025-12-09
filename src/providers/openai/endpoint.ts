@@ -1,7 +1,7 @@
 import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIResponsesBuilder } from "./builder"
-import { ClientResolver } from "./client/resolver"
+import { OpenAIClientResolver } from "./client/resolver"
 
 export class OpenAIResponses extends Endpoint {
     requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -11,7 +11,7 @@ export class OpenAIResponses extends Endpoint {
         
         try {
 
-            const client = ClientResolver.resolve(request)
+            const client = OpenAIClientResolver.resolve(request)
             const response = await client.send(request)
 
             // structured output response handler

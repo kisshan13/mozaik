@@ -1,15 +1,15 @@
-import { SendingClient } from "./client"
-import { DefaultClient } from "./default"
-import { ParserClient } from "./parser"
+import { SendingClient } from "@core/endpoint/client"
+import { OpenAIDefaultClient } from "./default"
+import { OpenAIParserClient } from "./parser"
 
-export class ClientResolver {
+export class OpenAIClientResolver {
 
     static resolve(request: any): SendingClient {
 
         if(request.text && request.text.format){
-            return new ParserClient()
+            return new OpenAIParserClient()
         }else{
-            return new DefaultClient()
+            return new OpenAIDefaultClient()
         }
     }
 }
