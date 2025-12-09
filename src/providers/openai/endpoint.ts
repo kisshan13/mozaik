@@ -1,32 +1,30 @@
 import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIResponsesBuilder } from "./builder"
-import OpenAI from "openai"
+import { ClientResolver } from "./client/resolver"
 
 export class OpenAIResponses extends Endpoint {
     requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
-
-    constructor(private client = new OpenAI()){
-        super()
-    }
 
 
     async sendRequest(request: any) {
         
         try {
 
-            if(request.text && request.text.format){
-                const response = await this.client.responses.parse(request)
+            const client = ClientResolver.resolve(request)
+            const response = await client.send(request)
+
+            // structured output response handler
+            if(response.output_parsed){
                 return response.output_parsed
             }
-
-            const response = await this.client.responses.create(request)
             
+            // default text response handler
             if (response.output_text) {
                 return response.output_text
             }
             
-            // Fallback: extract from output array if output_text not available
+            // content response handler
             const firstOutput = response.output?.[0]
             if (firstOutput && 'content' in firstOutput) {
                 const firstContent = firstOutput.content?.[0]
@@ -35,6 +33,7 @@ export class OpenAIResponses extends Endpoint {
                 }
             }
             
+            // empty response handler
             return ""
         } catch (error) {
             console.warn('[OpenAIProvider] Responses API request failed:', error)
