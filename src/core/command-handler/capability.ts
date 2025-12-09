@@ -5,7 +5,7 @@ export abstract class CapabilityHandler {
 
     abstract nextHandler: CapabilityHandler
 
-    setNextHandler(capability: CapabilityHandler): CapabilityHandler{
+    setNextHandler(capability: CapabilityHandler): CapabilityHandler {
         this.nextHandler = capability
         return this.nextHandler
     }
