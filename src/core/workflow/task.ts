@@ -8,14 +8,14 @@ export class Task extends WorkUnit {
     }
 
     async execute(): Promise<any> {
-      	const mosaic: Command = {
+      	const command: Command = {
             model: this.model,
             task: this.task
         }
 
-        console.log(`Calling llm with parameters: ${JSON.stringify(mosaic)}`)
+        console.log(`Calling llm with parameters: ${JSON.stringify(command)}`)
 
-        const agent = new Agent(mosaic)
+        const agent = new Agent(command)
         return await agent.act(this.task)
     }
 }
