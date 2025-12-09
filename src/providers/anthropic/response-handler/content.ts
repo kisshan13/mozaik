@@ -5,7 +5,7 @@ export class ContentHandler extends ResponseHandler {
     nextHandler!: ResponseHandler
 
 
-    handle(response: any) {
+    handle(request: any, response: any) {
         
         return response.content
 			.filter((block: any) => block.type === 'text')

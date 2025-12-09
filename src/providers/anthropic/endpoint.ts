@@ -27,6 +27,6 @@ export class AnthropicEndpoint extends Endpoint {
 
 		const client = AnthropicClientResolver.resolve(request)
 		const response = await client.send(request)
-		return this.responseHandler.handle(response)
+		return this.responseHandler.handle(request, response)
 	}
 }
