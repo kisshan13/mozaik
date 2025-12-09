@@ -1,7 +1,7 @@
 import OpenAI from "openai"
-import { SendingClient } from "./client"
+import { SendingClient } from "@core/endpoint/client"
 
-export class ParserClient implements SendingClient {
+export class OpenAIParserClient implements SendingClient {
 
     constructor(private client = new OpenAI()){}
     
