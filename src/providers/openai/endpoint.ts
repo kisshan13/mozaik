@@ -1,6 +1,6 @@
 import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
-import { OpenAIResponsesBuilder } from "./responses-builder"
+import { OpenAIResponsesBuilder } from "./builder"
 import OpenAI from "openai"
 
 export class OpenAIResponses extends Endpoint {

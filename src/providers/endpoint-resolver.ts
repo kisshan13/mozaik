@@ -1,7 +1,7 @@
 import { EndpointResolver } from "@core/endpoint-resolver"
 import { Endpoint } from "@core/endpoint"
 import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/types/model"
-import { OpenAIResponses } from "./openai/responses-endpoint"
+import { OpenAIResponses } from "./openai/endpoint"
 import { AnthropicEndpoint } from "./anthropic/endpoint"
 
 export class MosaicEndpointResolver extends EndpointResolver {
@@ -15,12 +15,15 @@ export class MosaicEndpointResolver extends EndpointResolver {
     }
 
     resolve(model: string): Endpoint {
+        
         if(this.isOpenAIModel(model)){
             return new OpenAIResponses()
         }
+        
         if(this.isAnthropicModel(model)){
             return new AnthropicEndpoint()
         }
+
         throw new Error('Provider not found')
     }
 

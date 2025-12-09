@@ -31,4 +31,5 @@ export abstract class Endpoint {
     }
 
     abstract sendRequest(providerRequest: any): any
+
 }
