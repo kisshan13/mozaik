@@ -29,7 +29,7 @@ export class OpenAIResponses extends Endpoint {
             .setNextHandler(contentHandler)
             .setNextHandler(emptyResponseHandler)
 
-		this.responseHandler = outputParsedHandler
+		this.responseHandler = functionCallsHandler
 	}
 
     async sendRequest(request: any) {

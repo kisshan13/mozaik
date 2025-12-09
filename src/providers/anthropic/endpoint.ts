@@ -5,6 +5,7 @@ import { AnthropicClientResolver } from "./client/resolver"
 import { ResponseHandler } from "@core/response-handler"
 import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
+import { ToolUseHandler } from "./response-handler/tool-use"
 
 export class AnthropicEndpoint extends Endpoint {
 	
@@ -14,13 +15,16 @@ export class AnthropicEndpoint extends Endpoint {
 	constructor(){
 		super()
 
+		const toolUseHandler: ResponseHandler = new ToolUseHandler()
 		const parsedOutputHandler: ResponseHandler = new ParsedOutputHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()
 
-        parsedOutputHandler
+
+		toolUseHandler
+			.setNextHandler(parsedOutputHandler)
             .setNextHandler(contentHandler)
 
-		this.responseHandler = parsedOutputHandler
+		this.responseHandler = toolUseHandler
 	}
 
 	async sendRequest(request: any) {

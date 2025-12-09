@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { ResponseHandler } from "@core/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
 
-export class ParsedOutputHandler extends ResponseHandler {
+export class ToolUseHandler extends ResponseHandler {
 
     nextHandler!: ResponseHandler
     client: AnthropicDefaultClient

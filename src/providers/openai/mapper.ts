@@ -1,9 +1,8 @@
 import { Message } from "@/types/message"
-import { Tool } from "@/types/tools"
+import { Tool } from "@/types/tool"
 import { ToolDefinition } from "@/types/openai-responses"
 
 export class OpenAIResponsesMapper {
-  constructor(private model?: string) {}
 
   /**
    * Convert domain Messages to Responses API instructions format
