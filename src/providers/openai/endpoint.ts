@@ -7,6 +7,7 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { EmptyResponseHandler } from "./response-handler/empty"
+import { FunctionCallsHandler } from "./response-handler/function-calls"
 
 export class OpenAIResponses extends Endpoint {
     requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -16,12 +17,14 @@ export class OpenAIResponses extends Endpoint {
 	constructor(){
 		super()
 
+        const functionCallsHandler: ResponseHandler = new FunctionCallsHandler()
 		const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
         const outputTextHandler: ResponseHandler = new OutputTextHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()
         const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
 
-        outputParsedHandler
+        functionCallsHandler
+            .setNextHandler(outputParsedHandler)
             .setNextHandler(outputTextHandler)
             .setNextHandler(contentHandler)
             .setNextHandler(emptyResponseHandler)
@@ -35,7 +38,7 @@ export class OpenAIResponses extends Endpoint {
 
             const client = OpenAIClientResolver.resolve(request)
             const response = await client.send(request)
-            return this.responseHandler.handle(response)
+            return this.responseHandler.handle(request, response)
         } catch (error) {
             console.warn('[OpenAIProvider] Responses API request failed:', error)
             throw error

@@ -4,7 +4,7 @@ import { AnthropicMapper } from "./mapper"
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
 import { ANTHROPIC_MODEL_MAP, AnthropicModel } from "@/types/model"
 import { ZodObject } from "zod"
-import { ToolSpec } from "@/types/tools"
+import { Tool } from "@/types/tool"
 
 export class AnthropicRequestBuilder extends RequestBuilder {
 
@@ -48,7 +48,7 @@ export class AnthropicRequestBuilder extends RequestBuilder {
 		return this
 	}
 
-	addTools(tools: ToolSpec[]): RequestBuilder {
+	addTools(tools: Tool[]): RequestBuilder {
 		this.request.tools = tools.map(tool => ({
 			name: tool.name,
 			description: tool.description,

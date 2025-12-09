@@ -4,7 +4,7 @@ export class EmptyResponseHandler extends ResponseHandler {
 
     nextHandler!: ResponseHandler
 
-    handle(response: any) {
+    handle(request: any, response: any) {
         return ""
     }
 }

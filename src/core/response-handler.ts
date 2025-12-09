@@ -7,5 +7,5 @@ export abstract class ResponseHandler {
         return this.nextHandler
     }
 
-    abstract handle(response: any): any
+    abstract handle(request: any, response: any): any
 }

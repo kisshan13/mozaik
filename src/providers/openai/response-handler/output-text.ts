@@ -5,12 +5,12 @@ export class OutputTextHandler extends ResponseHandler {
     nextHandler!: ResponseHandler
 
 
-    handle(response: any) {
+    handle(request: any, response: any) {
 
         if (response.output_text) {
             return response.output_text
         }
 
-        this.nextHandler.handle(response)
+        this.nextHandler.handle(request, response)
     }
 }

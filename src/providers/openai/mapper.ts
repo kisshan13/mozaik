@@ -1,5 +1,5 @@
 import { Message } from "@/types/message"
-import { ToolSpec } from "@/types/tools"
+import { Tool } from "@/types/tools"
 import { ToolDefinition } from "@/types/openai-responses"
 
 export class OpenAIResponsesMapper {
@@ -57,7 +57,7 @@ export class OpenAIResponsesMapper {
   /**
    * Map tools to Responses API format
    */
-  toTools(tools: ToolSpec[]): ToolDefinition[] {
+  toTools(tools: Tool[]): ToolDefinition[] {
     return tools.map(t => ({
       type: 'function',
       name: t.name,
