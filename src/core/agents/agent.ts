@@ -1,6 +1,6 @@
 import { RequestGateway } from "@core/request-gateway"
 import { Command } from "@/types/command"
-import { MosaicEndpointResolver } from "@providers/endpoint-resolver"
+import { DefaultEndpointResolver } from "@providers/endpoint-resolver"
 import { ZodObject } from "zod"
 import { Model } from "@/types/model"
 import { Message } from "@/types/message"
@@ -8,7 +8,7 @@ import { Message } from "@/types/message"
 export class Agent {
 
     private command: Command
-    gateway: RequestGateway = new RequestGateway(new MosaicEndpointResolver())
+    gateway: RequestGateway = new RequestGateway(new DefaultEndpointResolver())
 
     constructor(command: Command){
         this.command = command
