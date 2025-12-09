@@ -10,8 +10,6 @@ Mosaic is a TypeScript library for orchestrating AI agents, supporting both manu
 yarn add @jigjoy-io/mosaic
 ```
 
----
-
 ## API Key Configuration
 
 Make sure to set your API keys in a `.env` file at the root of your project:
@@ -23,8 +21,6 @@ OPENAI_API_KEY=your-openai-key-here
 # For Anthropic Claude
 ANTHROPIC_API_KEY=your-anthropic-key-here
 ```
-
----
 
 ## Supported Models
 
