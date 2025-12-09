@@ -2,10 +2,32 @@ import { Endpoint } from "@core/endpoint"
 import { RequestBuilder } from "@core/request-builder"
 import { OpenAIResponsesBuilder } from "./builder"
 import { OpenAIClientResolver } from "./client/resolver"
+import { ResponseHandler } from "@core/response-handler"
+import { OutputParsedHandler } from "./response-handler/output-parsed"
+import { ContentHandler } from "./response-handler/content"
+import { OutputTextHandler } from "./response-handler/output-text"
+import { EmptyResponseHandler } from "./response-handler/empty"
 
 export class OpenAIResponses extends Endpoint {
     requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
 
+    responseHandler: ResponseHandler
+
+	constructor(){
+		super()
+
+		const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
+        const outputTextHandler: ResponseHandler = new OutputTextHandler()
+		const contentHandler: ResponseHandler = new ContentHandler()
+        const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
+
+        outputParsedHandler
+            .setNextHandler(outputTextHandler)
+            .setNextHandler(contentHandler)
+            .setNextHandler(emptyResponseHandler)
+
+		this.responseHandler = outputParsedHandler
+	}
 
     async sendRequest(request: any) {
         
@@ -13,28 +35,7 @@ export class OpenAIResponses extends Endpoint {
 
             const client = OpenAIClientResolver.resolve(request)
             const response = await client.send(request)
-
-            // structured output response handler
-            if(response.output_parsed){
-                return response.output_parsed
-            }
-            
-            // default text response handler
-            if (response.output_text) {
-                return response.output_text
-            }
-            
-            // content response handler
-            const firstOutput = response.output?.[0]
-            if (firstOutput && 'content' in firstOutput) {
-                const firstContent = firstOutput.content?.[0]
-                if (firstContent && 'text' in firstContent) {
-                    return firstContent.text
-                }
-            }
-            
-            // empty response handler
-            return ""
+            return this.responseHandler.handle(response)
         } catch (error) {
             console.warn('[OpenAIProvider] Responses API request failed:', error)
             throw error
