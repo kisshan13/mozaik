@@ -1,13 +1,13 @@
 import { SendingClient } from "./client"
 import { DefaultClient } from "./default"
-import { StructuredOutputClient } from "./structured-output"
+import { ParserClient } from "./parser"
 
 export class ClientResolver {
 
     static resolve(request: any): SendingClient {
 
         if(request.text && request.text.format){
-            return new StructuredOutputClient()
+            return new ParserClient()
         }else{
             return new DefaultClient()
         }

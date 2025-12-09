@@ -1,7 +1,7 @@
 import OpenAI from "openai"
 import { SendingClient } from "./client"
 
-export class StructuredOutputClient implements SendingClient {
+export class ParserClient implements SendingClient {
 
     constructor(private client = new OpenAI()){}
     
