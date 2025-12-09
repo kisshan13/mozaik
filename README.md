@@ -50,7 +50,6 @@ const agent = new Agent(command)
 const codingResponse = await agent.act('Write a React component for a todo list')
 ```
 
----
 
 ### Structured Output, Vision and Tools
 
@@ -86,8 +85,6 @@ const [openaiResponse, anthropicResponse] = await Promise.all([
 ])
 ```
 
----
-
 ### Workflow
 
 A workflow defines how tasks are executed together, either sequentially (one after another) or in parallel. Each task or workflow is a `WorkUnit`, which allows workflows to be composed and nested to build more complex execution pipelines.
@@ -105,7 +102,6 @@ const workflow = new Workflow("sequential", [
 await workflow.execute()
 ```
 
----
 ### AI Autonomy
 
 Developers can create autonomous agents using an AI planner agent. The planner works as a meta-agent: it breaks a high-level goal into smaller tasks, assigns each task to a specialized agent, and coordinates their execution through a workflow.
