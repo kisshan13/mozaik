@@ -143,7 +143,7 @@ const anthropicCommand: Command = {
 const openaiAgent = new Agent(openaiCommand)
 const anthropicAgent = new Agent(anthropicCommand)
 
-const task = 'What are the key differences between TypeScript and JavaScript? Provide a concise answer.'
+const task = 'What are the key differences between TypeScript and JavaScript?'
 
 // Execute both agents in parallel using Promise.all()
 const [openaiResponse, anthropicResponse] = await Promise.all([
