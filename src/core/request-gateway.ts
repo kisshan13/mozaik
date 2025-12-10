@@ -11,8 +11,7 @@ export class RequestGateway {
 
     invoke(command: Command): any {
         this.endpoint = this.endpointResolver.resolve(command.model)
-        const request = this.endpoint.buildRequest(command)
-        return this.endpoint.sendRequest(request)
+        return this.endpoint.sendRequest(command)
     }
 
 }
