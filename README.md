@@ -47,11 +47,35 @@ const codingResponse = await agent.act('Write a React component for a todo list'
 ```
 
 
-### Structured Output, Vision and Tools
+### Structured Output
 
-The system supports structured outputs, multimodal input (text and images), custom tool definitions, and long-running multi-turn interactions, making it suitable for complex and interactive workflows.
+Structured output lets you enforce exact response formats—using schemas like Zod—so AI returns predictable, validated data every time.
 
----
+```typescript
+import { z } from 'zod'
+import { Agent, Command } from '@jigjoy-io/mosaic'
+
+const mealPlanSchema = z.object({
+    calories: z.number(),
+    meals: z.array(
+        z.object({
+            name: z.string(),
+            description: z.string(),
+            ingredients: z.array(z.string()).min(3)
+        })
+    ).length(3),
+    shoppingList: z.array(z.string())
+})
+
+const command: Command = {
+    model: 'gpt-5-mini',
+    task: 'Create a 1-day vegetarian meal plan with breakfast, lunch, and dinner.',
+    structuredOutput: mealPlanSchema
+}
+
+const agent = new Agent(command)
+const response = await agent.act()
+```
 
 ### Parallel Task Execution
 
