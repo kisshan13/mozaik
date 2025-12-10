@@ -17,11 +17,14 @@ export interface ToolResult {
 export class FunctionCallsHandler extends ResponseHandler {
 
     nextHandler!: ResponseHandler
-
     client: OpenAIDefaultClient
+    tools: Tool[]
+    request: any
 
-    constructor(){
+    constructor(request: any, tools: Tool[]){
         super()
+        this.request = request
+        this.tools = tools
         this.client = new OpenAIDefaultClient()
     }
 
@@ -85,21 +88,21 @@ export class FunctionCallsHandler extends ResponseHandler {
     }
       
 
-    async handle(request: any, response: any) {
+    async handle(response: any) {
 
         while (this.hasToolCalls(response)) {
             const toolCalls = this.extractToolCalls(response)
                     
-            const toolResults = await this.executeToolCalls(toolCalls, request.tools)
+            const toolResults = await this.executeToolCalls(toolCalls, this.tools)
                     
             // Continue the conversation with tool results
-            request.input = toolResults
-            request.previous_response_id = response.id
+            this.request.input = toolResults
+            this.request.previous_response_id = response.id
                     
                     
-            response = await this.client.send(request)
+            response = await this.client.send(this.request)
         }
 
-        this.nextHandler.handle(request, response)
+        return this.nextHandler.handle(response)
     }
 }

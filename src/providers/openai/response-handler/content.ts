@@ -5,7 +5,7 @@ export class ContentHandler extends ResponseHandler {
     nextHandler!: ResponseHandler
 
 
-    handle(request: any, response: any) {
+    handle(response: any) {
 
         const firstOutput = response.output?.[0]
         if (firstOutput && 'content' in firstOutput) {
@@ -15,6 +15,6 @@ export class ContentHandler extends ResponseHandler {
             }
         }
 
-        this.nextHandler.handle(request, response)
+        return this.nextHandler.handle(response)
     }
 }

@@ -6,16 +6,20 @@ import { ResponseHandler } from "@core/response-handler"
 import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
 import { ToolUseHandler } from "./response-handler/tool-use"
+import { Command } from "@/types/command"
 
 export class AnthropicEndpoint extends Endpoint {
 	
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
-	responseHandler: ResponseHandler
+	
+	async sendRequest(command: Command) {
 
-	constructor(){
-		super()
+        const request = this.buildRequest(command)
+		const client = AnthropicClientResolver.resolve(request)
+		const response = await client.send(request)
 
-		const toolUseHandler: ResponseHandler = new ToolUseHandler()
+		// response handler (chain of responsibilities)
+		const toolUseHandler: ResponseHandler = new ToolUseHandler(request, command.tools ? command.tools : [])
 		const parsedOutputHandler: ResponseHandler = new ParsedOutputHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()
 
@@ -24,13 +28,8 @@ export class AnthropicEndpoint extends Endpoint {
 			.setNextHandler(parsedOutputHandler)
             .setNextHandler(contentHandler)
 
-		this.responseHandler = toolUseHandler
-	}
+		const responseHandler = toolUseHandler
 
-	async sendRequest(request: any) {
-
-		const client = AnthropicClientResolver.resolve(request)
-		const response = await client.send(request)
-		return this.responseHandler.handle(request, response)
+		return responseHandler.handle(response)
 	}
 }
