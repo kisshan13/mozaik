@@ -126,7 +126,7 @@ const response = await agent.act()
 
 ### Parallel Task Execution
 
-This feature allows you to run multiple AI agents in parallel—across different models or providers—to execute the same or different tasks simultaneously and compare or combine their results.
+This example demonstrates how to use standard JavaScript/TypeScript concurrency (Promise.all) to run multiple AI agents in parallel and compare or combine their responses.
 
 ```typescript
 import 'dotenv/config'
