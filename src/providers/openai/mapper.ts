@@ -1,6 +1,13 @@
 import { Message } from "@/types/message"
 import { Tool } from "@/types/tool"
-import { ToolDefinition } from "@/types/openai-responses"
+
+export interface ToolDefinition {
+	type: 'function'
+	name: string
+	description: string
+	parameters: any
+	strict?: boolean
+}
 
 export class OpenAIResponsesMapper {
 
@@ -11,7 +18,6 @@ export class OpenAIResponsesMapper {
 	 * For multi-turn conversations, use conversation.id or previous_response_id parameters.
 	 */
 	toInstructions(messages: Message[]): string {
-		
 		if (messages.length === 0) {
 			throw new Error('[ResponsesMapper] Cannot create instructions from empty messages')
 		}
@@ -61,11 +67,11 @@ export class OpenAIResponsesMapper {
 	 */
 	toTools(tools: Tool[]): ToolDefinition[] {
 		return tools.map(t => ({
-		type: 'function',
-		name: t.name,
-		description: t.description,
-		parameters: t.schema,
-		strict: true  // Enable strict mode by default for better validation
+			type: 'function',
+			name: t.name,
+			description: t.description,
+			parameters: t.schema,
+			strict: true  // Enable strict mode by default for better validation
 		}))
 	}
 }
