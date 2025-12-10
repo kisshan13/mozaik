@@ -18,9 +18,7 @@ export class DefaultEndpointResolver extends EndpointResolver {
         
         if(this.isOpenAIModel(model)){
             return new OpenAIResponses()
-        }
-        
-        if(this.isAnthropicModel(model)){
+        }else if(this.isAnthropicModel(model)){
             return new AnthropicEndpoint()
         }
 
