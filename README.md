@@ -46,7 +46,6 @@ const agent = new Agent(command)
 const codingResponse = await agent.act('Write a React component for a todo list')
 ```
 
-
 ### Structured Output
 
 Structured output lets you enforce exact response formats—using schemas like Zod—so AI returns predictable, validated data every time.
@@ -71,6 +70,54 @@ const command: Command = {
     model: 'gpt-5-mini',
     task: 'Create a 1-day vegetarian meal plan with breakfast, lunch, and dinner.',
     structuredOutput: mealPlanSchema
+}
+
+const agent = new Agent(command)
+const response = await agent.act()
+```
+
+### Multi-turn Conversation
+
+Multi-turn conversation allows developers to provide chat history so the AI agent can maintain context and generate more relevant, continuous responses.
+
+```typescript
+import { Agent, Command } from '@jigjoy-io/mosaic'
+
+const command: Command = {
+    messages: [
+        { role: 'system', content: 'You are a coding assistant' },
+        { role: 'user', content: 'How do I sort an array in TypeScript?' },
+        { role: 'assistant', content: 'You can use the .sort() method...' }
+    ],
+    model: 'claude-haiku-4.5'
+}
+
+const agent = new Agent(command)
+const response = await agent.act('Can you show me an example?')
+```
+
+### Vision
+
+Vision support allows AI agents to interpret images alongside text, enabling richer understanding and multimodal interactions.
+
+```typescript
+import { Agent, Command } from '@jigjoy-io/mosaic'
+
+const command: Command = {
+    messages: [{
+        role: 'user',
+        content: [
+            {
+                type: 'image_url',
+                url: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...'
+            },
+            {
+                type: 'text',
+                text: 'What is in this image?'
+            }
+        ]
+    }],
+    model: 'claude-opus-4.5'
 }
 
 const agent = new Agent(command)
