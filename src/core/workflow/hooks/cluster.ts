@@ -1,11 +1,10 @@
 import { Task } from "../task"
 import { Workflow } from "../workflow"
 import { ExecutionHook } from "./execution-hook"
-import { Logger } from "./logging-hook"
 
-export class CompositeExecutionHook implements ExecutionHook {
+export class ClusterHook implements ExecutionHook {
     
-    constructor(private hooks: ExecutionHook[] = [new Logger()]) {}
+    constructor(private hooks: ExecutionHook[]) {}
     
     beforeTask(task: Task): void {
         this.hooks.forEach(h => h.beforeTask(task))

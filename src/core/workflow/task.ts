@@ -1,7 +1,7 @@
 import { Model, Command, Agent } from "@/index"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { ExecutionHook } from "./hooks/execution-hook"
-import { CompositeExecutionHook } from "./hooks/composite-hook"
+import { DEFAULT_CLUSTER_HOOK } from "./hooks"
 
 export class Task extends WorkUnit {
 
@@ -17,7 +17,7 @@ export class Task extends WorkUnit {
         return this.model
     }
 
-    async execute(hook: ExecutionHook = new CompositeExecutionHook()): Promise<any> {
+    async execute(hook: ExecutionHook = DEFAULT_CLUSTER_HOOK): Promise<any> {
         hook.beforeTask(this)
 
       	const command: Command = {
