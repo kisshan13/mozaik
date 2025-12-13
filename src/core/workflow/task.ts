@@ -1,7 +1,6 @@
 import { Model, Command, Agent } from "@/index"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { ExecutionHook } from "./hooks/execution-hook"
-import { Logger } from "./hooks/logging-hook"
 import { CompositeExecutionHook } from "./hooks/composite-hook"
 
 export class Task extends WorkUnit {
