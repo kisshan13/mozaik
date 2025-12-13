@@ -1,6 +1,6 @@
 import { Tool } from "@/types/tool"
 import Anthropic from "@anthropic-ai/sdk"
-import { ResponseHandler } from "@core/response-handler"
+import { ResponseHandler } from "@core/endpoint/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
 
 export class ToolUseHandler extends ResponseHandler {

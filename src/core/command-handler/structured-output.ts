@@ -1,6 +1,6 @@
 import { Command } from "@/types/command"
 import { CapabilityHandler } from "./capability"
-import { RequestBuilder } from "@core/request-builder"
+import { RequestBuilder } from "@core/endpoint/request-builder"
 
 export class StructuredOutputlHandler extends CapabilityHandler {
     
