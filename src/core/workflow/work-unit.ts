@@ -1,4 +1,6 @@
+import { ExecutionHook } from "./hooks/execution-hook"
+
 export abstract class WorkUnit {
     constructor() {}
-    abstract execute(): Promise<any>
+    abstract execute(hook: ExecutionHook): Promise<any>
 }

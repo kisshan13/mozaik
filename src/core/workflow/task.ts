@@ -1,5 +1,8 @@
 import { Model, Command, Agent } from "@/index"
 import { WorkUnit } from "@core/workflow/work-unit"
+import { ExecutionHook } from "./hooks/execution-hook"
+import { Logger } from "./hooks/logging-hook"
+import { CompositeExecutionHook } from "./hooks/composite-hook"
 
 export class Task extends WorkUnit {
 
@@ -7,15 +10,26 @@ export class Task extends WorkUnit {
         super()
     }
 
-    async execute(): Promise<any> {
+    getTask(){
+        return this.task
+    }
+
+    getModel(){
+        return this.model
+    }
+
+    async execute(hook: ExecutionHook = new CompositeExecutionHook()): Promise<any> {
+        hook.beforeTask(this)
+
       	const command: Command = {
             model: this.model,
             task: this.task
         }
 
-        console.log(`Calling llm with parameters: ${JSON.stringify(command)}`)
-
         const agent = new Agent(command)
-        return await agent.act(this.task)
+        const result = await agent.act(this.task)
+
+        hook.afterTask(this)
+        return result
     }
 }
