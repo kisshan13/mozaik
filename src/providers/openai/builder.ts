@@ -1,5 +1,5 @@
 import { Message } from "@/types/message"
-import { RequestBuilder } from "@core/request-builder"
+import { RequestBuilder } from "@core/endpoint/request-builder"
 import { OpenAIResponsesMapper } from "./mapper"
 import { zodTextFormat } from "openai/helpers/zod"
 import { ZodObject } from "zod"

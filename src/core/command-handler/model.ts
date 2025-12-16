@@ -1,4 +1,4 @@
-import { RequestBuilder } from "@core/request-builder"
+import { RequestBuilder } from "@core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
 import { Command } from "@/types/command"
 

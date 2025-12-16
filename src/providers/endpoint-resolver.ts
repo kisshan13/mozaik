@@ -1,5 +1,5 @@
-import { EndpointResolver } from "@core/endpoint-resolver"
-import { Endpoint } from "@core/endpoint"
+import { EndpointResolver } from "@core/endpoint/endpoint-resolver"
+import { Endpoint } from "@core/endpoint/endpoint"
 import { OPENAI_MODELS, ANTHROPIC_MODELS } from "@/types/model"
 import { OpenAIResponses } from "./openai/endpoint"
 import { AnthropicEndpoint } from "./anthropic/endpoint"
@@ -18,9 +18,7 @@ export class DefaultEndpointResolver extends EndpointResolver {
         
         if(this.isOpenAIModel(model)){
             return new OpenAIResponses()
-        }
-        
-        if(this.isAnthropicModel(model)){
+        }else if(this.isAnthropicModel(model)){
             return new AnthropicEndpoint()
         }
 

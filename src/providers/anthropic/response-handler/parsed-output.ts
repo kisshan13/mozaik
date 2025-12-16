@@ -1,4 +1,4 @@
-import { ResponseHandler } from "@core/response-handler"
+import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class ParsedOutputHandler extends ResponseHandler {
 

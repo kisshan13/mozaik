@@ -1,5 +1,5 @@
 import { Message } from "@/types/message"
-import { RequestBuilder } from "@core/request-builder"
+import { RequestBuilder } from "@core/endpoint/request-builder"
 import { AnthropicMapper } from "./mapper"
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
 import { ANTHROPIC_MODEL_MAP, AnthropicModel } from "@/types/model"

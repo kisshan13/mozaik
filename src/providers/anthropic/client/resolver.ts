@@ -6,10 +6,9 @@ export class AnthropicClientResolver {
 
     static resolve(request: any): SendingClient {
 
-        if(request.output_format){
-            return new AnthropicParserClient()
-        }else{
-            return new AnthropicDefaultClient()
-        }
+        return request.output_format ? 
+            new AnthropicParserClient() 
+            : new AnthropicDefaultClient()
+
     }
 }

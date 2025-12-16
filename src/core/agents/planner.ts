@@ -1,10 +1,9 @@
-import { Plan, PlanNode } from "@/types/plan"
-import { WorkUnit } from "@core/workflow/work-unit"
-import { Task } from "@core/workflow/task"
+import { Plan } from "@/types/plan"
 import { Workflow } from "@core/workflow/workflow"
 import { Agent } from "./agent"
 import { Command } from "@/types/command"
 import { PlanSchema } from "@core/workflow/schema/plan"
+import { PlanWorkflowMapper } from "@core/workflow/mapper"
 
 const PROMPT = 
 `You are a planner.
@@ -25,29 +24,6 @@ export class PlanningAgent extends Agent {
 	async planFromGoal(goal: string): Promise<Workflow> {
 		this.setStructuredOutput(PlanSchema)
 		const plan: Plan = await this.act(`${PROMPT}\nGoal: ${goal}`)
-		return buildWorkflow(plan.root)
+		return PlanWorkflowMapper.fromPlan(plan)
 	}
-}
-
-function buildWorkflow(node: PlanNode): Workflow {
-
-	if (node.kind !== "workflow") 
-		throw new Error("Root must be workflow")
-	
-	return new Workflow(
-		node.mode,
-		node.units.map(mapNode)
-	)
-}
-
-function mapNode(node: PlanNode): WorkUnit {
-
-	if (node.kind === "task") {
-		return new Task(node.task, node.model)
-	}
-	
-	return new Workflow(
-		node.mode,
-		node.units.map(mapNode)
-	)
 }

@@ -1,5 +1,5 @@
 import { Command } from "@/types/command"
-import { RequestBuilder } from "../request-builder"
+import { RequestBuilder } from "../endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
 
 export class ToolsHandler extends CapabilityHandler {

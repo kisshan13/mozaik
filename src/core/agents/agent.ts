@@ -1,4 +1,4 @@
-import { RequestGateway } from "@core/request-gateway"
+import { RequestGateway } from "@core/endpoint/request-gateway"
 import { Command } from "@/types/command"
 import { DefaultEndpointResolver } from "@providers/endpoint-resolver"
 import { ZodObject } from "zod"
