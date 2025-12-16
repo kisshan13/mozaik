@@ -240,6 +240,10 @@ Working examples are available on the [GitHub repo](https://github.com/jigjoy-io
 
 ---
 
+If you’re building agentic systems and want to learn or connect with like-minded developers, join our [Discord](https://discord.gg/33uMhcerDU) where we share ideas and knowledge.
+
+---
+
 ## Author & License
 
 Created by [JigJoy](https://jigjoy.io) team  
