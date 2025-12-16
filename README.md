@@ -240,7 +240,30 @@ Working examples are available on the [GitHub repo](https://github.com/jigjoy-io
 
 ---
 
-If you’re building agentic systems and want to learn or connect with like-minded developers, join our [Discord](https://discord.gg/33uMhcerDU) where we share ideas and knowledge.
+### Execution Hooks
+
+Execution hooks allow you to attach custom behavior to workflow and task execution without changing the workflow logic itself. Hooks are invoked at key lifecycle moments (before/after task or workflow execution) and are passed into `execute()`.
+
+A default hook cluster is provided out of the box, but you can extend or replace it to add logging, metrics, tracing, or other instrumentation.
+
+#### Extending the default hooks
+
+You can add your own hooks by creating a new cluster or extending the default one:
+
+```ts
+import { ClusterHook } from "@core/workflow/hooks/cluster"
+import { DEFAULT_CLUSTER_HOOK } from "@core/workflow/hooks"
+import { MetricsHook } from "./metrics-hook"
+
+const extendedHook = new ClusterHook([
+  DEFAULT_CLUSTER_HOOK,
+  new MetricsHook()
+])
+
+await workflow.execute(extendedHook)
+```
+
+If you’re building agentic systems and want to learn or connect with like-minded developers, join [our Discord](https://discord.gg/33uMhcerDU) where we share ideas and knowledge.
 
 ---
 
