@@ -7,13 +7,11 @@ import { ExecutionHook } from "./execution-hook"
 export class Logger implements ExecutionHook {
     
     beforeWorkflow(workflow: Workflow) {
-        console.log('[Workflow:start]', {
-            mode: workflow.mode
-        })
+        console.log(`[Workflow:start], Mode: ${workflow.mode}`)
     }
   
     afterWorkflow(workflow: Workflow) {
-        console.log('[Workflow:end]')
+        console.log(`[Workflow:end], Mode: ${workflow.mode}`)
     }
   
     beforeTask(task: Task) {
@@ -24,7 +22,7 @@ export class Logger implements ExecutionHook {
     }
   
     afterTask(task: Task) {
-        console.log('[Task:end]')
+        console.log(`[Task:end]: ${task.getTask}`)
     }
-  }
-  
+
+}
