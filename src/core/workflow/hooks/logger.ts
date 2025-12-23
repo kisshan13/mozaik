@@ -1,5 +1,3 @@
-// LoggingVisitor.js
-
 import { Task } from "../task"
 import { Workflow } from "../workflow"
 import { ExecutionHook } from "./execution-hook"
