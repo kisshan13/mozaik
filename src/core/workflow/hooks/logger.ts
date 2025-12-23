@@ -15,14 +15,11 @@ export class Logger implements ExecutionHook {
     }
   
     beforeTask(task: Task) {
-        console.log('[Task:start]', {
-            task: task.getTask(),
-            model: task.getModel()
-        })
+        console.log(`[Task:end]: Model: ${task.getModel()} Task: ${task.getTask()}`)
     }
   
     afterTask(task: Task) {
-        console.log(`[Task:end]: ${task.getTask}`)
+        console.log(`[Task:end]: Model: ${task.getModel()} Task: ${task.getTask()}`)
     }
 
 }
