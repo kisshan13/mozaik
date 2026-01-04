@@ -3,14 +3,11 @@ import { CapabilityHandler } from "./capability"
 import { RequestBuilder } from "@core/endpoint/request-builder"
 
 export class StructuredOutputlHandler extends CapabilityHandler {
-    
-    nextHandler!: CapabilityHandler
+	nextHandler!: CapabilityHandler
 
-    apply(command: Command, builder: RequestBuilder) {
-        if(command.structuredOutput){
-            builder.addStructuredOutput(command.structuredOutput)
-        }
-            
-    }
-
+	apply(command: Command, builder: RequestBuilder) {
+		if (command.structuredOutput) {
+			builder.addStructuredOutput(command.structuredOutput)
+		}
+	}
 }

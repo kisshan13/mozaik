@@ -1,3 +1,3 @@
 export interface SendingClient {
-    send(request: any): Promise<any>
+	send(request: any): Promise<any>
 }

@@ -1,17 +1,14 @@
-
 import { Command } from "@/types/command"
 import { Endpoint } from "./endpoint"
 import { EndpointResolver } from "./endpoint-resolver"
 
 export class RequestGateway {
+	endpoint!: Endpoint
 
-    endpoint!: Endpoint
+	constructor(readonly endpointResolver: EndpointResolver) {}
 
-    constructor(readonly endpointResolver: EndpointResolver){}
-
-    invoke(command: Command): any {
-        this.endpoint = this.endpointResolver.resolve(command.model)
-        return this.endpoint.sendRequest(command)
-    }
-
+	invoke(command: Command): any {
+		this.endpoint = this.endpointResolver.resolve(command.model)
+		return this.endpoint.sendRequest(command)
+	}
 }

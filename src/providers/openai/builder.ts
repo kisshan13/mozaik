@@ -6,7 +6,6 @@ import { ZodObject } from "zod"
 import { Tool } from "@/types/tool"
 
 export class OpenAIResponsesBuilder extends RequestBuilder {
-
 	constructor(private mapper = new OpenAIResponsesMapper()) {
 		super()
 	}
@@ -22,18 +21,16 @@ export class OpenAIResponsesBuilder extends RequestBuilder {
 	}
 
 	addMessages(messages: Message[]): RequestBuilder {
-
 		const instructions = this.mapper.toInstructions(messages)
 		// Set optional instructions if there's a system message
 		if (instructions && instructions !== "You are a helpful assistant.") {
 			this.request.instructions = instructions
 		}
-		
+
 		return this
 	}
 
 	addStructuredOutput(schema: ZodObject): RequestBuilder {
-
 		this.request.text = {
 			format: zodTextFormat(schema, "outputSchema"),
 		}
@@ -41,12 +38,11 @@ export class OpenAIResponsesBuilder extends RequestBuilder {
 	}
 
 	addTools(tools: Tool[]): RequestBuilder {
-		
-		this.request.tools = tools.map(tool => ({
-			type: 'function' as const,
+		this.request.tools = tools.map((tool) => ({
+			type: "function" as const,
 			name: tool.name,
 			description: tool.description,
-			parameters: tool.schema
+			parameters: tool.schema,
 		}))
 		return this
 	}

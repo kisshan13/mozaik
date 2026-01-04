@@ -4,9 +4,9 @@ import { Model } from "./model"
 import { Tool } from "./tool"
 
 export type Command = {
-    model: Model,
-    messages?: Message[]
-    task?: string
-    structuredOutput?: ZodObject<any>
-    tools?: Tool[]
+	model: Model
+	messages?: Message[]
+	task?: string
+	structuredOutput?: ZodObject<any>
+	tools?: Tool[]
 }

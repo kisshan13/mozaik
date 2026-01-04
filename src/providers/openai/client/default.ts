@@ -2,10 +2,9 @@ import OpenAI from "openai"
 import { SendingClient } from "@core/endpoint/client"
 
 export class OpenAIDefaultClient implements SendingClient {
+	constructor(private client = new OpenAI()) {}
 
-    constructor(private client = new OpenAI()){}
-    
-    async send(request: any): Promise<any> {
-        return await this.client.responses.create(request)
-    }
+	async send(request: any): Promise<any> {
+		return await this.client.responses.create(request)
+	}
 }
