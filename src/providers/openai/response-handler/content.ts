@@ -1,20 +1,17 @@
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class ContentHandler extends ResponseHandler {
+	nextHandler!: ResponseHandler
 
-    nextHandler!: ResponseHandler
+	handle(response: any) {
+		const firstOutput = response.output?.[0]
+		if (firstOutput && "content" in firstOutput) {
+			const firstContent = firstOutput.content?.[0]
+			if (firstContent && "text" in firstContent) {
+				return firstContent.text
+			}
+		}
 
-
-    handle(response: any) {
-
-        const firstOutput = response.output?.[0]
-        if (firstOutput && 'content' in firstOutput) {
-            const firstContent = firstOutput.content?.[0]
-            if (firstContent && 'text' in firstContent) {
-                return firstContent.text
-            }
-        }
-
-        return this.nextHandler.handle(response)
-    }
+		return this.nextHandler.handle(response)
+	}
 }

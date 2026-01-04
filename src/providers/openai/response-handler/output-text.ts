@@ -1,16 +1,13 @@
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class OutputTextHandler extends ResponseHandler {
+	nextHandler!: ResponseHandler
 
-    nextHandler!: ResponseHandler
+	handle(response: any) {
+		if (response.output_text) {
+			return response.output_text
+		}
 
-
-    handle(response: any) {
-
-        if (response.output_text) {
-            return response.output_text
-        }
-
-        return this.nextHandler.handle(response)
-    }
+		return this.nextHandler.handle(response)
+	}
 }

@@ -11,42 +11,40 @@ import { FunctionCallsHandler } from "./response-handler/function-calls"
 import { Command } from "@/types/command"
 
 export class OpenAIResponses extends Endpoint {
-    requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
+	requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
 
-	constructor(){
+	constructor() {
 		super()
 	}
 
-    async sendRequest(command: Command) {
-        
-        try {
+	async sendRequest(command: Command) {
+		try {
+			const request = this.buildRequest(command)
+			const client = OpenAIClientResolver.resolve(request)
+			const response = await client.send(request)
 
-            const request = this.buildRequest(command)
-            const client = OpenAIClientResolver.resolve(request)
-            const response = await client.send(request)
+			// response handler (chain of responsibilities)
+			const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(
+				request,
+				command.tools ? command.tools : [],
+			)
+			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
+			const outputTextHandler: ResponseHandler = new OutputTextHandler()
+			const contentHandler: ResponseHandler = new ContentHandler()
+			const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
 
-            // response handler (chain of responsibilities)
-            const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(request, command.tools ? command.tools : [])
-            const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
-            const outputTextHandler: ResponseHandler = new OutputTextHandler()
-            const contentHandler: ResponseHandler = new ContentHandler()
-            const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
-    
-            functionCallsHandler
-                .setNextHandler(outputParsedHandler)
-                .setNextHandler(outputTextHandler)
-                .setNextHandler(contentHandler)
-                .setNextHandler(emptyResponseHandler)
-    
-            const responseHandler = functionCallsHandler
+			functionCallsHandler
+				.setNextHandler(outputParsedHandler)
+				.setNextHandler(outputTextHandler)
+				.setNextHandler(contentHandler)
+				.setNextHandler(emptyResponseHandler)
 
+			const responseHandler = functionCallsHandler
 
-            return responseHandler.handle(response)
-        } catch (error) {
-            console.warn('[OpenAIProvider] Responses API request failed:', error)
-            throw error
-        }
-    }
-
-    
+			return responseHandler.handle(response)
+		} catch (error) {
+			console.warn("[OpenAIProvider] Responses API request failed:", error)
+			throw error
+		}
+	}
 }

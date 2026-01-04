@@ -1,4 +1,3 @@
-
 import { RequestBuilder } from "./request-builder"
 import { CapabilityHandler } from "../command-handler/capability"
 import { MessagesHandler } from "../command-handler/messages"
@@ -9,33 +8,30 @@ import { Command } from "@/types/command"
 import { ToolsHandler } from "../command-handler/tools"
 
 export abstract class Endpoint {
+	abstract requestBuilder: RequestBuilder
+	command: Command | null = null
 
-    abstract requestBuilder: RequestBuilder
-    command: Command | null = null
+	buildRequest(command: Command): any {
+		this.command = command
 
-    buildRequest(command: Command): any {
+		this.requestBuilder.initialize()
 
-        this.command = command
-        
-        this.requestBuilder.initialize()
-        
-        const messagesHandler: CapabilityHandler = new MessagesHandler()
-        const taskHandler: CapabilityHandler = new TaskHandler()
-        const modelHandler: CapabilityHandler = new ModelHandler()
-        const structuredOutputHandler: CapabilityHandler = new StructuredOutputlHandler()
-        const toolsHandler: CapabilityHandler = new ToolsHandler()
+		const messagesHandler: CapabilityHandler = new MessagesHandler()
+		const taskHandler: CapabilityHandler = new TaskHandler()
+		const modelHandler: CapabilityHandler = new ModelHandler()
+		const structuredOutputHandler: CapabilityHandler = new StructuredOutputlHandler()
+		const toolsHandler: CapabilityHandler = new ToolsHandler()
 
-        messagesHandler
-            .setNextHandler(taskHandler)
-            .setNextHandler(modelHandler)
-            .setNextHandler(structuredOutputHandler)
-            .setNextHandler(toolsHandler)
+		messagesHandler
+			.setNextHandler(taskHandler)
+			.setNextHandler(modelHandler)
+			.setNextHandler(structuredOutputHandler)
+			.setNextHandler(toolsHandler)
 
-        messagesHandler.handle(command, this.requestBuilder)
+		messagesHandler.handle(command, this.requestBuilder)
 
-        return this.requestBuilder.build()
-    }
+		return this.requestBuilder.build()
+	}
 
-    abstract sendRequest(providerRequest: any): any
-
+	abstract sendRequest(providerRequest: any): any
 }

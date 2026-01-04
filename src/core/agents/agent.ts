@@ -6,34 +6,33 @@ import { Model } from "@/types/model"
 import { Message } from "@/types/message"
 
 export class Agent {
+	private command: Command
+	gateway: RequestGateway = new RequestGateway(new DefaultEndpointResolver())
 
-    private command: Command
-    gateway: RequestGateway = new RequestGateway(new DefaultEndpointResolver())
+	constructor(command: Command) {
+		this.command = command
+	}
 
-    constructor(command: Command){
-        this.command = command
-    }
+	setModel(model: Model) {
+		this.command.model = model
+	}
 
-    setModel(model: Model){
-        this.command.model = model
-    }
+	setMessages(messages: Message[]) {
+		this.command.messages = messages
+	}
 
-    setMessages(messages: Message[]){
-        this.command.messages = messages
-    }
+	setTask(task: string) {
+		this.command.task = task
+	}
 
-    setTask(task: string){
-        this.command.task = task
-    }
+	setStructuredOutput(schema: ZodObject<any>) {
+		this.command.structuredOutput = schema
+	}
 
-    setStructuredOutput(schema: ZodObject<any>){
-        this.command.structuredOutput = schema
-    }
-
-    async act(task?: string){
-        if(task){
-            this.command.task = task
-        }
-        return await this.gateway.invoke(this.command)
-    }
+	async act(task?: string) {
+		if (task) {
+			this.command.task = task
+		}
+		return await this.gateway.invoke(this.command)
+	}
 }
