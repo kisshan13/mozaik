@@ -3,13 +3,11 @@ import { CapabilityHandler } from "./capability"
 import { Command } from "@/types/command"
 
 export class MessagesHandler extends CapabilityHandler {
-    
-    nextHandler!: CapabilityHandler
+	nextHandler!: CapabilityHandler
 
-    apply(command: Command, builder: RequestBuilder) {
-        if(command.messages){
-            builder.addMessages(command.messages)
-        }
-    }
-
+	apply(command: Command, builder: RequestBuilder) {
+		if (command.messages) {
+			builder.addMessages(command.messages)
+		}
+	}
 }

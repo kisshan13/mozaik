@@ -5,8 +5,7 @@ import { Command } from "@/types/command"
 import { PlanSchema } from "@core/workflow/schema/plan"
 import { PlanWorkflowMapper } from "@core/workflow/mapper"
 
-const PROMPT = 
-`You are a planner.
+const PROMPT = `You are a planner.
 
 Rules:
 - Use 'parallel' for the task that can be run in parallel.
@@ -14,10 +13,9 @@ Rules:
 - Keep prompts actionable.
 - Don't ask user for any input, just do the thing with available data you have.
 `
-  
-export class PlanningAgent extends Agent {
 
-	constructor(command: Command){
+export class PlanningAgent extends Agent {
+	constructor(command: Command) {
 		super(command)
 	}
 

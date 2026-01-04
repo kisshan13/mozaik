@@ -1,61 +1,63 @@
 {
-  "name": "@jigjoy-io/mosaic",
-  "version": "0.5.0",
-  "description": "A TypeScript library for building multi-agent AI workflows",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "core": [
-        "dist/core/index.d.ts"
-      ],
-      "providers/openai": [
-        "dist/providers/openai/index.d.ts"
-      ]
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jigjoy-io/mosaic.git"
-  },
-  "author": "Miodrag Vilotijević",
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [
-    "ai-agent",
-    "agentic-ai",
-    "agent-framework",
-    "ai-workflow",
-    "ai-orchestration",
-    "ai-agents",
-    "ai-developer-tools",
-    "ai-infrastructure",
-    "autonomous-agent",
-    "multi-agent-system",
-    "openai",
-    "llm"
-  ],
-  "license": "MIT",
-  "devDependencies": {
-    "rimraf": "^5.0.5",
-    "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.0",
-    "openai": "^6.9.1",
-    "zod": "^4.1.13"
-  },
-  "peerDependencies": {}
+	"name": "@jigjoy-io/mosaic",
+	"version": "0.5.1",
+	"description": "A TypeScript library for building multi-agent AI workflows",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"core": [
+				"dist/core/index.d.ts"
+			],
+			"providers/openai": [
+				"dist/providers/openai/index.d.ts"
+			]
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jigjoy-io/mosaic.git"
+	},
+	"author": "Miodrag Vilotijević",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
+		"prepublishOnly": "npm run build"
+	},
+	"keywords": [
+		"ai-agent",
+		"agentic-ai",
+		"agent-framework",
+		"ai-workflow",
+		"ai-orchestration",
+		"ai-agents",
+		"ai-developer-tools",
+		"ai-infrastructure",
+		"autonomous-agent",
+		"multi-agent-system",
+		"openai",
+		"llm"
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"prettier": "^3.7.4",
+		"rimraf": "^5.0.5",
+		"tsup": "^8.0.2",
+		"typescript": "^5.3.3"
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "^0.71.0",
+		"openai": "^6.9.1",
+		"zod": "^4.1.13"
+	},
+	"peerDependencies": {}
 }

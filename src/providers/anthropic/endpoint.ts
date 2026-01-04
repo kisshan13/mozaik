@@ -9,12 +9,10 @@ import { ToolUseHandler } from "./response-handler/tool-use"
 import { Command } from "@/types/command"
 
 export class AnthropicEndpoint extends Endpoint {
-	
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
-	
-	async sendRequest(command: Command) {
 
-        const request = this.buildRequest(command)
+	async sendRequest(command: Command) {
+		const request = this.buildRequest(command)
 		const client = AnthropicClientResolver.resolve(request)
 		const response = await client.send(request)
 
@@ -23,10 +21,7 @@ export class AnthropicEndpoint extends Endpoint {
 		const parsedOutputHandler: ResponseHandler = new ParsedOutputHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()
 
-
-		toolUseHandler
-			.setNextHandler(parsedOutputHandler)
-            .setNextHandler(contentHandler)
+		toolUseHandler.setNextHandler(parsedOutputHandler).setNextHandler(contentHandler)
 
 		const responseHandler = toolUseHandler
 

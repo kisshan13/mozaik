@@ -2,21 +2,20 @@ import { Command } from "@/types/command"
 import { RequestBuilder } from "../endpoint/request-builder"
 
 export abstract class CapabilityHandler {
+	abstract nextHandler: CapabilityHandler
 
-    abstract nextHandler: CapabilityHandler
+	setNextHandler(capability: CapabilityHandler): CapabilityHandler {
+		this.nextHandler = capability
+		return this.nextHandler
+	}
 
-    setNextHandler(capability: CapabilityHandler): CapabilityHandler {
-        this.nextHandler = capability
-        return this.nextHandler
-    }
+	abstract apply(command: Command, requestBuilder: RequestBuilder): any
 
-    abstract apply(command: Command, requestBuilder: RequestBuilder): any
+	handle(command: Command, builder: RequestBuilder) {
+		this.apply(command, builder)
 
-    handle(command: Command, builder: RequestBuilder){
-        this.apply(command, builder)
-
-        if (this.nextHandler) {
-            this.nextHandler.handle(command, builder)
-        }
-    }
+		if (this.nextHandler) {
+			this.nextHandler.handle(command, builder)
+		}
+	}
 }

@@ -4,7 +4,6 @@ import { WorkUnit } from "./work-unit"
 import { Task } from "./task"
 
 export class PlanWorkflowMapper {
-    
 	static fromPlan(plan: Plan): Workflow {
 		return this.fromNode(plan.root)
 	}
@@ -14,10 +13,7 @@ export class PlanWorkflowMapper {
 			throw new Error("Root must be workflow")
 		}
 
-		return new Workflow(
-			node.mode,
-			node.units.map(this.mapNode)
-		)
+		return new Workflow(node.mode, node.units.map(this.mapNode))
 	}
 
 	private static mapNode(node: PlanNode): WorkUnit {
@@ -25,9 +21,6 @@ export class PlanWorkflowMapper {
 			return new Task(node.task, node.model)
 		}
 
-		return new Workflow(
-			node.mode,
-			node.units.map(this.mapNode)
-		)
+		return new Workflow(node.mode, node.units.map(this.mapNode))
 	}
 }
