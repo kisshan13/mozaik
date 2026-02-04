@@ -2,6 +2,8 @@
 
 Mosaic is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
 
+![Mosaic](https://www.rockform.co.uk/wp-content/uploads/2018/06/Picture6-1.jpg)
+
 ---
 
 ## 📦 Installation
