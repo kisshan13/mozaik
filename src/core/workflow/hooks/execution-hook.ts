@@ -5,5 +5,5 @@ export interface ExecutionHook {
 	beforeWorkflow(wf: Workflow): void
 	afterWorkflow(wf: Workflow): void
 	beforeTask(task: Task): void
-	afterTask(task: Task): void
+	afterTask(task: Task, result: any): void
 }

@@ -15,7 +15,7 @@ export class Logger implements ExecutionHook {
 		console.log(`[Task:end]: Model: ${task.getModel()} Task: ${task.getTask()}`)
 	}
 
-	afterTask(task: Task) {
+	afterTask(task: Task, result: any) {
 		console.log(`[Task:end]: Model: ${task.getModel()} Task: ${task.getTask()}`)
 	}
 }
