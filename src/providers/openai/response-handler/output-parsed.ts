@@ -1,13 +1,16 @@
+import { ResponseContext } from "@core/endpoint/response-context"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class OutputParsedHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	handle(response: any) {
-		if (response.output_parsed) {
-			return response.output_parsed
+	async handle(responseContext: ResponseContext) {
+		const providerResponse = responseContext.providerResponse
+		if (providerResponse.output_parsed) {
+			responseContext.setResponse(providerResponse.output_parsed)
+			return responseContext
 		}
 
-		return this.nextHandler.handle(response)
+		return await this.nextHandler.handle(responseContext)
 	}
 }

@@ -1,3 +1,5 @@
+import { ResponseContext } from "./response-context"
+
 export abstract class ResponseHandler {
 	abstract nextHandler: ResponseHandler
 
@@ -6,5 +8,5 @@ export abstract class ResponseHandler {
 		return this.nextHandler
 	}
 
-	abstract handle(response: any): any
+	abstract handle(responseContext: ResponseContext): Promise<ResponseContext>
 }

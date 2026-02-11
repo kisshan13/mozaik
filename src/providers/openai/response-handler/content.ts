@@ -1,17 +1,20 @@
+import { ResponseContext } from "@core/endpoint/response-context"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class ContentHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	handle(response: any) {
-		const firstOutput = response.output?.[0]
+	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
+		const providerResponse = responseContext.providerResponse
+		const firstOutput = providerResponse.output?.[0]
 		if (firstOutput && "content" in firstOutput) {
 			const firstContent = firstOutput.content?.[0]
 			if (firstContent && "text" in firstContent) {
-				return firstContent.text
+				responseContext.setResponse(firstContent.text)
+				return responseContext
 			}
 		}
 
-		return this.nextHandler.handle(response)
+		return await this.nextHandler.handle(responseContext)
 	}
 }
