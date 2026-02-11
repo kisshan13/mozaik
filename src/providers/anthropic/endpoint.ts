@@ -7,6 +7,7 @@ import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
 import { ToolUseHandler } from "./response-handler/tool-use"
 import { Command } from "@/types/command"
+import { ResponseContext } from "@core/endpoint/response-context"
 
 export class AnthropicEndpoint extends Endpoint {
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
@@ -15,6 +16,9 @@ export class AnthropicEndpoint extends Endpoint {
 		const request = this.buildRequest(command)
 		const client = AnthropicClientResolver.resolve(request)
 		const response = await client.send(request)
+
+		const responseContext = new ResponseContext()
+		responseContext.setProviderResponse(response)
 
 		// response handler (chain of responsibilities)
 		const toolUseHandler: ResponseHandler = new ToolUseHandler(request, command.tools ? command.tools : [])

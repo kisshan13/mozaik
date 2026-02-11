@@ -1,6 +1,8 @@
 import { ResponseHandler } from "@core/endpoint/response-handler"
 import { OpenAIDefaultClient } from "../client/default"
 import { Tool } from "@/types/tool"
+import { ResponseContext } from "@core/endpoint/response-context"
+import { UsageEntry } from "@core/endpoint/usage"
 
 export interface ToolCall {
 	call_id: string
@@ -83,19 +85,32 @@ export class FunctionCallsHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(response: any) {
-		while (this.hasToolCalls(response)) {
-			const toolCalls = this.extractToolCalls(response)
+	async handle(responseContext: ResponseContext) {
+		let providerResponse = responseContext.providerResponse
+		let toolCallingResponse: any
+		while (this.hasToolCalls(providerResponse)) {
+			const toolCalls = this.extractToolCalls(providerResponse)
 
 			const toolResults = await this.executeToolCalls(toolCalls, this.tools)
 
 			// Continue the conversation with tool results
 			this.request.input = toolResults
-			this.request.previous_response_id = response.id
+			this.request.previous_response_id = providerResponse.id
 
-			response = await this.client.send(this.request)
+			toolCallingResponse = await this.client.send(this.request)
+
+			responseContext.addUsageEntry(
+				new UsageEntry(
+					toolCallingResponse.usage.input_tokens,
+					toolCallingResponse.usage.output_tokens,
+					toolCallingResponse.model,
+				),
+			)
+			responseContext.setProviderResponse(toolCallingResponse)
+			responseContext.setResponse(toolCallingResponse)
+			providerResponse = toolCallingResponse
 		}
 
-		return this.nextHandler.handle(response)
+		return await this.nextHandler.handle(responseContext)
 	}
 }

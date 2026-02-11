@@ -1,20 +1,18 @@
 import { ResponseContext } from "@core/endpoint/response-context"
 import { ResponseHandler } from "@core/endpoint/response-handler"
+import { UsageEntry } from "@core/endpoint/usage"
 
-export class ContentHandler extends ResponseHandler {
+export class UsageHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
 	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
 		const providerResponse = responseContext.providerResponse
-		const firstOutput = providerResponse.output?.[0]
-		if (firstOutput && "content" in firstOutput) {
-			const firstContent = firstOutput.content?.[0]
-			if (firstContent && "text" in firstContent) {
-				responseContext.setResponse(firstContent.text)
-				return responseContext
-			}
+		const usage = providerResponse.usage
+		if (usage) {
+			responseContext.addUsageEntry(
+				new UsageEntry(usage.input_tokens, usage.output_tokens, providerResponse.model),
+			)
 		}
-
 		return await this.nextHandler.handle(responseContext)
 	}
 }
