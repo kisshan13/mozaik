@@ -6,7 +6,6 @@ import { ResponseHandler } from "@core/endpoint/response-handler"
 import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
-import { EmptyResponseHandler } from "./response-handler/empty"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
 import { Command } from "@/types/command"
 
@@ -39,7 +38,7 @@ export class OpenAIResponses extends Endpoint {
 
 			const responseHandler = functionCallsHandler
 
-			return responseHandler.handle(response)
+			return await responseHandler.handle(response)
 		} catch (error) {
 			console.warn("[OpenAIProvider] Responses API request failed:", error)
 			throw error
