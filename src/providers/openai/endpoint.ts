@@ -31,13 +31,11 @@ export class OpenAIResponses extends Endpoint {
 			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
 			const outputTextHandler: ResponseHandler = new OutputTextHandler()
 			const contentHandler: ResponseHandler = new ContentHandler()
-			const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
 
 			functionCallsHandler
 				.setNextHandler(outputParsedHandler)
 				.setNextHandler(outputTextHandler)
 				.setNextHandler(contentHandler)
-				.setNextHandler(emptyResponseHandler)
 
 			const responseHandler = functionCallsHandler
 
