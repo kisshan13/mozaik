@@ -17,7 +17,7 @@ export class ClusterHook implements ExecutionHook {
 		this.hooks.forEach((h) => h.beforeWorkflow(wf))
 	}
 
-	afterWorkflow(wf: Workflow) {
-		this.hooks.forEach((h) => h.afterWorkflow(wf))
+	afterWorkflow(wf: Workflow, result: any) {
+		this.hooks.forEach((h) => h.afterWorkflow(wf, result))
 	}
 }

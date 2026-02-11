@@ -18,7 +18,7 @@ export class Workflow extends WorkUnit {
 		const executionStrategy: WorkflowExecutionStrategy = ExecutionStrategyFactory.create(this.mode)
 		const result = await executionStrategy.execute(this, hook)
 
-		hook.afterWorkflow(this)
+		hook.afterWorkflow(this, result)
 		return result
 	}
 }
