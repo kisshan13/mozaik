@@ -2,7 +2,7 @@
 
 Mozaik is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
 
-![Mosaic](https://www.rockform.co.uk/wp-content/uploads/2018/06/Picture6-1.jpg)
+![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
 
 ---
 
