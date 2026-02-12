@@ -6,9 +6,10 @@ import { ResponseHandler } from "@core/endpoint/response-handler"
 import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
-import { EmptyResponseHandler } from "./response-handler/empty"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
 import { Command } from "@/types/command"
+import { ResponseContext } from "@core/endpoint/response-context"
+import { UsageHandler } from "./response-handler/usage"
 
 export class OpenAIResponses extends Endpoint {
 	requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -23,7 +24,11 @@ export class OpenAIResponses extends Endpoint {
 			const client = OpenAIClientResolver.resolve(request)
 			const response = await client.send(request)
 
+			const responseContext = new ResponseContext()
+			responseContext.setProviderResponse(response)
+
 			// response handler (chain of responsibilities)
+			const usageHandler: ResponseHandler = new UsageHandler()
 			const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(
 				request,
 				command.tools ? command.tools : [],
@@ -31,17 +36,16 @@ export class OpenAIResponses extends Endpoint {
 			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
 			const outputTextHandler: ResponseHandler = new OutputTextHandler()
 			const contentHandler: ResponseHandler = new ContentHandler()
-			const emptyResponseHandler: ResponseHandler = new EmptyResponseHandler()
 
-			functionCallsHandler
+			usageHandler
+				.setNextHandler(functionCallsHandler)
 				.setNextHandler(outputParsedHandler)
 				.setNextHandler(outputTextHandler)
 				.setNextHandler(contentHandler)
-				.setNextHandler(emptyResponseHandler)
 
-			const responseHandler = functionCallsHandler
+			const responseHandler = usageHandler
 
-			return responseHandler.handle(response)
+			return await responseHandler.handle(responseContext)
 		} catch (error) {
 			console.warn("[OpenAIProvider] Responses API request failed:", error)
 			throw error

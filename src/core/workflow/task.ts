@@ -30,7 +30,7 @@ export class Task extends WorkUnit {
 		const agent = new Agent(command)
 		const result = await agent.act(this.task)
 
-		hook.afterTask(this)
+		hook.afterTask(this, result)
 		return result
 	}
 }

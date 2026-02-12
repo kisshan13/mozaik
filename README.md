@@ -1,13 +1,15 @@
-# Mosaic
+# Mozaik
 
-Mosaic is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
+Mozaik is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
+
+![Mosaic](https://www.rockform.co.uk/wp-content/uploads/2018/06/Picture6-1.jpg)
 
 ---
 
 ## 📦 Installation
 
 ```bash
-yarn add @jigjoy-io/mosaic
+yarn add @jigjoy-ai/mosaic
 ```
 
 ## API Key Configuration
@@ -36,7 +38,7 @@ This feature lets developers create AI agents through a single unified request d
 
 ```typescript
 import 'dotenv/config'
-import { Agent, Command } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-ai/mosaic'
 
 const command: Command = {
     model: 'claude-sonnet-4.5'
@@ -52,7 +54,7 @@ Structured output lets you enforce exact response formats—using schemas like Z
 
 ```typescript
 import { z } from 'zod'
-import { Agent, Command } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-ai/mosaic'
 
 const mealPlanSchema = z.object({
     calories: z.number(),
@@ -81,7 +83,7 @@ const response = await agent.act()
 Multi-turn conversation allows developers to provide chat history so the AI agent can maintain context and generate more relevant, continuous responses.
 
 ```typescript
-import { Agent, Command } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-ai/mosaic'
 
 const command: Command = {
     messages: [
@@ -102,7 +104,7 @@ Tool calling allows the agent to invoke real functions in your environment—let
 
 ```typescript
 import { promises as fs } from 'fs'
-import { Agent, Command, Tool } from '@jigjoy-io/mosaic'
+import { Agent, Command, Tool } from '@jigjoy-ai/mosaic'
 
 const tools: Tool[] = [
   {
@@ -144,7 +146,7 @@ await agent.act()
 Vision support allows AI agents to interpret images alongside text, enabling richer understanding and multimodal interactions.
 
 ```typescript
-import { Agent, Command } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-ai/mosaic'
 
 const command: Command = {
     messages: [{
@@ -173,7 +175,7 @@ This example demonstrates how to use standard JavaScript/TypeScript concurrency 
 
 ```typescript
 import 'dotenv/config'
-import { Agent, Command } from '@jigjoy-io/mosaic'
+import { Agent, Command } from '@jigjoy-ai/mosaic'
 
 const openaiCommand: Command = {
     model: 'gpt-5'
@@ -236,7 +238,7 @@ By combining manually created workflows with the AI Planner, you can build hybri
 
 ---
 
-Working examples are available on the [GitHub repo](https://github.com/jigjoy-io/mosaic-examples).
+Working examples are available on the [GitHub repo](https://github.com/jigjoy-ai/mosaic-examples).
 
 ---
 

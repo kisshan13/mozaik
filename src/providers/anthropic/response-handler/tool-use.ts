@@ -2,6 +2,8 @@ import { Tool } from "@/types/tool"
 import Anthropic from "@anthropic-ai/sdk"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
+import { ResponseContext } from "@core/endpoint/response-context"
+import { UsageEntry } from "@core/endpoint/usage"
 
 export class ToolUseHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
@@ -50,16 +52,18 @@ export class ToolUseHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(response: any) {
-		while (response.stop_reason === "tool_use") {
-			const toolUseBlocks = response.content.filter(
+	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
+		let providerResponse = responseContext.providerResponse
+
+		while (providerResponse.stop_reason === "tool_use") {
+			const toolUseBlocks = providerResponse.content.filter(
 				(block: any): block is Anthropic.ToolUseBlock => block.type === "tool_use",
 			)
 
 			// Add assistant's response to messages
 			this.request.messages.push({
 				role: "assistant",
-				content: response.content,
+				content: providerResponse.content,
 			})
 
 			const toolResults = await this.executeToolCalls(this.tools, toolUseBlocks)
@@ -71,9 +75,18 @@ export class ToolUseHandler extends ResponseHandler {
 			})
 
 			// Call model again
-			response = await this.client.send(this.request)
+			const toolCallingResponse = await this.client.send(this.request)
+			responseContext.addUsageEntry(
+				new UsageEntry(
+					toolCallingResponse.usage.input_tokens,
+					toolCallingResponse.usage.output_tokens,
+					toolCallingResponse.model,
+				),
+			)
+			responseContext.setProviderResponse(toolCallingResponse)
+			providerResponse = toolCallingResponse
 		}
 
-		return this.nextHandler.handle(response)
+		return await this.nextHandler.handle(responseContext)
 	}
 }

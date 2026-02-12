@@ -7,8 +7,8 @@ export class RequestGateway {
 
 	constructor(readonly endpointResolver: EndpointResolver) {}
 
-	invoke(command: Command): any {
+	async invoke(command: Command): Promise<any> {
 		this.endpoint = this.endpointResolver.resolve(command.model)
-		return this.endpoint.sendRequest(command)
+		return await this.endpoint.sendRequest(command)
 	}
 }
