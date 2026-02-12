@@ -19,4 +19,12 @@ export class ResponseContext {
 		this.response = response
 		return this
 	}
+
+	getResponse(): any {
+		return this.response
+	}
+
+	getUsageEntries(): UsageEntry [] {
+		return this.usageEntries
+	}
 }
