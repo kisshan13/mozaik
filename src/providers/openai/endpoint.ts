@@ -10,6 +10,7 @@ import { FunctionCallsHandler } from "./response-handler/function-calls"
 import { Command } from "@/types/command"
 import { ResponseContext } from "@core/endpoint/response-context"
 import { UsageHandler } from "./response-handler/usage"
+import { MozaikResponse } from "@/types/response"
 
 export class OpenAIResponses extends Endpoint {
 	requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -18,7 +19,7 @@ export class OpenAIResponses extends Endpoint {
 		super()
 	}
 
-	async sendRequest(command: Command) {
+	async sendRequest(command: Command): Promise<MozaikResponse> {
 		try {
 			const request = this.buildRequest(command)
 			const client = OpenAIClientResolver.resolve(request)
@@ -45,7 +46,18 @@ export class OpenAIResponses extends Endpoint {
 
 			const responseHandler = usageHandler
 
-			return await responseHandler.handle(responseContext)
+			const result = await responseHandler.handle(responseContext)
+
+			const usageEntries = result.getUsageEntries().map(e => ({
+				inputTokens: e.inputTokens,
+				outputTokens: e.outputTokens,
+				model: e.model
+			}))
+
+			return {
+				data: result.getResponse(),
+				usageEntries: usageEntries
+			}
 		} catch (error) {
 			console.warn("[OpenAIProvider] Responses API request failed:", error)
 			throw error

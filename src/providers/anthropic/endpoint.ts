@@ -10,11 +10,12 @@ import { Command } from "@/types/command"
 import { ResponseContext } from "@core/endpoint/response-context"
 import { UsageHandler } from "./response-handler/usage"
 import { UnhandledResponseHandler } from "./response-handler/undhandled"
+import { MozaikResponse } from "@/types/response"
 
 export class AnthropicEndpoint extends Endpoint {
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
-	async sendRequest(command: Command) {
+	async sendRequest(command: Command): Promise<MozaikResponse> {
 		const request = this.buildRequest(command)
 		const client = AnthropicClientResolver.resolve(request)
 		const response = await client.send(request)
@@ -37,6 +38,17 @@ export class AnthropicEndpoint extends Endpoint {
 
 		const responseHandler = usageHandler
 
-		return await responseHandler.handle(responseContext)
+		const result = await responseHandler.handle(responseContext)
+
+			const usageEntries = result.getUsageEntries().map(e => ({
+				inputTokens: e.inputTokens,
+				outputTokens: e.outputTokens,
+				model: e.model
+			}))
+
+			return {
+				data: result.getResponse(),
+				usageEntries: usageEntries
+			}
 	}
 }
