@@ -1,6 +1,6 @@
-import { ResponseContext } from "@core/endpoint/response-context"
+import { ResponseContext } from "@core/response"
 import { ResponseHandler } from "@core/endpoint/response-handler"
-import { UsageEntry } from "@core/endpoint/usage"
+import { UsageEntry } from "@core/usage-entry"
 
 export class UsageHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler

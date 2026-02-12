@@ -7,21 +7,20 @@ import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
 import { ToolUseHandler } from "./response-handler/tool-use"
 import { Command } from "@/types/command"
-import { ResponseContext } from "@core/endpoint/response-context"
+import { MozaikResponse } from "@core/response"
 import { UsageHandler } from "./response-handler/usage"
 import { UnhandledResponseHandler } from "./response-handler/undhandled"
-import { MozaikResponse } from "@/types/response"
-
+import { UsageEntry } from "@core/usage-entry"
 export class AnthropicEndpoint extends Endpoint {
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
-	async sendRequest(command: Command): Promise<MozaikResponse> {
+	async sendRequest(command: Command): Promise<any> {
 		const request = this.buildRequest(command)
 		const client = AnthropicClientResolver.resolve(request)
 		const response = await client.send(request)
 
-		const responseContext = new ResponseContext()
-		responseContext.setProviderResponse(response)
+		const mozaikResponse = new MozaikResponse()
+		mozaikResponse.setProviderResponse(response)
 
 		// response handler (chain of responsibilities)
 		const usageHandler: ResponseHandler = new UsageHandler()
@@ -38,17 +37,21 @@ export class AnthropicEndpoint extends Endpoint {
 
 		const responseHandler = usageHandler
 
-		const result = await responseHandler.handle(responseContext)
+		const result = await responseHandler.handle(mozaikResponse)
 
-			const usageEntries = result.getUsageEntries().map(e => ({
-				inputTokens: e.inputTokens,
-				outputTokens: e.outputTokens,
-				model: e.model
-			}))
+		const usageEntries = result.getUsageEntries().map((e: UsageEntry) => ({
+			inputTokens: e.inputTokens,
+			cachedInputTokens: e.cachedInputTokens,
+			outputTokens: e.outputTokens,
+			model: e.model
+		}))
 
-			return {
-				data: result.getResponse(),
-				usageEntries: usageEntries
+		return {
+			data: result.getResponse(),
+			usage: {
+				entries: usageEntries,
+				totalUsdCost: 0
 			}
+		}
 	}
 }

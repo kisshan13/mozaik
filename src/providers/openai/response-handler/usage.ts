@@ -1,18 +1,23 @@
-import { ResponseContext } from "@core/endpoint/response-context"
+import { MozaikResponse } from "@core/response"
 import { ResponseHandler } from "@core/endpoint/response-handler"
-import { UsageEntry } from "@core/endpoint/usage"
+import { UsageEntry } from "@core/usage-entry"
 
 export class UsageHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
-		const providerResponse = responseContext.providerResponse
+	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
+		const providerResponse = mozaikResponse.providerResponse
 		const usage = providerResponse.usage
 		if (usage) {
-			responseContext.addUsageEntry(
-				new UsageEntry(usage.input_tokens, usage.output_tokens, providerResponse.model),
+
+			const cachedInputTokens = usage.input_token_details?.cached_tokens ?? 0
+			const newInputTokens = usage.input_tokens - cachedInputTokens
+			const outputTokens = usage.output_tokens
+
+			mozaikResponse.addUsageEntry(
+				new UsageEntry(newInputTokens, outputTokens, cachedInputTokens, providerResponse.model),
 			)
 		}
-		return await this.nextHandler.handle(responseContext)
+		return await this.nextHandler.handle(mozaikResponse)
 	}
 }

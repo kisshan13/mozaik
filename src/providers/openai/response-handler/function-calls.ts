@@ -1,8 +1,8 @@
 import { ResponseHandler } from "@core/endpoint/response-handler"
 import { OpenAIDefaultClient } from "../client/default"
 import { Tool } from "@/types/tool"
-import { ResponseContext } from "@core/endpoint/response-context"
-import { UsageEntry } from "@core/endpoint/usage"
+import { MozaikResponse } from "@core/response"
+import { UsageEntry } from "@core/usage-entry"
 
 export interface ToolCall {
 	call_id: string
@@ -85,8 +85,8 @@ export class FunctionCallsHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(responseContext: ResponseContext) {
-		let providerResponse = responseContext.providerResponse
+	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
+		let providerResponse = mozaikResponse.providerResponse
 		let toolCallingResponse: any
 		while (this.hasToolCalls(providerResponse)) {
 			const toolCalls = this.extractToolCalls(providerResponse)
@@ -99,18 +99,24 @@ export class FunctionCallsHandler extends ResponseHandler {
 
 			toolCallingResponse = await this.client.send(this.request)
 
-			responseContext.addUsageEntry(
+
+			const cachedInputTokens = toolCallingResponse.usage.input_token_details?.cached_tokens ?? 0
+			const newInputTokens = toolCallingResponse.usage.input_tokens - cachedInputTokens
+			const outputTokens = toolCallingResponse.usage.output_tokens
+
+			mozaikResponse.addUsageEntry(
 				new UsageEntry(
-					toolCallingResponse.usage.input_tokens,
-					toolCallingResponse.usage.output_tokens,
+					newInputTokens,
+					outputTokens,
+					cachedInputTokens,
 					toolCallingResponse.model,
 				),
 			)
-			responseContext.setProviderResponse(toolCallingResponse)
-			responseContext.setResponse(toolCallingResponse)
+			mozaikResponse.setProviderResponse(toolCallingResponse)
+			mozaikResponse.setResponseData(toolCallingResponse)
 			providerResponse = toolCallingResponse
 		}
 
-		return await this.nextHandler.handle(responseContext)
+		return await this.nextHandler.handle(mozaikResponse)
 	}
 }
