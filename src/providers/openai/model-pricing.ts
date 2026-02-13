@@ -11,12 +11,7 @@ export class OpenAIModelPricing {
 	}
 
 	getPriceInUsd(modelName: string, inputTokens: number, outputTokens: number, cachedInputTokens: number): number {
-		if (modelName === "gpt-5") {
-			this.inputPricePer1MToken = 1.25
-			this.outputPricePer1MToken = 10
-			this.cachedPricePer1MToken = 0.125
-			return this.calculateTotalCost(inputTokens, outputTokens, cachedInputTokens)
-		} else if (modelName === "gpt-5-mini") {
+		if (modelName === "gpt-5-mini") {
 			this.inputPricePer1MToken = 0.25
 			this.outputPricePer1MToken = 2
 			this.cachedPricePer1MToken = 0.025
@@ -27,6 +22,11 @@ export class OpenAIModelPricing {
 			this.cachedPricePer1MToken = 0.005
 			return this.calculateTotalCost(inputTokens, outputTokens, cachedInputTokens)
 		} else if (modelName === "gpt-5.1") {
+			this.inputPricePer1MToken = 1.25
+			this.outputPricePer1MToken = 10
+			this.cachedPricePer1MToken = 0.125
+			return this.calculateTotalCost(inputTokens, outputTokens, cachedInputTokens)
+		} else if (modelName === "gpt-5") {
 			this.inputPricePer1MToken = 1.25
 			this.outputPricePer1MToken = 10
 			this.cachedPricePer1MToken = 0.125
