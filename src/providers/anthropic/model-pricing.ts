@@ -9,15 +9,15 @@ export class AnthropicModelPricing {
 	}
 
 	getPriceInUsd(modelName: string, inputTokens: number, outputTokens: number): number {
-		if (modelName === "claude-sonnet-4.5") {
+		if (modelName.startsWith("claude-sonnet-4-5")) {
 			this.inputPricePer1MToken = 3
 			this.outputPricePer1MToken = 15
 			return this.calculateTotalCost(inputTokens, outputTokens)
-		} else if (modelName === "claude-haiku-4.5") {
+		} else if (modelName.startsWith("claude-haiku-4-5")) {
 			this.inputPricePer1MToken = 1
 			this.outputPricePer1MToken = 5
 			return this.calculateTotalCost(inputTokens, outputTokens)
-		} else if (modelName === "claude-opus-4.5") {
+		} else if (modelName.startsWith("claude-opus-4-5")) {
 			this.inputPricePer1MToken = 5
 			this.outputPricePer1MToken = 25
 			return this.calculateTotalCost(inputTokens, outputTokens)
