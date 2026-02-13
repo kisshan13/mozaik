@@ -1,4 +1,4 @@
-import { ResponseContext } from "./response-context"
+import { MozaikResponse } from "../response"
 
 export abstract class ResponseHandler {
 	abstract nextHandler: ResponseHandler
@@ -8,5 +8,5 @@ export abstract class ResponseHandler {
 		return this.nextHandler
 	}
 
-	abstract handle(responseContext: ResponseContext): Promise<ResponseContext>
+	abstract handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse>
 }

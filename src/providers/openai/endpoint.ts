@@ -7,10 +7,10 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
-import { Command } from "@/types/command"
-import { ResponseContext } from "@core/endpoint/response-context"
+import { Command } from "@/types/request"
+import { MozaikResponse } from "@core/response"
 import { UsageHandler } from "./response-handler/usage"
-import { MozaikResponse } from "@/types/response"
+import { UsageEntry } from "@core/usage-entry"
 
 export class OpenAIResponses extends Endpoint {
 	requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -19,14 +19,14 @@ export class OpenAIResponses extends Endpoint {
 		super()
 	}
 
-	async sendRequest(command: Command): Promise<MozaikResponse> {
+	async sendRequest(command: Command): Promise<any> {
 		try {
 			const request = this.buildRequest(command)
 			const client = OpenAIClientResolver.resolve(request)
 			const response = await client.send(request)
 
-			const responseContext = new ResponseContext()
-			responseContext.setProviderResponse(response)
+			const mozaikResponse = new MozaikResponse()
+			mozaikResponse.setProviderResponse(response)
 
 			// response handler (chain of responsibilities)
 			const usageHandler: ResponseHandler = new UsageHandler()
@@ -46,18 +46,9 @@ export class OpenAIResponses extends Endpoint {
 
 			const responseHandler = usageHandler
 
-			const result = await responseHandler.handle(responseContext)
+			const result: MozaikResponse = await responseHandler.handle(mozaikResponse)
 
-			const usageEntries = result.getUsageEntries().map(e => ({
-				inputTokens: e.inputTokens,
-				outputTokens: e.outputTokens,
-				model: e.model
-			}))
-
-			return {
-				data: result.getResponse(),
-				usageEntries: usageEntries
-			}
+			return result.getResponse()
 		} catch (error) {
 			console.warn("[OpenAIProvider] Responses API request failed:", error)
 			throw error

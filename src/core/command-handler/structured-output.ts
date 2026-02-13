@@ -1,13 +1,13 @@
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 import { CapabilityHandler } from "./capability"
 import { RequestBuilder } from "@core/endpoint/request-builder"
 
 export class StructuredOutputlHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(command: Command, builder: RequestBuilder) {
-		if (command.structuredOutput) {
-			builder.addStructuredOutput(command.structuredOutput)
+	apply(request: MozaikRequest, builder: RequestBuilder) {
+		if (request.structuredOutput) {
+			builder.addStructuredOutput(request.structuredOutput)
 		}
 	}
 }
