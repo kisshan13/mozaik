@@ -1,13 +1,13 @@
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 import { RequestBuilder } from "../endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
 
 export class ToolsHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(command: Command, requestBuilder: RequestBuilder) {
-		if (command.tools && command.tools.length > 0) {
-			requestBuilder.addTools(command.tools)
+	apply(mozaikRequest: MozaikRequest, requestBuilder: RequestBuilder) {
+		if (mozaikRequest.tools && mozaikRequest.tools.length > 0) {
+			requestBuilder.addTools(mozaikRequest.tools)
 		}
 	}
 }

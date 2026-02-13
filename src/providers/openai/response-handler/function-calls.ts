@@ -3,6 +3,7 @@ import { OpenAIDefaultClient } from "../client/default"
 import { Tool } from "@/types/tool"
 import { MozaikResponse } from "@core/response"
 import { UsageEntry } from "@core/usage-entry"
+import { OpenAIModelPricing } from "@providers/openai/model-pricing"
 
 export interface ToolCall {
 	call_id: string
@@ -99,19 +100,16 @@ export class FunctionCallsHandler extends ResponseHandler {
 
 			toolCallingResponse = await this.client.send(this.request)
 
-
-			const cachedInputTokens = toolCallingResponse.usage.input_token_details?.cached_tokens ?? 0
-			const newInputTokens = toolCallingResponse.usage.input_tokens - cachedInputTokens
-			const outputTokens = toolCallingResponse.usage.output_tokens
-
-			mozaikResponse.addUsageEntry(
-				new UsageEntry(
-					newInputTokens,
-					outputTokens,
-					cachedInputTokens,
-					toolCallingResponse.model,
-				),
+			const openAIModelPricing = new OpenAIModelPricing()
+			const usage = toolCallingResponse.usage
+			const totalCost = openAIModelPricing.getPriceInUsd(
+				providerResponse.model,
+				usage.input_tokens,
+				usage.output_tokens,
+				usage.input_token_details?.cached_tokens ?? 0,
 			)
+
+			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, providerResponse.model))
 			mozaikResponse.setProviderResponse(toolCallingResponse)
 			mozaikResponse.setResponseData(toolCallingResponse)
 			providerResponse = toolCallingResponse

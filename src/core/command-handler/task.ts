@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 
 export class TaskHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(command: Command, builder: RequestBuilder) {
-		if (command.task) {
-			builder.addTask(command.task)
+	apply(request: MozaikRequest, builder: RequestBuilder) {
+		if (request.task) {
+			builder.addTask(request.task)
 		}
 	}
 }

@@ -1,13 +1,9 @@
 export class UsageEntry {
-	inputTokens: number
-	outputTokens: number
-	cachedInputTokens: number
+	priceInUsd: number
 	model: string
 
-	constructor(inputTokens: number, outputTokens: number, cachedInputTokens: number, model: string) {
-		this.inputTokens = inputTokens
-		this.outputTokens = outputTokens
-		this.cachedInputTokens = cachedInputTokens
+	constructor(priceInUsd: number, model: string) {
+		this.priceInUsd = priceInUsd
 		this.model = model
 	}
 }

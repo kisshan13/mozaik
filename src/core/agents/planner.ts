@@ -1,7 +1,7 @@
 import { Plan } from "@/types/plan"
 import { Workflow } from "@core/workflow/workflow"
-import { Agent } from "./agent"
-import { Command } from "@/types/command"
+import { MozaikAgent } from "./agent"
+import { MozaikRequest } from "@/types/request"
 import { PlanSchema } from "@core/workflow/schema/plan"
 import { PlanWorkflowMapper } from "@core/workflow/mapper"
 
@@ -14,9 +14,9 @@ Rules:
 - Don't ask user for any input, just do the thing with available data you have.
 `
 
-export class PlanningAgent extends Agent {
-	constructor(command: Command) {
-		super(command)
+export class PlanningAgent extends MozaikAgent {
+	constructor(request: MozaikRequest) {
+		super(request)
 	}
 
 	async planFromGoal(goal: string): Promise<Workflow> {

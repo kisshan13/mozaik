@@ -24,12 +24,13 @@ export class MozaikResponse {
 		return {
 			data: this.responseData,
 			usage: {
-				entries: this.usageEntries
-			}
+				entries: this.usageEntries,
+			},
+			totalCost: this.usageEntries.reduce((acc, entry) => acc + entry.priceInUsd, 0),
 		}
 	}
 
-	getUsageEntries(): UsageEntry [] {
+	getUsageEntries(): UsageEntry[] {
 		return this.usageEntries
 	}
 }

@@ -4,6 +4,7 @@ import { ResponseHandler } from "@core/endpoint/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
 import { MozaikResponse } from "@core/response"
 import { UsageEntry } from "@core/usage-entry"
+import { AnthropicModelPricing } from "../model-pricing"
 
 export class ToolUseHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
@@ -76,14 +77,16 @@ export class ToolUseHandler extends ResponseHandler {
 
 			// Call model again
 			const toolCallingResponse = await this.client.send(this.request)
-			mozaikResponse.addUsageEntry(
-				new UsageEntry(
-					toolCallingResponse.usage.input_tokens,
-					toolCallingResponse.usage.output_tokens,
-					toolCallingResponse.usage.input_token_details?.cached_tokens ?? 0,
-					toolCallingResponse.model,
-				),
+
+			const usage = toolCallingResponse.usage
+			const anthropicModelPricing = new AnthropicModelPricing()
+			const totalCost = anthropicModelPricing.getPriceInUsd(
+				providerResponse.model,
+				usage.input_tokens,
+				usage.output_tokens,
 			)
+
+			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, toolCallingResponse.model.name))
 			mozaikResponse.setProviderResponse(toolCallingResponse)
 			providerResponse = toolCallingResponse
 		}

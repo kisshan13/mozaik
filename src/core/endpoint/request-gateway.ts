@@ -1,4 +1,4 @@
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 import { Endpoint } from "./endpoint"
 import { EndpointResolver } from "./endpoint-resolver"
 
@@ -7,8 +7,8 @@ export class RequestGateway {
 
 	constructor(readonly endpointResolver: EndpointResolver) {}
 
-	async invoke(command: Command): Promise<any> {
-		this.endpoint = this.endpointResolver.resolve(command.model)
-		return await this.endpoint.sendRequest(command)
+	async invoke(request: MozaikRequest): Promise<any> {
+		this.endpoint = this.endpointResolver.resolve(request.model)
+		return await this.endpoint.sendRequest(request)
 	}
 }

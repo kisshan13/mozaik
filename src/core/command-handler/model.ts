@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 
 export class ModelHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(command: Command, builder: RequestBuilder) {
-		if (command.model) {
-			builder.addModel(command.model)
+	apply(request: MozaikRequest, builder: RequestBuilder) {
+		if (request.model) {
+			builder.addModel(request.model)
 		}
 	}
 }

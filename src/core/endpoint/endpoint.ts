@@ -4,15 +4,15 @@ import { MessagesHandler } from "../command-handler/messages"
 import { TaskHandler } from "../command-handler/task"
 import { ModelHandler } from "../command-handler/model"
 import { StructuredOutputlHandler } from "../command-handler/structured-output"
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 import { ToolsHandler } from "../command-handler/tools"
 
 export abstract class Endpoint {
 	abstract requestBuilder: RequestBuilder
-	command: Command | null = null
+	request: MozaikRequest | null = null
 
-	buildRequest(command: Command): any {
-		this.command = command
+	buildRequest(request: MozaikRequest): any {
+		this.request = request
 
 		this.requestBuilder.initialize()
 
@@ -28,7 +28,7 @@ export abstract class Endpoint {
 			.setNextHandler(structuredOutputHandler)
 			.setNextHandler(toolsHandler)
 
-		messagesHandler.handle(command, this.requestBuilder)
+		messagesHandler.handle(request, this.requestBuilder)
 
 		return this.requestBuilder.build()
 	}
