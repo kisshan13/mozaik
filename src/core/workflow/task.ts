@@ -1,4 +1,4 @@
-import { Model, Command, Agent } from "@/index"
+import { Model, MozaikRequest, MozaikAgent } from "@/index"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { ExecutionHook } from "./hooks/execution-hook"
 import { DEFAULT_CLUSTER_HOOK } from "./hooks"
@@ -22,12 +22,12 @@ export class Task extends WorkUnit {
 	async execute(hook: ExecutionHook = DEFAULT_CLUSTER_HOOK): Promise<any> {
 		hook.beforeTask(this)
 
-		const command: Command = {
+		const request: MozaikRequest = {
 			model: this.model,
 			task: this.task,
 		}
 
-		const agent = new Agent(command)
+		const agent = new MozaikAgent(request)
 		const result = await agent.act(this.task)
 
 		hook.afterTask(this, result)

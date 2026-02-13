@@ -2,8 +2,9 @@ import { Tool } from "@/types/tool"
 import Anthropic from "@anthropic-ai/sdk"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
-import { ResponseContext } from "@core/endpoint/response-context"
-import { UsageEntry } from "@core/endpoint/usage"
+import { MozaikResponse } from "@core/response"
+import { UsageEntry } from "@core/usage-entry"
+import { AnthropicModelPricing } from "../model-pricing"
 
 export class ToolUseHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
@@ -52,8 +53,8 @@ export class ToolUseHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
-		let providerResponse = responseContext.providerResponse
+	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
+		let providerResponse = mozaikResponse.providerResponse
 
 		while (providerResponse.stop_reason === "tool_use") {
 			const toolUseBlocks = providerResponse.content.filter(
@@ -76,17 +77,20 @@ export class ToolUseHandler extends ResponseHandler {
 
 			// Call model again
 			const toolCallingResponse = await this.client.send(this.request)
-			responseContext.addUsageEntry(
-				new UsageEntry(
-					toolCallingResponse.usage.input_tokens,
-					toolCallingResponse.usage.output_tokens,
-					toolCallingResponse.model,
-				),
+
+			const usage = toolCallingResponse.usage
+			const anthropicModelPricing = new AnthropicModelPricing()
+			const totalCost = anthropicModelPricing.getPriceInUsd(
+				providerResponse.model,
+				usage.input_tokens,
+				usage.output_tokens,
 			)
-			responseContext.setProviderResponse(toolCallingResponse)
+
+			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, toolCallingResponse.model.name))
+			mozaikResponse.setProviderResponse(toolCallingResponse)
 			providerResponse = toolCallingResponse
 		}
 
-		return await this.nextHandler.handle(responseContext)
+		return await this.nextHandler.handle(mozaikResponse)
 	}
 }

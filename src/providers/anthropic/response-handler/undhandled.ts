@@ -1,11 +1,11 @@
-import { ResponseContext } from "@core/endpoint/response-context"
+import { MozaikResponse } from "@core/response"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class UnhandledResponseHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	async handle(responseContext: ResponseContext): Promise<ResponseContext> {
-		const providerResponse = responseContext.providerResponse
+	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
+		const providerResponse = mozaikResponse.providerResponse
 		const id = providerResponse?.id ?? "unknown"
 		const model = providerResponse?.model ?? "unknown"
 

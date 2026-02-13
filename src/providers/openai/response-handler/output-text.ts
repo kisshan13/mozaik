@@ -1,16 +1,16 @@
-import { ResponseContext } from "@core/endpoint/response-context"
+import { MozaikResponse } from "@core/response"
 import { ResponseHandler } from "@core/endpoint/response-handler"
 
 export class OutputTextHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	async handle(responseContext: ResponseContext) {
-		const providerResponse = responseContext.providerResponse
+	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
+		const providerResponse = mozaikResponse.providerResponse
 		if (providerResponse.output_text) {
-			responseContext.setResponse(providerResponse.output_text)
-			return responseContext
+			mozaikResponse.setResponseData(providerResponse.output_text)
+			return mozaikResponse
 		}
 
-		return await this.nextHandler.handle(responseContext)
+		return await this.nextHandler.handle(mozaikResponse)
 	}
 }

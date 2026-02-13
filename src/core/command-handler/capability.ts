@@ -1,4 +1,4 @@
-import { Command } from "@/types/command"
+import { MozaikRequest } from "@/types/request"
 import { RequestBuilder } from "../endpoint/request-builder"
 
 export abstract class CapabilityHandler {
@@ -9,13 +9,13 @@ export abstract class CapabilityHandler {
 		return this.nextHandler
 	}
 
-	abstract apply(command: Command, requestBuilder: RequestBuilder): any
+	abstract apply(request: MozaikRequest, requestBuilder: RequestBuilder): any
 
-	handle(command: Command, builder: RequestBuilder) {
-		this.apply(command, builder)
+	handle(request: MozaikRequest, builder: RequestBuilder) {
+		this.apply(request, builder)
 
 		if (this.nextHandler) {
-			this.nextHandler.handle(command, builder)
+			this.nextHandler.handle(request, builder)
 		}
 	}
 }

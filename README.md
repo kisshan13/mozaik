@@ -2,7 +2,7 @@
 
 Mozaik is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
 
-![Mosaic](https://www.rockform.co.uk/wp-content/uploads/2018/06/Picture6-1.jpg)
+![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
 
 ---
 
@@ -32,19 +32,19 @@ The system supports OpenAI models (gpt-5, gpt-5-mini, gpt-5-nano, gpt-5.1) and A
 
 ## Features
 
-### AI Agents
+### AI MozaikAgents
 
 This feature lets developers create AI agents through a single unified request definition, making it easy to compose tasks and leverage multiple models. You can mix providers, choose the best model for each task, and build agents that work across different capabilities.
 
 ```typescript
 import "dotenv/config"
-import { Agent, Command } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
 
-const command: Command = {
+const request: MozaikRequest = {
 	model: "claude-sonnet-4.5",
 }
 
-const agent = new Agent(command)
+const agent = new MozaikAgent(request)
 const codingResponse = await agent.act("Write a React component for a todo list")
 ```
 
@@ -54,7 +54,7 @@ Structured output lets you enforce exact response formats—using schemas like Z
 
 ```typescript
 import { z } from "zod"
-import { Agent, Command } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
 
 const mealPlanSchema = z.object({
 	calories: z.number(),
@@ -70,13 +70,13 @@ const mealPlanSchema = z.object({
 	shoppingList: z.array(z.string()),
 })
 
-const command: Command = {
+const request: MozaikRequest = {
 	model: "gpt-5-mini",
 	task: "Create a 1-day vegetarian meal plan with breakfast, lunch, and dinner.",
 	structuredOutput: mealPlanSchema,
 }
 
-const agent = new Agent(command)
+const agent = new MozaikAgent(request)
 const response = await agent.act()
 ```
 
@@ -85,9 +85,9 @@ const response = await agent.act()
 Multi-turn conversation allows developers to provide chat history so the AI agent can maintain context and generate more relevant, continuous responses.
 
 ```typescript
-import { Agent, Command } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
 
-const command: Command = {
+const request: MozaikRequest = {
 	messages: [
 		{ role: "system", content: "You are a coding assistant" },
 		{ role: "user", content: "How do I sort an array in TypeScript?" },
@@ -96,7 +96,7 @@ const command: Command = {
 	model: "claude-haiku-4.5",
 }
 
-const agent = new Agent(command)
+const agent = new MozaikAgent(request)
 const response = await agent.act("Can you show me an example?")
 ```
 
@@ -106,7 +106,7 @@ Tool calling allows the agent to invoke real functions in your environment—let
 
 ```typescript
 import { promises as fs } from "fs"
-import { Agent, Command, Tool } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest, Tool } from "@mozaik-ai/core"
 
 const tools: Tool[] = [
 	{
@@ -127,7 +127,7 @@ const tools: Tool[] = [
 	},
 ]
 
-const command: Command = {
+const request: MozaikRequest = {
 	model: "gpt-5.1",
 	tools,
 	messages: [
@@ -139,7 +139,7 @@ const command: Command = {
 	task: "Create a two-bullet trip prep checklist for Belgrade and save it as trip-checklist.txt.",
 }
 
-const agent = new Agent(command)
+const agent = new MozaikAgent(request)
 await agent.act()
 ```
 
@@ -148,9 +148,9 @@ await agent.act()
 Vision support allows AI agents to interpret images alongside text, enabling richer understanding and multimodal interactions.
 
 ```typescript
-import { Agent, Command } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
 
-const command: Command = {
+const request: MozaikRequest = {
 	messages: [
 		{
 			role: "user",
@@ -169,7 +169,7 @@ const command: Command = {
 	model: "claude-opus-4.5",
 }
 
-const agent = new Agent(command)
+const agent = new MozaikAgent(request)
 const response = await agent.act()
 ```
 
@@ -179,18 +179,18 @@ This example demonstrates how to use standard JavaScript/TypeScript concurrency 
 
 ```typescript
 import "dotenv/config"
-import { Agent, Command } from "@mozaik-ai/core"
+import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
 
-const openaiCommand: Command = {
+const openaiRequest: MozaikRequest = {
 	model: "gpt-5",
 }
 
-const anthropicCommand: Command = {
+const anthropicRequest: MozaikRequest = {
 	model: "claude-sonnet-4.5",
 }
 
-const openaiAgent = new Agent(openaiCommand)
-const anthropicAgent = new Agent(anthropicCommand)
+const openaiAgent = new MozaikAgent(openaiRequest)
+const anthropicAgent = new MozaikAgent(anthropicRequest)
 
 const task = "What are the key differences between TypeScript and JavaScript?"
 
