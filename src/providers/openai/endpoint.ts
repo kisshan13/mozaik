@@ -7,10 +7,9 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
-import { Command } from "@/types/request"
+import { MozaikRequest } from "@/types/request"
 import { MozaikResponse } from "@core/response"
 import { UsageHandler } from "./response-handler/usage"
-import { UsageEntry } from "@core/usage-entry"
 
 export class OpenAIResponses extends Endpoint {
 	requestBuilder: RequestBuilder = new OpenAIResponsesBuilder()
@@ -19,9 +18,9 @@ export class OpenAIResponses extends Endpoint {
 		super()
 	}
 
-	async sendRequest(command: Command): Promise<any> {
+	async sendRequest(mozaikRequest: MozaikRequest): Promise<any> {
 		try {
-			const request = this.buildRequest(command)
+			const request = this.buildRequest(mozaikRequest)
 			const client = OpenAIClientResolver.resolve(request)
 			const response = await client.send(request)
 
@@ -32,7 +31,7 @@ export class OpenAIResponses extends Endpoint {
 			const usageHandler: ResponseHandler = new UsageHandler()
 			const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(
 				request,
-				command.tools ? command.tools : [],
+				mozaikRequest.tools ? mozaikRequest.tools : [],
 			)
 			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
 			const outputTextHandler: ResponseHandler = new OutputTextHandler()
