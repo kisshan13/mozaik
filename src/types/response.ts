@@ -6,5 +6,8 @@ type UsageEntry = {
 
 export type MozaikResponse = {
     data: any,
-    usageEntries: UsageEntry[]
+    usage: {
+        entries: UsageEntry[]
+        totalUsdCost: number
+    }
 }
