@@ -1,11 +1,11 @@
 import { RequestBuilder } from "./request-builder"
-import { CapabilityHandler } from "../command-handler/capability"
-import { MessagesHandler } from "../command-handler/messages"
-import { TaskHandler } from "../command-handler/task"
-import { ModelHandler } from "../command-handler/model"
-import { StructuredOutputlHandler } from "../command-handler/structured-output"
+import { CapabilityHandler } from "../request-handler/capability"
+import { MessagesHandler } from "../request-handler/messages"
+import { TaskHandler } from "../request-handler/task"
+import { ModelHandler } from "../request-handler/model"
+import { StructuredOutputlHandler } from "../request-handler/structured-output"
 import { MozaikRequest } from "@/types/request"
-import { ToolsHandler } from "../command-handler/tools"
+import { ToolsHandler } from "../request-handler/tools"
 
 export abstract class Endpoint {
 	abstract requestBuilder: RequestBuilder
