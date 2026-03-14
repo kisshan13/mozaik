@@ -1,4 +1,4 @@
-export const OPENAI_MODELS = ["gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5.1"] as const
+export const OPENAI_MODELS = ["gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5.1", "gpt-5.2", "gpt-5.4"] as const
 
 export type OpenAIModel = (typeof OPENAI_MODELS)[number]
 
