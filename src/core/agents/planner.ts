@@ -21,7 +21,8 @@ export class PlanningAgent extends MozaikAgent {
 
 	async planFromGoal(goal: string): Promise<Workflow> {
 		this.setStructuredOutput(PlanSchema)
-		const plan: Plan = await this.act(`${PROMPT}\nGoal: ${goal}`)
+		const response = await this.act(`${PROMPT}\nGoal: ${goal}`)
+		const plan: Plan = response.data
 		return PlanWorkflowMapper.fromPlan(plan)
 	}
 }
