@@ -1,6 +1,6 @@
 import { Plan } from "@/types/plan"
 import { Workflow } from "@core/workflow/workflow"
-import { MozaikAgent } from "../agents/agent"
+import { MozaikAgent } from "../agent"
 import { InferenceSpecification } from "@/types/inference-specification"
 import { PlanSchema } from "@core/workflow/schema/plan"
 import { PlanWorkflowMapper } from "@core/workflow/mapper"
