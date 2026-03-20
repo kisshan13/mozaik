@@ -5,7 +5,7 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod"
 import { ANTHROPIC_MODEL_MAP, AnthropicModel } from "@/types/model"
 import { ZodObject } from "zod"
 import { Tool } from "@/types/tool"
-import { ReasoningEffort } from "@/types/request"
+import { ReasoningEffort } from "@/types/inference-specification"
 
 export class AnthropicRequestBuilder extends RequestBuilder {
 	private mapper = new AnthropicMapper()
@@ -58,8 +58,7 @@ export class AnthropicRequestBuilder extends RequestBuilder {
 	}
 
 	addReasoningEffort(effort: ReasoningEffort): RequestBuilder {
-
-		let reasoningEffort = ''
+		let reasoningEffort = ""
 		if (effort === ReasoningEffort.NONE) {
 			return this
 		} else if (effort === ReasoningEffort.LOW) {
@@ -73,7 +72,7 @@ export class AnthropicRequestBuilder extends RequestBuilder {
 		}
 
 		this.request.output_config = {
-			effort: reasoningEffort
+			effort: reasoningEffort,
 		}
 		return this
 	}

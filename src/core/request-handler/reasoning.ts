@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { MozaikRequest } from "@/types/request"
+import { InferenceSpecification } from "@/types/inference-specification"
 
 export class ReasoningHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(request: MozaikRequest, builder: RequestBuilder) {
-		if (request.reasoningEffort) {
-			builder.addReasoningEffort(request.reasoningEffort)
+	apply(inferenceSpecification: InferenceSpecification, builder: RequestBuilder) {
+		if (inferenceSpecification.reasoningEffort) {
+			builder.addReasoningEffort(inferenceSpecification.reasoningEffort)
 		}
 	}
 }

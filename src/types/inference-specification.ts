@@ -3,7 +3,7 @@ import { Message } from "./message"
 import { Model } from "./model"
 import { Tool } from "./tool"
 
-export type MozaikRequest = {
+export type InferenceSpecification = {
 	model: Model
 	messages?: Message[]
 	task?: string

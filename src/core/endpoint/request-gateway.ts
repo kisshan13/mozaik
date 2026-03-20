@@ -1,4 +1,4 @@
-import { MozaikRequest } from "@/types/request"
+import { MozaikRequest } from "@/types/inference-specification"
 import { Endpoint } from "./endpoint"
 import { EndpointResolver } from "./endpoint-resolver"
 

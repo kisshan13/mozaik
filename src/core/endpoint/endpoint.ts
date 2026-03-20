@@ -4,7 +4,7 @@ import { MessagesHandler } from "../request-handler/messages"
 import { TaskHandler } from "../request-handler/task"
 import { ModelHandler } from "../request-handler/model"
 import { StructuredOutputlHandler } from "../request-handler/structured-output"
-import { MozaikRequest } from "@/types/request"
+import { MozaikRequest } from "@/types/inference-specification"
 import { ToolsHandler } from "../request-handler/tools"
 
 export abstract class Endpoint {

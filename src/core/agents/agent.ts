@@ -1,5 +1,5 @@
 import { RequestGateway } from "@core/endpoint/request-gateway"
-import { MozaikRequest } from "@/types/request"
+import { MozaikRequest } from "@/types/inference-specification"
 import { DefaultEndpointResolver } from "@providers/endpoint-resolver"
 import { ZodObject } from "zod"
 import { Model } from "@/types/model"

@@ -7,7 +7,7 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
-import { MozaikRequest } from "@/types/request"
+import { MozaikRequest } from "@/types/inference-specification"
 import { MozaikResponse } from "@core/response"
 import { UsageHandler } from "./response-handler/usage"
 

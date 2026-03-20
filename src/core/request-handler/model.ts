@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { MozaikRequest } from "@/types/request"
+import { InferenceSpecification } from "@/types/inference-specification"
 
 export class ModelHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(request: MozaikRequest, builder: RequestBuilder) {
-		if (request.model) {
-			builder.addModel(request.model)
+	apply(inferenceSpecification: InferenceSpecification, builder: RequestBuilder) {
+		if (inferenceSpecification.model) {
+			builder.addModel(inferenceSpecification.model)
 		}
 	}
 }

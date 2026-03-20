@@ -1,40 +1,47 @@
-import { MozaikRequest } from "@/types/request"
-import { CalculateCostState, EndpointResolverState, Execution, RequestDispatchState, RequestMappingState, ResponseProcessingState, State, StateId, ToolCallingState } from "./state"
+import { InferenceSpecification } from "@/types/inference-specification"
+import {
+	CalculateCostState,
+	EndpointResolverState,
+	Execution,
+	RequestDispatchState,
+	RequestMappingState,
+	ResponseProcessingState,
+	State,
+	StateId,
+	ToolCallingState,
+} from "./state"
 import { Endpoint } from "@core/endpoint/endpoint"
 
-
 export interface RuntimeContext {
-    request: MozaikRequest
-    endpoint: Endpoint | null
-    providerRequest: any | null
-    providerResponse: any | null
+	inferenceSpecification: InferenceSpecification
+	endpoint: Endpoint | null
+	providerRequest: any | null
+	providerResponse: any | null
 }
 
-
 export class RuntimeEngine {
-    private states: Map<StateId, State> = new Map<StateId, State>()
+	private states: Map<StateId, State> = new Map<StateId, State>()
 
-    constructor() {
-        this.states.set(StateId.ENDPOINT_RESOLVER, new EndpointResolverState())
-        this.states.set(StateId.REQUEST_MAPPING, new RequestMappingState())
-        this.states.set(StateId.REQUEST_DISPATCH, new RequestDispatchState())
-        this.states.set(StateId.CALCULATE_COST, new CalculateCostState())
-        this.states.set(StateId.RESPONSE_PROCESSING, new ResponseProcessingState())
-        this.states.set(StateId.TOOL_CALLING, new ToolCallingState())
-    }
+	constructor() {
+		this.states.set(StateId.ENDPOINT_RESOLVER, new EndpointResolverState())
+		this.states.set(StateId.REQUEST_MAPPING, new RequestMappingState())
+		this.states.set(StateId.REQUEST_DISPATCH, new RequestDispatchState())
+		this.states.set(StateId.CALCULATE_COST, new CalculateCostState())
+		this.states.set(StateId.RESPONSE_PROCESSING, new ResponseProcessingState())
+		this.states.set(StateId.TOOL_CALLING, new ToolCallingState())
+	}
 
-    public async run(execution: Execution, context: RuntimeContext): Promise<void> {
-        while (!execution.isTerminal()) {
-            const state = this.states.get(execution.currentState)
+	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
+		while (!execution.isTerminal()) {
+			const state = this.states.get(execution.currentState)
 
-            if (!state) {
-                throw new Error(`State ${execution.currentState} not found`)
-            }
+			if (!state) {
+				throw new Error(`State ${execution.currentState} not found`)
+			}
 
-            const transition = await state.run(execution, context);
+			const transition = await state.run(execution, context)
 
-            transition.apply(execution, context)
-        }
-    }
-
+			transition.apply(execution, context)
+		}
+	}
 }

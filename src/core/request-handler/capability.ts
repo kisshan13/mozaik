@@ -1,4 +1,4 @@
-import { MozaikRequest } from "@/types/request"
+import { InferenceSpecification } from "@/types/inference-specification"
 import { RequestBuilder } from "../endpoint/request-builder"
 
 export abstract class CapabilityHandler {
@@ -9,13 +9,13 @@ export abstract class CapabilityHandler {
 		return this.nextHandler
 	}
 
-	abstract apply(request: MozaikRequest, requestBuilder: RequestBuilder): any
+	abstract apply(inferenceSpecification: InferenceSpecification, requestBuilder: RequestBuilder): any
 
-	handle(request: MozaikRequest, builder: RequestBuilder) {
-		this.apply(request, builder)
+	handle(inferenceSpecification: InferenceSpecification, builder: RequestBuilder) {
+		this.apply(inferenceSpecification, builder)
 
 		if (this.nextHandler) {
-			this.nextHandler.handle(request, builder)
+			this.nextHandler.handle(inferenceSpecification, builder)
 		}
 	}
 }
