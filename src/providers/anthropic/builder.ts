@@ -59,15 +59,15 @@ export class AnthropicRequestBuilder extends RequestBuilder {
 
 	addReasoningEffort(effort: ReasoningEffort): RequestBuilder {
 		let reasoningEffort = ""
-		if (effort === ReasoningEffort.NONE) {
+		if (effort === "none") {
 			return this
-		} else if (effort === ReasoningEffort.LOW) {
+		} else if (effort === "low") {
 			reasoningEffort = "low"
-		} else if (effort === ReasoningEffort.MEDIUM) {
+		} else if (effort === "medium") {
 			reasoningEffort = "medium"
-		} else if (effort === ReasoningEffort.HIGH) {
+		} else if (effort === "high") {
 			reasoningEffort = "high"
-		} else if (effort === ReasoningEffort.MAX) {
+		} else if (effort === "max") {
 			reasoningEffort = "max"
 		}
 

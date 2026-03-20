@@ -6,7 +6,7 @@ import { ResponseHandler } from "@core/endpoint/response-handler"
 import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
 import { ToolUseHandler } from "./response-handler/tool-use"
-import { MozaikRequest } from "@/types/inference-specification"
+import { InferenceSpecification } from "@/types/inference-specification"
 import { MozaikResponse } from "@core/response"
 import { UsageHandler } from "./response-handler/usage"
 import { UnhandledResponseHandler } from "./response-handler/undhandled"
@@ -14,8 +14,8 @@ import { UnhandledResponseHandler } from "./response-handler/undhandled"
 export class AnthropicEndpoint extends Endpoint {
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
-	async sendRequest(mozaikRequest: MozaikRequest): Promise<any> {
-		const providerRequest = this.buildRequest(mozaikRequest)
+	async sendRequest(inferenceSpecification: InferenceSpecification): Promise<any> {
+		const providerRequest = this.buildRequest(inferenceSpecification)
 		const client = AnthropicClientResolver.resolve(providerRequest)
 		const response = await client.send(providerRequest)
 
@@ -26,7 +26,7 @@ export class AnthropicEndpoint extends Endpoint {
 		const usageHandler: ResponseHandler = new UsageHandler()
 		const toolUseHandler: ResponseHandler = new ToolUseHandler(
 			providerRequest,
-			mozaikRequest.tools ? mozaikRequest.tools : [],
+			inferenceSpecification.tools ? inferenceSpecification.tools : [],
 		)
 		const parsedOutputHandler: ResponseHandler = new ParsedOutputHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()

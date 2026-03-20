@@ -4,15 +4,15 @@ import { MessagesHandler } from "../request-handler/messages"
 import { TaskHandler } from "../request-handler/task"
 import { ModelHandler } from "../request-handler/model"
 import { StructuredOutputlHandler } from "../request-handler/structured-output"
-import { MozaikRequest } from "@/types/inference-specification"
+import { InferenceSpecification } from "@/types/inference-specification"
 import { ToolsHandler } from "../request-handler/tools"
 
 export abstract class Endpoint {
 	abstract requestBuilder: RequestBuilder
-	request: MozaikRequest | null = null
+	inferenceSpecification: InferenceSpecification | null = null
 
-	buildRequest(request: MozaikRequest): any {
-		this.request = request
+	buildRequest(inferenceSpecification: InferenceSpecification): any {
+		this.inferenceSpecification = inferenceSpecification
 
 		this.requestBuilder.initialize()
 
@@ -28,10 +28,10 @@ export abstract class Endpoint {
 			.setNextHandler(structuredOutputHandler)
 			.setNextHandler(toolsHandler)
 
-		messagesHandler.handle(request, this.requestBuilder)
+		messagesHandler.handle(inferenceSpecification, this.requestBuilder)
 
 		return this.requestBuilder.build()
 	}
 
-	abstract sendRequest(providerRequest: any): any
+	abstract sendRequest(inferenceSpecification: InferenceSpecification): any
 }
