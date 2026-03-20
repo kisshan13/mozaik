@@ -1,7 +1,7 @@
 import { Plan } from "@/types/plan"
 import { Workflow } from "@core/workflow/workflow"
-import { MozaikAgent } from "./agent"
-import { MozaikRequest } from "@/types/inference-specification"
+import { MozaikAgent } from "../agents/agent"
+import { InferenceSpecification } from "@/types/inference-specification"
 import { PlanSchema } from "@core/workflow/schema/plan"
 import { PlanWorkflowMapper } from "@core/workflow/mapper"
 
@@ -15,8 +15,8 @@ Rules:
 `
 
 export class PlanningAgent extends MozaikAgent {
-	constructor(request: MozaikRequest) {
-		super(request)
+	constructor(inferenceSpecification: InferenceSpecification) {
+		super(inferenceSpecification)
 	}
 
 	async planFromGoal(goal: string): Promise<Workflow> {
