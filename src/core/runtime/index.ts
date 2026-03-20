@@ -1,5 +1,5 @@
 import { MozaikRequest } from "@/types/request"
-import { DecisionState, EndpointResolverState, Execution, RequestDispatchState, RequestMappingState, ResponseProcessingState, State, StateId, ToolCallingState } from "./state"
+import { CalculateCostState, EndpointResolverState, Execution, RequestDispatchState, RequestMappingState, ResponseProcessingState, State, StateId, ToolCallingState } from "./state"
 import { Endpoint } from "@core/endpoint/endpoint"
 
 
@@ -18,9 +18,9 @@ export class RuntimeEngine {
         this.states.set(StateId.ENDPOINT_RESOLVER, new EndpointResolverState())
         this.states.set(StateId.REQUEST_MAPPING, new RequestMappingState())
         this.states.set(StateId.REQUEST_DISPATCH, new RequestDispatchState())
-        this.states.set(StateId.DECISION, new DecisionState())
-        this.states.set(StateId.TOOL_CALLING, new ToolCallingState())
+        this.states.set(StateId.CALCULATE_COST, new CalculateCostState())
         this.states.set(StateId.RESPONSE_PROCESSING, new ResponseProcessingState())
+        this.states.set(StateId.TOOL_CALLING, new ToolCallingState())
     }
 
     public async run(execution: Execution, context: RuntimeContext): Promise<void> {

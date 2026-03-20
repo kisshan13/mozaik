@@ -159,22 +159,6 @@ export class CalculateCostState implements State {
     }
 }
 
-export class DecisionState implements State {
-    async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
-
-
-        const providerResponse = context.providerResponse
-
-        if (!providerResponse) {
-            throw new Error("Provider response not found")
-        }
-
-
-
-        return new GoTo(StateId.RESPONSE_PROCESSING)
-    }
-}
-
 export class ToolCallingState implements State {
     async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
 
