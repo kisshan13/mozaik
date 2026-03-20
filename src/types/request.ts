@@ -8,14 +8,8 @@ export type MozaikRequest = {
 	messages?: Message[]
 	task?: string
 	structuredOutput?: ZodObject<any>
-	tools?: Tool[],
+	tools?: Tool[]
 	reasoningEffort?: ReasoningEffort
 }
 
-export enum ReasoningEffort {
-	NONE = "none",
-	LOW = "low",
-	MEDIUM = "medium",
-	HIGH = "high",
-	MAX = "max",
-}
+export type ReasoningEffort = "none" | "low" | "medium" | "high" | "max"
