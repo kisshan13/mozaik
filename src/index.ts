@@ -7,8 +7,8 @@ import { Message } from "@/types/message"
 import { Model } from "@/types/model"
 import { Tool } from "@/types/tool"
 import { MozaikResponse } from "@/types/response"
-import { MozaikRequest } from "@/types/request"
-import { ReasoningEffort } from "@/types/request"
+import { InferenceSpecification } from "@/types/inference-specification"
+import { ReasoningEffort } from "@/types/inference-specification"
 
 export {
 	Model,
@@ -19,7 +19,7 @@ export {
 	WorkUnit,
 	PlanningAgent,
 	MozaikAgent,
-	MozaikRequest,
+	InferenceSpecification,
 	MozaikResponse,
 	ReasoningEffort,
 }

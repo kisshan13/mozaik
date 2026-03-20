@@ -1,4 +1,4 @@
-import { Plan, PlanNode } from "@/types/plan"
+import { Plan, PlanNode } from "@core/workflow/plan"
 import { Workflow } from "./workflow"
 import { WorkUnit } from "./work-unit"
 import { Task } from "./task"

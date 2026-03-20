@@ -1,6 +1,6 @@
 import z from "zod"
 import { ANTHROPIC_MODELS, OPENAI_MODELS } from "@/types/model"
-import { PlanNode } from "@/types/plan"
+import { PlanNode } from "@core/workflow/plan"
 
 const ModelSchema = z.enum([...OPENAI_MODELS, ...ANTHROPIC_MODELS])
 

@@ -1,4 +1,4 @@
-import { Plan } from "@/types/plan"
+import { Plan } from "@core/workflow/plan"
 import { Workflow } from "@core/workflow/workflow"
 import { MozaikAgent } from "../agent"
 import { InferenceSpecification } from "@/types/inference-specification"
