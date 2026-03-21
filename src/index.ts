@@ -6,9 +6,9 @@ import { MozaikAgent } from "@/domain/agent"
 import { Message } from "@/domain/types/message"
 import { Model } from "@/domain/types/model"
 import { Tool } from "@/domain/types/tool"
-import { MozaikResponse } from "@/domain/types/response"
-import { InferenceSpecification } from "@/domain/types/inference-specification"
-import { ReasoningEffort } from "@/domain/types/inference-specification"
+import { InferenceResponse } from "@/domain/types/response"
+import { InferenceRequest } from "@/domain/inference/inference-request"
+import { ReasoningEffort } from "@/domain/inference/inference-request"
 
 export {
 	Model,
@@ -19,7 +19,7 @@ export {
 	WorkUnit,
 	PlanningAgent,
 	MozaikAgent,
-	InferenceSpecification,
-	MozaikResponse,
+	InferenceRequest,
+	InferenceResponse,
 	ReasoningEffort,
 }

@@ -1,4 +1,4 @@
-import { MozaikResponse } from "../response"
+import { InferenceResponse } from "../../../domain/inference/response"
 
 export abstract class ResponseHandler {
 	abstract nextHandler: ResponseHandler
@@ -8,5 +8,5 @@ export abstract class ResponseHandler {
 		return this.nextHandler
 	}
 
-	abstract handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse>
+	abstract handle(inferenceResponse: InferenceResponse): Promise<InferenceResponse>
 }

@@ -1,21 +1,21 @@
-import { UsageEntry } from "../../domain/usage-entry"
+import { UsageEntry } from "../usage-entry"
 
-export class MozaikResponse {
+export class InferenceResponse {
 	providerResponse: any
 	responseData?: any
 	usageEntries: UsageEntry[] = []
 
-	setProviderResponse(providerResponse: any): MozaikResponse {
+	setProviderResponse(providerResponse: any): InferenceResponse {
 		this.providerResponse = providerResponse
 		return this
 	}
 
-	addUsageEntry(usageEntry: UsageEntry): MozaikResponse {
+	addUsageEntry(usageEntry: UsageEntry): InferenceResponse {
 		this.usageEntries.push(usageEntry)
 		return this
 	}
 
-	setResponseData(response: any): MozaikResponse {
+	setResponseData(response: any): InferenceResponse {
 		this.responseData = response
 		return this
 	}

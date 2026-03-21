@@ -7,8 +7,8 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
-import { InferenceSpecification } from "@/domain/types/inference-specification"
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceRequest } from "@/domain/inference/inference-request"
+import { InferenceResponse } from "@/domain/inference/response"
 import { UsageHandler } from "./response-handler/usage"
 
 export class OpenAIResponses extends Endpoint {
@@ -18,20 +18,20 @@ export class OpenAIResponses extends Endpoint {
 		super()
 	}
 
-	async sendRequest(inferenceSpecification: InferenceSpecification): Promise<any> {
+	async sendRequest(inferenceRequest: InferenceRequest): Promise<any> {
 		try {
-			const request = this.buildRequest(inferenceSpecification)
+			const request = this.buildRequest(inferenceRequest)
 			const client = OpenAIClientResolver.resolve(request)
 			const response = await client.send(request)
 
-			const mozaikResponse = new MozaikResponse()
-			mozaikResponse.setProviderResponse(response)
+			const inferenceResponse = new InferenceResponse()
+			inferenceResponse.setProviderResponse(response)
 
 			// response handler (chain of responsibilities)
 			const usageHandler: ResponseHandler = new UsageHandler()
 			const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(
 				request,
-				inferenceSpecification.tools ? inferenceSpecification.tools : [],
+				inferenceRequest.tools ? inferenceRequest.tools : [],
 			)
 			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
 			const outputTextHandler: ResponseHandler = new OutputTextHandler()
@@ -45,7 +45,7 @@ export class OpenAIResponses extends Endpoint {
 
 			const responseHandler = usageHandler
 
-			const result: MozaikResponse = await responseHandler.handle(mozaikResponse)
+			const result: InferenceResponse = await responseHandler.handle(inferenceResponse)
 
 			return result.getResponse()
 		} catch (error) {

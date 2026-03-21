@@ -6,27 +6,27 @@ import { ResponseHandler } from "@/app/core/endpoint/response-handler"
 import { ParsedOutputHandler } from "./response-handler/parsed-output"
 import { ContentHandler } from "./response-handler/content"
 import { ToolUseHandler } from "./response-handler/tool-use"
-import { InferenceSpecification } from "@/domain/types/inference-specification"
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceRequest } from "@/domain/inference/inference-request"
+import { InferenceResponse } from "@/domain/inference/response"
 import { UsageHandler } from "./response-handler/usage"
 import { UnhandledResponseHandler } from "./response-handler/undhandled"
 
 export class AnthropicEndpoint extends Endpoint {
 	requestBuilder: RequestBuilder = new AnthropicRequestBuilder()
 
-	async sendRequest(inferenceSpecification: InferenceSpecification): Promise<any> {
-		const providerRequest = this.buildRequest(inferenceSpecification)
+	async sendRequest(inferenceRequest: InferenceRequest): Promise<any> {
+		const providerRequest = this.buildRequest(inferenceRequest)
 		const client = AnthropicClientResolver.resolve(providerRequest)
 		const response = await client.send(providerRequest)
 
-		const mozaikResponse = new MozaikResponse()
-		mozaikResponse.setProviderResponse(response)
+		const inferenceResponse = new InferenceResponse()
+		inferenceResponse.setProviderResponse(response)
 
 		// response handler (chain of responsibilities)
 		const usageHandler: ResponseHandler = new UsageHandler()
 		const toolUseHandler: ResponseHandler = new ToolUseHandler(
 			providerRequest,
-			inferenceSpecification.tools ? inferenceSpecification.tools : [],
+			inferenceRequest.tools ? inferenceRequest.tools : [],
 		)
 		const parsedOutputHandler: ResponseHandler = new ParsedOutputHandler()
 		const contentHandler: ResponseHandler = new ContentHandler()
@@ -40,7 +40,7 @@ export class AnthropicEndpoint extends Endpoint {
 
 		const responseHandler = usageHandler
 
-		const result = await responseHandler.handle(mozaikResponse)
+		const result = await responseHandler.handle(inferenceResponse)
 
 		return result.getResponse()
 	}

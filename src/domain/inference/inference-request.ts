@@ -1,9 +1,9 @@
 import { ZodObject } from "zod"
-import { Message } from "./message"
-import { Model } from "./model"
-import { Tool } from "./tool"
+import { Message } from "../types/message"
+import { Model } from "../types/model"
+import { Tool } from "../types/tool"
 
-export type InferenceSpecification = {
+export type InferenceRequest = {
 	model: Model
 	messages?: Message[]
 	task?: string

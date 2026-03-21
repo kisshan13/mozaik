@@ -1,13 +1,13 @@
 type UsageEntry = {
-    inputTokens: number
+	inputTokens: number
 	outputTokens: number
 	model: string
 }
 
-export type MozaikResponse = {
-    data: any,
-    usage: {
-        entries: UsageEntry[]
-        totalUsdCost: number
-    }
+export type InferenceResponse = {
+	data: any
+	usage: {
+		entries: UsageEntry[]
+		totalUsdCost: number
+	}
 }

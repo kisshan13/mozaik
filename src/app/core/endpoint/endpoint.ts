@@ -1,18 +1,18 @@
 import { RequestBuilder } from "./request-builder"
-import { CapabilityHandler } from "../request-handler/capability"
-import { MessagesHandler } from "../request-handler/messages"
-import { TaskHandler } from "../request-handler/task"
-import { ModelHandler } from "../request-handler/model"
-import { StructuredOutputlHandler } from "../request-handler/structured-output"
-import { InferenceSpecification } from "@/domain/types/inference-specification"
-import { ToolsHandler } from "../request-handler/tools"
+import { CapabilityHandler } from "../../../domain/request-handler/capability"
+import { MessagesHandler } from "../../../domain/request-handler/messages"
+import { TaskHandler } from "../../../domain/request-handler/task"
+import { ModelHandler } from "../../../domain/request-handler/model"
+import { StructuredOutputlHandler } from "../../../domain/request-handler/structured-output"
+import { InferenceRequest } from "@/domain/inference/inference-request"
+import { ToolsHandler } from "../../../domain/request-handler/tools"
 
 export abstract class Endpoint {
 	abstract requestBuilder: RequestBuilder
-	inferenceSpecification: InferenceSpecification | null = null
+	inferenceRequest: InferenceRequest | null = null
 
-	buildRequest(inferenceSpecification: InferenceSpecification): any {
-		this.inferenceSpecification = inferenceSpecification
+	buildRequest(inferenceRequest: InferenceRequest): any {
+		this.inferenceRequest = inferenceRequest
 
 		this.requestBuilder.initialize()
 
@@ -28,10 +28,10 @@ export abstract class Endpoint {
 			.setNextHandler(structuredOutputHandler)
 			.setNextHandler(toolsHandler)
 
-		messagesHandler.handle(inferenceSpecification, this.requestBuilder)
+		messagesHandler.handle(inferenceRequest, this.requestBuilder)
 
 		return this.requestBuilder.build()
 	}
 
-	abstract sendRequest(inferenceSpecification: InferenceSpecification): any
+	abstract sendRequest(inferenceRequest: InferenceRequest): any
 }

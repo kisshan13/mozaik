@@ -1,16 +1,16 @@
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceResponse } from "@/domain/inference/response"
 import { ResponseHandler } from "@/app/core/endpoint/response-handler"
 
 export class ParsedOutputHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
-		const providerResponse = mozaikResponse.providerResponse
+	async handle(inferenceResponse: InferenceResponse): Promise<InferenceResponse> {
+		const providerResponse = inferenceResponse.providerResponse
 		if (providerResponse.parsed_output) {
-			mozaikResponse.setResponseData(providerResponse.parsed_output)
-			return mozaikResponse
+			inferenceResponse.setResponseData(providerResponse.parsed_output)
+			return inferenceResponse
 		}
 
-		return await this.nextHandler.handle(mozaikResponse)
+		return await this.nextHandler.handle(inferenceResponse)
 	}
 }

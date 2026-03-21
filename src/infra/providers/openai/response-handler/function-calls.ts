@@ -1,7 +1,7 @@
 import { ResponseHandler } from "@/app/core/endpoint/response-handler"
 import { OpenAIDefaultClient } from "../client/default"
 import { Tool } from "@/domain/types/tool"
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceResponse } from "@/domain/inference/response"
 import { UsageEntry } from "@/domain/usage-entry"
 import { OpenAIModelPricing } from "@/infra/providers/openai/model-pricing"
 
@@ -86,8 +86,8 @@ export class FunctionCallsHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
-		let providerResponse = mozaikResponse.providerResponse
+	async handle(inferenceResponse: InferenceResponse): Promise<InferenceResponse> {
+		let providerResponse = inferenceResponse.providerResponse
 		let toolCallingResponse: any
 		while (this.hasToolCalls(providerResponse)) {
 			const toolCalls = this.extractToolCalls(providerResponse)
@@ -109,12 +109,12 @@ export class FunctionCallsHandler extends ResponseHandler {
 				usage.input_token_details?.cached_tokens ?? 0,
 			)
 
-			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, providerResponse.model))
-			mozaikResponse.setProviderResponse(toolCallingResponse)
-			mozaikResponse.setResponseData(toolCallingResponse)
+			inferenceResponse.addUsageEntry(new UsageEntry(totalCost, providerResponse.model))
+			inferenceResponse.setProviderResponse(toolCallingResponse)
+			inferenceResponse.setResponseData(toolCallingResponse)
 			providerResponse = toolCallingResponse
 		}
 
-		return await this.nextHandler.handle(mozaikResponse)
+		return await this.nextHandler.handle(inferenceResponse)
 	}
 }

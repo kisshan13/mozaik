@@ -2,7 +2,7 @@ import { Tool } from "@/domain/types/tool"
 import Anthropic from "@anthropic-ai/sdk"
 import { ResponseHandler } from "@/app/core/endpoint/response-handler"
 import { AnthropicDefaultClient } from "../client/default"
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceResponse } from "@/domain/inference/response"
 import { UsageEntry } from "@/domain/usage-entry"
 import { AnthropicModelPricing } from "../model-pricing"
 
@@ -53,8 +53,8 @@ export class ToolUseHandler extends ResponseHandler {
 		return results
 	}
 
-	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
-		let providerResponse = mozaikResponse.providerResponse
+	async handle(inferenceResponse: InferenceResponse): Promise<InferenceResponse> {
+		let providerResponse = inferenceResponse.providerResponse
 
 		while (providerResponse.stop_reason === "tool_use") {
 			const toolUseBlocks = providerResponse.content.filter(
@@ -86,11 +86,11 @@ export class ToolUseHandler extends ResponseHandler {
 				usage.output_tokens,
 			)
 
-			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, toolCallingResponse.model.name))
-			mozaikResponse.setProviderResponse(toolCallingResponse)
+			inferenceResponse.addUsageEntry(new UsageEntry(totalCost, toolCallingResponse.model.name))
+			inferenceResponse.setProviderResponse(toolCallingResponse)
 			providerResponse = toolCallingResponse
 		}
 
-		return await this.nextHandler.handle(mozaikResponse)
+		return await this.nextHandler.handle(inferenceResponse)
 	}
 }

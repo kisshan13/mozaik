@@ -4,7 +4,7 @@ import { OpenAIResponsesMapper } from "./mapper"
 import { zodTextFormat } from "openai/helpers/zod"
 import { ZodObject } from "zod"
 import { Tool } from "@/domain/types/tool"
-import { ReasoningEffort } from "@/domain/types/inference-specification"
+import { ReasoningEffort } from "@/domain/inference/inference-request"
 
 export class OpenAIResponsesBuilder extends RequestBuilder {
 	constructor(private mapper = new OpenAIResponsesMapper()) {

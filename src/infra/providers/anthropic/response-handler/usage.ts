@@ -1,4 +1,4 @@
-import { MozaikResponse } from "@/app/core/response"
+import { InferenceResponse } from "@/domain/inference/response"
 import { ResponseHandler } from "@/app/core/endpoint/response-handler"
 import { UsageEntry } from "@/domain/usage-entry"
 import { AnthropicModelPricing } from "../model-pricing"
@@ -6,8 +6,8 @@ import { AnthropicModelPricing } from "../model-pricing"
 export class UsageHandler extends ResponseHandler {
 	nextHandler!: ResponseHandler
 
-	async handle(mozaikResponse: MozaikResponse): Promise<MozaikResponse> {
-		const providerResponse = mozaikResponse.providerResponse
+	async handle(inferenceResponse: InferenceResponse): Promise<InferenceResponse> {
+		const providerResponse = inferenceResponse.providerResponse
 		const usage = providerResponse.usage
 
 		const anthropicModelPricing = new AnthropicModelPricing()
@@ -17,8 +17,8 @@ export class UsageHandler extends ResponseHandler {
 			usage.output_tokens,
 		)
 		if (usage) {
-			mozaikResponse.addUsageEntry(new UsageEntry(totalCost, providerResponse.model))
+			inferenceResponse.addUsageEntry(new UsageEntry(totalCost, providerResponse.model))
 		}
-		return await this.nextHandler.handle(mozaikResponse)
+		return await this.nextHandler.handle(inferenceResponse)
 	}
 }
