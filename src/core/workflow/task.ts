@@ -1,4 +1,4 @@
-import { Model, MozaikRequest, MozaikAgent } from "@/index"
+import { Model, MozaikAgent, InferenceSpecification } from "@/index"
 import { WorkUnit } from "@core/workflow/work-unit"
 import { ExecutionHook } from "./hooks/execution-hook"
 import { DEFAULT_CLUSTER_HOOK } from "./hooks"
@@ -22,7 +22,7 @@ export class Task extends WorkUnit {
 	async execute(hook: ExecutionHook = DEFAULT_CLUSTER_HOOK): Promise<any> {
 		hook.beforeTask(this)
 
-		const request: MozaikRequest = {
+		const request: InferenceSpecification = {
 			model: this.model,
 			task: this.task,
 		}
