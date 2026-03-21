@@ -2,10 +2,9 @@ import { DefaultEndpointResolver } from "@providers/endpoint-resolver"
 import { RuntimeContext } from "."
 
 export enum StateId {
-	ENDPOINT_RESOLVER,
 	REQUEST_MAPPING,
 	REQUEST_DISPATCH,
-	CALCULATE_COST,
+	COST_CALCULATION,
 	DECISION,
 	TOOL_CALLING,
 	RESPONSE_PROCESSING,
@@ -38,9 +37,9 @@ export class Execution {
 
 	constructor(executionId: string) {
 		this.executionId = executionId
-		this.currentState = StateId.ENDPOINT_RESOLVER
 		this.previousState = null
 		this.status = ExecutionStatus.RUNNING
+		this.currentState = StateId.REQUEST_MAPPING
 		this.stepCount = 0
 		this.retryCounts = new Map<StateId, number>()
 		this.history = []
@@ -103,25 +102,14 @@ export interface State {
 	run(execution: Execution, context: RuntimeContext): Promise<Transition>
 }
 
-export class EndpointResolverState implements State {
+export abstract class RequestMappingState implements State {
+
+    abstract mapRequest(execution: Execution, context: RuntimeContext): Promise<any>
+
 	async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
-		const endpoint = new DefaultEndpointResolver().resolve(context.inferenceSpecification.model)
-		context.endpoint = endpoint
 		execution.currentState = StateId.REQUEST_MAPPING
-		return new GoTo(StateId.REQUEST_MAPPING)
-	}
-}
-
-export class RequestMappingState implements State {
-	async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
-		const endpoint = context.endpoint
-
-		if (!endpoint) {
-			throw new Error("Endpoint not found")
-		}
-
-		const providerRequest = endpoint.buildRequest(context.inferenceSpecification)
-		context.providerRequest = providerRequest
+        const providerRequest = await this.mapRequest(execution, context)
+        context.providerRequest = providerRequest
 
 		return new GoTo(StateId.REQUEST_DISPATCH)
 	}
@@ -129,25 +117,24 @@ export class RequestMappingState implements State {
 
 export class RequestDispatchState implements State {
 	async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
+        execution.currentState = StateId.REQUEST_DISPATCH
 		const providerRequest = context.providerRequest
-		const endpoint = context.endpoint
 
 		if (!providerRequest) {
 			throw new Error("Provider request not found")
 		}
 
-		if (!endpoint) {
-			throw new Error("Endpoint not found")
-		}
+        const endpointResolver = new DefaultEndpointResolver()
+        const endpoint = endpointResolver.resolve(context.inferenceSpecification.model)
 
 		const providerResponse = await endpoint.sendRequest(providerRequest)
 		context.providerResponse = providerResponse
 
-		return new GoTo(StateId.CALCULATE_COST)
+		return new GoTo(StateId.COST_CALCULATION)
 	}
 }
 
-export class CalculateCostState implements State {
+export class CostCalculationState implements State {
 	async run(execution: Execution, context: RuntimeContext): Promise<Transition> {
 		return new GoTo(StateId.DECISION)
 	}

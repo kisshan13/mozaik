@@ -1,6 +1,6 @@
 import { InferenceSpecification } from "@/types/inference-specification"
 import {
-	CalculateCostState,
+	CostCalculationState,
 	EndpointResolverState,
 	Execution,
 	RequestDispatchState,
@@ -23,10 +23,9 @@ export class RuntimeEngine {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor() {
-		this.states.set(StateId.ENDPOINT_RESOLVER, new EndpointResolverState())
 		this.states.set(StateId.REQUEST_MAPPING, new RequestMappingState())
 		this.states.set(StateId.REQUEST_DISPATCH, new RequestDispatchState())
-		this.states.set(StateId.CALCULATE_COST, new CalculateCostState())
+		this.states.set(StateId.COST_CALCULATION, new CostCalculationState())
 		this.states.set(StateId.RESPONSE_PROCESSING, new ResponseProcessingState())
 		this.states.set(StateId.TOOL_CALLING, new ToolCallingState())
 	}
