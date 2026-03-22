@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 
 export type ReasoningEffort = "none" | "low" | "medium" | "high" | "max"
 
-type InferenceIteration = {
+type Inference = {
 	model: Model
 	contextSummary: string
 	contextWindow: ContextWindow
@@ -13,12 +13,12 @@ type InferenceIteration = {
 	timestamp: Date
 }
 
-export class Inference {
+export class InferenceSession {
 	private sessionId: string
 	private model: Model
 	private context: Context
 	private contextWindow: ContextWindow
-	private iterations: InferenceIteration[] = []
+	private inferences: Inference[] = []
 	private reasoningEffort: ReasoningEffort
 
 	constructor(
@@ -26,14 +26,14 @@ export class Inference {
 		model: Model,
 		context: Context,
 		contextWindow: ContextWindow,
-		iterations: InferenceIteration[],
+		inferences: Inference[],
 		reasoningEffort: ReasoningEffort,
 	) {
 		this.sessionId = sessionId
 		this.model = model
 		this.context = context
 		this.contextWindow = contextWindow
-		this.iterations = iterations
+		this.inferences = inferences
 		this.reasoningEffort = reasoningEffort
 	}
 
@@ -73,18 +73,18 @@ export class Inference {
 		this.contextWindow = contextWindow
 	}
 
-	getIterations(): InferenceIteration[] {
-		return this.iterations
+	getInferences(): Inference[] {
+		return this.inferences
 	}
 
-	addIteration(iteration: InferenceIteration) {
-		this.iterations.push(iteration)
+	addInference(inference: Inference) {
+		this.inferences.push(inference)
 	}
 
 	static create(model: Model, context: Context, effort?: ReasoningEffort) {
 		const sessionId = uuidv4()
 		const reasoningEffort = effort || model.defaultReasoningEffort
 		const contextWindow = new ContextWindow(model.contextWindowCapacity, 0, 0, 0)
-		return new Inference(sessionId, model, context, contextWindow, [], reasoningEffort)
+		return new InferenceSession(sessionId, model, context, contextWindow, [], reasoningEffort)
 	}
 }
