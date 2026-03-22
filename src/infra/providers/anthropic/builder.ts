@@ -5,7 +5,7 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod"
 import { ANTHROPIC_MODEL_MAP, AnthropicModel } from "@/domain/types/model"
 import { ZodObject } from "zod"
 import { Tool } from "@/domain/types/tool"
-import { ReasoningEffort } from "@/domain/inference/inference-request"
+import { ReasoningEffort } from "@/domain/inference/context"
 
 export class AnthropicRequestBuilder extends RequestBuilder {
 	private mapper = new AnthropicMapper()

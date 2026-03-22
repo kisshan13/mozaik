@@ -7,7 +7,7 @@ import { OutputParsedHandler } from "./response-handler/output-parsed"
 import { ContentHandler } from "./response-handler/content"
 import { OutputTextHandler } from "./response-handler/output-text"
 import { FunctionCallsHandler } from "./response-handler/function-calls"
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 import { InferenceResponse } from "@/domain/inference/response"
 import { UsageHandler } from "./response-handler/usage"
 
@@ -18,9 +18,9 @@ export class OpenAIResponses extends Endpoint {
 		super()
 	}
 
-	async sendRequest(inferenceRequest: InferenceRequest): Promise<any> {
+	async sendRequest(context: Context): Promise<any> {
 		try {
-			const request = this.buildRequest(inferenceRequest)
+			const request = this.buildRequest(context)
 			const client = OpenAIClientResolver.resolve(request)
 			const response = await client.send(request)
 
@@ -31,7 +31,7 @@ export class OpenAIResponses extends Endpoint {
 			const usageHandler: ResponseHandler = new UsageHandler()
 			const functionCallsHandler: ResponseHandler = new FunctionCallsHandler(
 				request,
-				inferenceRequest.tools ? inferenceRequest.tools : [],
+				context.tools ? context.tools : [],
 			)
 			const outputParsedHandler: ResponseHandler = new OutputParsedHandler()
 			const outputTextHandler: ResponseHandler = new OutputTextHandler()

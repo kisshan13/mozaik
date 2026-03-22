@@ -1,4 +1,4 @@
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 import {
 	CostCalculationState,
 	Execution,
@@ -12,7 +12,7 @@ import {
 import { Endpoint } from "@/app/core/endpoint/endpoint"
 
 export interface RuntimeContext {
-	inferenceRequest: InferenceRequest
+	context: Context
 	endpoint: Endpoint | null
 	providerRequest: any | null
 	providerResponse: any | null

@@ -1,4 +1,4 @@
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 import { Endpoint } from "./endpoint"
 import { EndpointResolver } from "./endpoint-resolver"
 
@@ -7,8 +7,8 @@ export class RequestGateway {
 
 	constructor(readonly endpointResolver: EndpointResolver) {}
 
-	async invoke(inferenceRequest: InferenceRequest): Promise<any> {
-		this.endpoint = this.endpointResolver.resolve(inferenceRequest.model)
-		return await this.endpoint.sendRequest(inferenceRequest)
+	async invoke(context: Context): Promise<any> {
+		this.endpoint = this.endpointResolver.resolve(context.model)
+		return await this.endpoint.sendRequest(context)
 	}
 }

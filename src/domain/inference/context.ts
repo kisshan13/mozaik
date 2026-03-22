@@ -3,7 +3,7 @@ import { Message } from "../types/message"
 import { Model } from "../types/model"
 import { Tool } from "../types/tool"
 
-export type InferenceRequest = {
+export type Context = {
 	model: Model
 	messages?: Message[]
 	task?: string

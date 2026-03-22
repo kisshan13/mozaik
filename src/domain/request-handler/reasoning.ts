@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@/app/core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 
 export class ReasoningHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(inferenceRequest: InferenceRequest, builder: RequestBuilder) {
-		if (inferenceRequest.reasoningEffort) {
-			builder.addReasoningEffort(inferenceRequest.reasoningEffort)
+	apply(context: Context, builder: RequestBuilder) {
+		if (context.reasoningEffort) {
+			builder.addReasoningEffort(context.reasoningEffort)
 		}
 	}
 }

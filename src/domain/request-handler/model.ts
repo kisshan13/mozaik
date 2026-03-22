@@ -1,13 +1,13 @@
 import { RequestBuilder } from "@/app/core/endpoint/request-builder"
 import { CapabilityHandler } from "./capability"
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 
 export class ModelHandler extends CapabilityHandler {
 	nextHandler!: CapabilityHandler
 
-	apply(inferenceRequest: InferenceRequest, builder: RequestBuilder) {
-		if (inferenceRequest.model) {
-			builder.addModel(inferenceRequest.model)
+	apply(context: Context, builder: RequestBuilder) {
+		if (context.model) {
+			builder.addModel(context.model)
 		}
 	}
 }

@@ -1,5 +1,5 @@
 import { Message } from "@/domain/types/message"
-import { ReasoningEffort } from "@/domain/inference/inference-request"
+import { ReasoningEffort } from "@/domain/inference/context"
 import { Tool } from "@/domain/types/tool"
 import { ZodObject } from "zod"
 

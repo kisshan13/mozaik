@@ -1,38 +1,38 @@
 import { RequestGateway } from "@/app/core/endpoint/request-gateway"
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 import { DefaultEndpointResolver } from "@/infra/endpoint-resolver"
 import { ZodObject } from "zod"
 import { Model } from "@/domain/types/model"
 import { Message } from "@/domain/types/message"
 
 export class MozaikAgent {
-	private inferenceRequest: InferenceRequest
+	private context: Context
 	gateway: RequestGateway = new RequestGateway(new DefaultEndpointResolver())
 
-	constructor(inferenceRequest: InferenceRequest) {
-		this.inferenceRequest = inferenceRequest
+	constructor(context: Context) {
+		this.context = context
 	}
 
 	setModel(model: Model) {
-		this.inferenceRequest.model = model
+		this.context.model = model
 	}
 
 	setMessages(messages: Message[]) {
-		this.inferenceRequest.messages = messages
+		this.context.messages = messages
 	}
 
 	setTask(task: string) {
-		this.inferenceRequest.task = task
+		this.context.task = task
 	}
 
 	setStructuredOutput(schema: ZodObject<any>) {
-		this.inferenceRequest.structuredOutput = schema
+		this.context.structuredOutput = schema
 	}
 
 	async act(task?: string) {
 		if (task) {
-			this.inferenceRequest.task = task
+			this.context.task = task
 		}
-		return await this.gateway.invoke(this.inferenceRequest)
+		return await this.gateway.invoke(this.context)
 	}
 }

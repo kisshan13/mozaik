@@ -120,7 +120,7 @@ export class RequestDispatchState implements State {
 		}
 
 		const endpointResolver = new DefaultEndpointResolver()
-		const endpoint = endpointResolver.resolve(context.inferenceRequest.model)
+		const endpoint = endpointResolver.resolve(context.context.model)
 
 		const providerResponse = await endpoint.sendRequest(providerRequest)
 		context.providerResponse = providerResponse

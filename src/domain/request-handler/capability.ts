@@ -1,4 +1,4 @@
-import { InferenceRequest } from "@/domain/inference/inference-request"
+import { Context } from "@/domain/inference/context"
 import { RequestBuilder } from "../../app/core/endpoint/request-builder"
 
 export abstract class CapabilityHandler {
@@ -9,13 +9,13 @@ export abstract class CapabilityHandler {
 		return this.nextHandler
 	}
 
-	abstract apply(inferenceRequest: InferenceRequest, requestBuilder: RequestBuilder): any
+	abstract apply(context: Context, requestBuilder: RequestBuilder): any
 
-	handle(inferenceRequest: InferenceRequest, builder: RequestBuilder) {
-		this.apply(inferenceRequest, builder)
+	handle(context: Context, builder: RequestBuilder) {
+		this.apply(context, builder)
 
 		if (this.nextHandler) {
-			this.nextHandler.handle(inferenceRequest, builder)
+			this.nextHandler.handle(context, builder)
 		}
 	}
 }
