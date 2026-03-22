@@ -1,3 +1,7 @@
-export type Context = {
-	task: string
+export class Context {
+	readonly task: string
+
+	constructor(task: string) {
+		this.task = task
+	}
 }
