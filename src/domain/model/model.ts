@@ -1,7 +1,8 @@
-import { ReasoningEffort } from "./inference"
-import { Pricing } from "./pricing"
+import { Pricing } from "../inference/pricing"
 
-export class Model {
+export type ReasoningEffort = "none" | "low" | "medium" | "high" | "max"
+
+export class ModelCapabilities {
 	readonly name: string
 	readonly provider: string
 	readonly contextWindowCapacity: number
