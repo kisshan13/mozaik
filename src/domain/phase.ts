@@ -12,9 +12,9 @@ export class FocusPhase extends Phase {
 }
 
 export class InferencePhase extends Phase {
-	private inferenceProvider: InferenceProvider<Interaction>
+	private inferenceProvider: InferenceProvider
 
-	constructor(inferenceProvider: InferenceProvider<Interaction>) {
+	constructor(inferenceProvider: InferenceProvider) {
 		super()
 		this.inferenceProvider = inferenceProvider
 	}

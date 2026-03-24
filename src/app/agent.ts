@@ -1,4 +1,3 @@
-import { Interaction } from "@/domain/interaction"
 import { Interpreter } from "@/domain/interpreter"
 import { InferenceProvider } from "@/domain/model/provider"
 import { Participant } from "@/domain/participant"
@@ -7,7 +6,7 @@ import { FocusPhase, InferencePhase, IntentPhase, InteractPhase } from "@/domain
 export class Agent extends Participant {
 	interpreter: Interpreter = new Interpreter()
 
-	constructor(inferenceProvider: InferenceProvider<Interaction>) {
+	constructor(inferenceProvider: InferenceProvider) {
 		super()
 		this.interpreter.addPhase(new FocusPhase())
 		this.interpreter.addPhase(new InferencePhase(inferenceProvider))
