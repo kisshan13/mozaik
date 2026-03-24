@@ -2,19 +2,18 @@ import { Interaction } from "./interaction"
 import { Phase } from "./phase"
 
 export class Interpreter {
-    phases: Phase<Interaction, Interaction>[] = []
+	phases: Phase[] = []
 
-    addPhase(phase: Phase<Interaction, Interaction>) {
-        this.phases.push(phase)
-    }
+	addPhase(phase: Phase) {
+		this.phases.push(phase)
+	}
 
-    async run(interaction: Interaction): Promise<Interaction> {
+	async run(interaction: Interaction): Promise<Interaction> {
+		let evolvingInteraction = interaction
+		for (const phase of this.phases) {
+			evolvingInteraction = await phase.run(evolvingInteraction)
+		}
 
-        let evolvingInteraction = interaction
-        for (const phase of this.phases) {
-            evolvingInteraction = await phase.run(evolvingInteraction)
-        }
-
-        return evolvingInteraction
-    }
+		return evolvingInteraction
+	}
 }

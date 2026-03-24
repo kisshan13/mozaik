@@ -1,5 +1,5 @@
 import { Inference } from "../inference/inference"
 
-export interface LLMProvider<R> {
-	generate(request: R): Promise<Inference>
+export interface InferenceProvider<Interaction> {
+	generate(request: Interaction): Promise<Inference>
 }

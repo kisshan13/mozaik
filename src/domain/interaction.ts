@@ -1,4 +1,7 @@
+export class Interaction<T = unknown> {
+	readonly data: T
 
-export abstract class Interaction {
-
+	constructor(data: T) {
+		this.data = data
+	}
 }
