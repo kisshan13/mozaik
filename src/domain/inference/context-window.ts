@@ -1,5 +1,6 @@
 class ContextWindow {
 	constructor(
+		readonly contextId: string,
 		readonly capacity: number,
 		readonly inputTokens: number,
 		readonly reservedOutputTokens: number,

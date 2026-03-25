@@ -1,8 +1,8 @@
-import { Context } from "./context"
 import { Inference } from "./inference"
 import { ModelConfig } from "../model/config"
 import { Tool } from "./tool"
 import { v4 as uuidv4 } from "uuid"
+import { Context } from "../context"
 
 export class InferenceSession {
 	private id: string

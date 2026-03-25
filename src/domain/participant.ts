@@ -11,7 +11,7 @@ export class Participant implements Entity {
 		this.interpreter = interpreter
 	}
 
-	async perceive(interaction: Interaction): Promise<Interaction> {
+	async observe(interaction: Interaction): Promise<Interaction> {
 		return this.interpreter.interpret(interaction)
 	}
 }
