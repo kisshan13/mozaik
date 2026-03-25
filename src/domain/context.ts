@@ -1,7 +1,7 @@
 import { Interaction } from "./interaction"
 import { Participant } from "./participant"
 
-export class Space {
+export class Context {
 	participants: Participant[] = []
 
 	enter(participant: Participant) {
