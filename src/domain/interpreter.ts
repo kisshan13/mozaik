@@ -8,12 +8,10 @@ export class Interpreter {
 		this.phases.push(phase)
 	}
 
-	async run(interaction: Interaction): Promise<Interaction> {
-		let evolvingInteraction = interaction
+	async interpret(interaction: Interaction): Promise<Interaction> {
 		for (const phase of this.phases) {
-			evolvingInteraction = await phase.run(evolvingInteraction)
+			interaction = await phase.run(interaction)
 		}
-
-		return evolvingInteraction
+		return interaction
 	}
 }

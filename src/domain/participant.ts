@@ -1,10 +1,17 @@
 import { Interaction } from "./interaction"
 import { Interpreter } from "./interpreter"
+import { Entity } from "./entity"
 
-export abstract class Participant {
-	abstract interpreter: Interpreter
+export class Participant implements Entity {
+	id: string
+	interpreter: Interpreter
 
-	async interact(interaction: Interaction) {
-		return this.interpreter.run(interaction)
+	constructor(id: string, interpreter: Interpreter) {
+		this.id = id
+		this.interpreter = interpreter
+	}
+
+	async perceive(interaction: Interaction): Promise<Interaction> {
+		return this.interpreter.interpret(interaction)
 	}
 }

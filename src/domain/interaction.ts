@@ -1,7 +1,9 @@
 export class Interaction<T = unknown> {
-	readonly data: T
+	readonly type: string
+	readonly context: T
 
-	constructor(data: T) {
-		this.data = data
+	constructor(type: string, context: T) {
+		this.type = type
+		this.context = context
 	}
 }
