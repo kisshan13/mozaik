@@ -14,9 +14,6 @@ export class Environment {
 	}
 
 	absorb(interaction: Interaction): void {
-		const tool = interaction.getTool()
-		if (tool) {
-			tool.execute(interaction)
-		}
+		interaction.simulate()
 	}
 }

@@ -1,4 +1,4 @@
-import { Pricing } from "../inference/pricing"
+//import { Pricing } from "../inference/pricing"
 
 export type ReasoningEffort = "none" | "low" | "medium" | "high" | "max"
 
@@ -10,7 +10,7 @@ export class ModelCapabilities {
 	readonly knowledgeCutoffDate: string
 	readonly reasoningTokenSupport: boolean
 	readonly defaultReasoningEffort: ReasoningEffort
-	readonly pricing: Pricing
+	//readonly pricing: Pricing
 
 	constructor(
 		name: string,
@@ -20,7 +20,7 @@ export class ModelCapabilities {
 		knowledgeCutoffDate: string,
 		reasoningTokenSupport: boolean,
 		defaultReasoningEffort: ReasoningEffort,
-		pricing: Pricing,
+		//pricing: Pricing,
 	) {
 		this.name = name
 		this.provider = provider
@@ -29,6 +29,6 @@ export class ModelCapabilities {
 		this.knowledgeCutoffDate = knowledgeCutoffDate
 		this.reasoningTokenSupport = reasoningTokenSupport
 		this.defaultReasoningEffort = defaultReasoningEffort
-		this.pricing = pricing
+		//this.pricing = pricing
 	}
 }
