@@ -16,7 +16,7 @@ export class Context {
 		this.episodes = episodes
 	}
 
-	submit(initiator: Participant, interaction: Interaction): void {
+	submit(initiator: Participant, interaction: Interaction, context: Context): void {
 		// validate participants belong to context
 		this.recordEpisode(initiator, interaction)
 
@@ -28,7 +28,7 @@ export class Context {
 		}
 
 		this.environment.absorb(interaction)
-		this.engageParticipants(interaction)
+		this.engageParticipants(interaction, context)
 	}
 
 	private recordEpisode(initiator: Participant, interaction: Interaction): void {
@@ -43,9 +43,9 @@ export class Context {
 		this.episodes.push(episode)
 	}
 
-	private engageParticipants(interaction: Interaction): void {
+	private engageParticipants(interaction: Interaction, context: Context): void {
 		for (const participant of this.participants) {
-			participant.observe(interaction)
+			participant.observe(interaction, context)
 		}
 	}
 }

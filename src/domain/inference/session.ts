@@ -1,7 +1,6 @@
 import { Inference } from "./inference"
 import { ModelConfig } from "../model/config"
 import { Tool } from "./tool"
-import { v4 as uuidv4 } from "uuid"
 import { Context } from "../context"
 
 export class InferenceSession {
@@ -62,7 +61,7 @@ export class InferenceSession {
 	}
 
 	static create(modelConfig: ModelConfig<unknown>, tools: Tool[], context: Context) {
-		const sessionId = uuidv4()
+		const sessionId = crypto.randomUUID()
 		const evolution: Inference[] = []
 		return new InferenceSession(sessionId, modelConfig, tools, context, evolution)
 	}
