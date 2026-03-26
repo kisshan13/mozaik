@@ -22,7 +22,7 @@ export class InferencePhase extends Phase {
 
 	async run(interaction: Interaction): Promise<Interaction> {
 		const inference = await this.inferenceProvider.generate(interaction)
-		return new Interaction("inference", inference)
+		return new Interaction("inference", interaction.getParticipants(), inference)
 	}
 }
 

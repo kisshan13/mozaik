@@ -1,4 +1,5 @@
 import { Context } from "./context"
+import { Interaction } from "./interaction"
 import { Participant } from "./participant"
 
 export class Environment {
@@ -10,5 +11,12 @@ export class Environment {
 
 	createContext(participants: Set<Participant>): Context {
 		return new Context(this, participants, [])
+	}
+
+	absorb(interaction: Interaction): void {
+		const tool = interaction.getTool()
+		if (tool) {
+			tool.execute(interaction)
+		}
 	}
 }

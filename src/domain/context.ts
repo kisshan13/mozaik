@@ -27,6 +27,7 @@ export class Context {
 			}
 		}
 
+		this.environment.absorb(interaction)
 		this.engageParticipants(interaction)
 	}
 
