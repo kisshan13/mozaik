@@ -1,5 +1,5 @@
-import { Context } from "./context"
-import { Interaction } from "./interaction"
+import { Context } from "../hypervisor/context"
+import { Interaction } from "../hypervisor/interaction"
 
 export interface ContextEngineeringStrategy {
     execute(

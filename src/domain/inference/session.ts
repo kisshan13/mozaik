@@ -1,7 +1,7 @@
 import { Inference } from "./inference"
-import { ModelConfig } from "../model/config"
+import { ModelConfig } from "./model/config"
 import { Tool } from "./tool"
-import { Context } from "../context"
+import { Context } from "../hypervisor/context"
 
 export class InferenceSession {
 	private id: string

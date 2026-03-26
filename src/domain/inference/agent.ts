@@ -1,24 +1,23 @@
-import { Context } from "./context"
+import { Context } from "../hypervisor/context"
 import { ContextEngineeringStrategy } from "./context-engineering-strategy"
-import { Interaction } from "./interaction"
-import { Participant } from "./participant"
+import { Interaction } from "../hypervisor/interaction"
 
 export interface LlmGateway {
     generate(input: unknown): Promise<unknown>
 }
 
-export abstract class Agent extends Participant {
+export abstract class Agent {
 
+    id: string
     contextEngineeringStrategy: ContextEngineeringStrategy
 
-
     constructor(id: string, contextEngineeringStrategy: ContextEngineeringStrategy) {
-        super(id)
+        this.id = id
         this.contextEngineeringStrategy = contextEngineeringStrategy
     }
 
-	async observe(interaction: Interaction, context: Context): Promise<unknown> {
-        return this.contextEngineeringStrategy.execute(interaction, context)
+	observe(interaction: Interaction, context: Context): void {
+        this.contextEngineeringStrategy.execute(interaction, context)
 	}
 
 }

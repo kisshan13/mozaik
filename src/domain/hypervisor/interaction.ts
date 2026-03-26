@@ -1,4 +1,4 @@
-import { Tool } from "./inference/tool"
+import { Tool } from "../inference/tool"
 import { Participant } from "./participant"
     
 type ParticipantId = string
