@@ -1,23 +1,27 @@
 import { Context } from "../hypervisor/context"
 import { ContextEngineeringStrategy } from "./context-engineering-strategy"
 import { Interaction } from "../hypervisor/interaction"
+import { Participant } from "../hypervisor/participant"
+import { Interpreter } from "../hypervisor/interpreter"
 
 export interface LlmGateway {
-    generate(input: unknown): Promise<unknown>
+	generate(input: unknown): Promise<unknown>
 }
 
-export abstract class Agent {
+class AgentInterpreter implements Interpreter {
+	private contextEngineeringStrategy: ContextEngineeringStrategy
 
-    id: string
-    contextEngineeringStrategy: ContextEngineeringStrategy
-
-    constructor(id: string, contextEngineeringStrategy: ContextEngineeringStrategy) {
-        this.id = id
-        this.contextEngineeringStrategy = contextEngineeringStrategy
-    }
-
-	observe(interaction: Interaction, context: Context): void {
-        this.contextEngineeringStrategy.execute(interaction, context)
+	constructor(contextEngineeringStrategy: ContextEngineeringStrategy) {
+		this.contextEngineeringStrategy = contextEngineeringStrategy
 	}
 
+	interpret(interaction: Interaction, context: Context): void {
+		this.contextEngineeringStrategy.execute(interaction, context)
+	}
+}
+
+export class Agent extends Participant {
+	constructor(id: string, contextEngineeringStrategy: ContextEngineeringStrategy) {
+		super(id, new AgentInterpreter(contextEngineeringStrategy))
+	}
 }
