@@ -1,4 +1,4 @@
-export class Pricing {
+export class ModelPricing {
 	constructor(
 		private inputPricePer1MToken: number,
 		private outputPricePer1MToken: number,

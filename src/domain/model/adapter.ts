@@ -1,6 +1,6 @@
-import { InferenceResult } from "../inference-result"
+import { InferenceResult } from "../agent/inference-result"
 import { ModelRequestMapper } from "./request-mapper"
-import { InferenceSession } from "../agent"
+import { InferenceSession } from "../agent/session"
 import { ModelGateway } from "./gateway"
 
 export class ModelAdapter {
