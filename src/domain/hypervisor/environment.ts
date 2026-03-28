@@ -1,8 +1,8 @@
 import { Interaction } from "./interaction"
 import { Participant } from "./participant"
-import { Interpreter } from "./interpreter"
 import { Interpretation } from "./interpretation"
 import { Episode } from "./episode"
+import { Tool } from "./tool"
 
 export class Environment {
 	readonly id: string
@@ -15,10 +15,10 @@ export class Environment {
 		this.episodes = []
 	}
 
-	async absorb(initiator: Participant, interaction: Interaction<unknown>, interpreter: Interpreter): Promise<void> {
-		const interpretation: Interpretation<unknown> = await interpreter.execute(interaction)
-		this.recordEpisode(initiator, interaction, interpretation)
+	async absorb(interaction: Interaction<unknown>, tool: Tool): Promise<void> {
 		this.engageParticipants(interaction)
+		const interpretation = await interaction.simulate(tool)
+		this.recordEpisode(interaction, interpretation)
 	}
 
 	addParticipant(participant: Participant): void {
@@ -35,17 +35,10 @@ export class Environment {
 		}
 	}
 
-	private recordEpisode(
-		initiator: Participant,
-		interaction: Interaction<unknown>,
-		interpretation: Interpretation<unknown>,
-	): void {
-		// record episode in context
-
+	private recordEpisode(interaction: Interaction<unknown>, interpretation: Interpretation<unknown>): void {
 		const episodeId = crypto.randomUUID()
 		const episode = {
 			id: episodeId,
-			initiator: initiator,
 			interaction: interaction,
 			interpretation: interpretation,
 		}
