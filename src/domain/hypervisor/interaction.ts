@@ -1,9 +1,9 @@
 import { Participant } from "./participant"
-
+import { Interpreter } from "./interpreter"
 
 type ParticipantId = string
 
-export abstract class Interaction {
+export class Interaction {
 	readonly type: string
 	readonly id: string
 	private participants: Map<ParticipantId, Participant>
@@ -18,5 +18,7 @@ export abstract class Interaction {
 		return this.participants
 	}
 
-	public abstract simulate(): void
+	public simulate(interpreter: Interpreter): void {
+		interpreter.execute(this)
+	}
 }

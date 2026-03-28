@@ -1,25 +1,20 @@
 import { Interaction } from "./interaction"
 import { Participant } from "./participant"
-import { Episode } from "./episode"
 import { Environment } from "./environment"
+import { Interpreter } from "./interpreter"
 
 export class Context {
 	readonly id: string
 	participants: Set<Participant>
 	environment: Environment
-	private episodes: Episode[]
 
-	constructor(environment: Environment, participants: Set<Participant>, episodes: Episode[]) {
+	constructor(environment: Environment, participants: Set<Participant>) {
 		this.id = crypto.randomUUID()
 		this.participants = participants
 		this.environment = environment
-		this.episodes = episodes
 	}
 
-	submit(initiator: Participant, interaction: Interaction): void {
-		// validate participants belong to context
-		this.recordEpisode(initiator, interaction)
-
+	submit(initiator: Participant, interaction: Interaction, interpreter: Interpreter): void {
 		const participants = interaction.getParticipants()
 		for (const participant of participants.values()) {
 			if (!this.participants.has(participant)) {
@@ -27,20 +22,8 @@ export class Context {
 			}
 		}
 
-		this.environment.absorb(interaction)
+		this.environment.absorb(initiator, interaction, interpreter)
 		this.engageParticipants(interaction, this)
-	}
-
-	private recordEpisode(initiator: Participant, interaction: Interaction): void {
-		// record episode in context
-
-		const episodeId = crypto.randomUUID()
-		const episode = {
-			id: episodeId,
-			initiator: initiator,
-			interaction: interaction,
-		}
-		this.episodes.push(episode)
 	}
 
 	private engageParticipants(interaction: Interaction, context: Context): void {
