@@ -1,5 +1,5 @@
 import { Interaction } from "../hypervisor/interaction"
 
 export interface RequestAdapter<R> {
-	map(interaction: Interaction): R
+	map(interaction: Interaction<unknown>): R
 }

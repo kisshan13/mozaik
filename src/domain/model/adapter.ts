@@ -8,7 +8,7 @@ export class Inference {
 		private readonly requestAdapter: RequestAdapter<unknown>,
 	) {}
 
-	async execute(interaction: Interaction): Promise<unknown> {
+	async execute(interaction: Interaction<unknown>): Promise<unknown> {
 		const modelRequest = this.requestAdapter.map(interaction)
 		const modelResponse = await this.modelGateway.generate(modelRequest)
 		return modelResponse

@@ -3,14 +3,14 @@ import { Interpreter } from "./interpreter"
 
 type ParticipantId = string
 
-export class Interaction {
-	readonly type: string
+export class Interaction<D> {
 	readonly id: string
+	readonly data: D
 	private participants: Map<ParticipantId, Participant>
 
-	constructor(type: string, participants: Map<ParticipantId, Participant>) {
+	constructor(data: D, participants: Map<ParticipantId, Participant> = new Map()) {
 		this.id = crypto.randomUUID()
-		this.type = type
+		this.data = data
 		this.participants = participants
 	}
 
