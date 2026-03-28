@@ -18,6 +18,10 @@ export class Interaction<D> {
 		return this.participants
 	}
 
+	getData(): D {
+		return this.data
+	}
+
 	public simulate(interpreter: Interpreter): void {
 		interpreter.execute(this)
 	}

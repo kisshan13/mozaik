@@ -12,6 +12,6 @@ export class Agent extends Participant {
 	}
 
 	observe(interaction: Interaction<unknown>): void {
-		this.contextEngineeringStrategy.execute(interaction)
+		this.contextEngineeringStrategy.execute(interaction.getData())
 	}
 }
