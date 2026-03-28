@@ -4,10 +4,6 @@ import { Interaction } from "../hypervisor/interaction"
 import { Participant } from "../hypervisor/participant"
 import { Interpreter } from "../hypervisor/interpreter"
 
-export interface LlmGateway {
-	generate(input: unknown): Promise<unknown>
-}
-
 class AgentInterpreter implements Interpreter {
 	private contextEngineeringStrategy: ContextEngineeringStrategy
 

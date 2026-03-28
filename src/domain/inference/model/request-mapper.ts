@@ -1,5 +1,5 @@
 import { InferenceSession } from "../session"
 
-export interface LLMRequestMapper<R> {
+export interface ModelRequestMapper<R> {
 	map(session: InferenceSession): R
 }

@@ -1,4 +1,4 @@
-import { Inference } from "./inference"
+import { InferenceResult } from "./inference-result"
 import { ModelConfig } from "./model/config"
 import { Tool } from "./tool"
 import { Context } from "../hypervisor/context"
@@ -8,20 +8,20 @@ export class InferenceSession {
 	private modelConfig: ModelConfig<unknown>
 	private tools: Tool[] = []
 	private context: Context
-	private evolution: Inference[] = []
+	private inferenceEvolution: InferenceResult<unknown>[] = []
 
 	constructor(
 		id: string,
 		modelConfig: ModelConfig<unknown>,
 		tools: Tool[],
 		context: Context,
-		evolution: Inference[],
+		inferenceEvolution: InferenceResult<unknown>[],
 	) {
 		this.id = id
 		this.modelConfig = modelConfig
 		this.tools = tools
 		this.context = context
-		this.evolution = evolution
+		this.inferenceEvolution = inferenceEvolution
 	}
 
 	getSessionId(): string {
@@ -52,17 +52,17 @@ export class InferenceSession {
 		this.tools = tools
 	}
 
-	getEvolution(): Inference[] {
-		return this.evolution
+	getInferenceEvolution(): InferenceResult<unknown>[] {
+		return this.inferenceEvolution
 	}
 
-	addInference(inference: Inference) {
-		this.evolution.push(inference)
+	addInferenceResult(inference: InferenceResult<unknown>) {
+		this.inferenceEvolution.push(inference)
 	}
 
 	static create(modelConfig: ModelConfig<unknown>, tools: Tool[], context: Context) {
 		const sessionId = crypto.randomUUID()
-		const evolution: Inference[] = []
+		const evolution: InferenceResult<unknown>[] = []
 		return new InferenceSession(sessionId, modelConfig, tools, context, evolution)
 	}
 }

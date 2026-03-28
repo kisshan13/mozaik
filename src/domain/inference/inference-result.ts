@@ -1,13 +1,13 @@
-export class Inference {
+export class InferenceResult<R> {
 	readonly contextSummary: string
 	readonly contextWindow: ContextWindow
 	readonly timestamp: Date
-	readonly response?: string
+	readonly rawResponse: R
 
-	constructor(contextSummary: string, contextWindow: ContextWindow, timestamp: Date, response?: string) {
+	constructor(contextSummary: string, contextWindow: ContextWindow, timestamp: Date, rawResponse: R) {
 		this.contextSummary = contextSummary
 		this.contextWindow = contextWindow
-		this.response = response
+		this.rawResponse = rawResponse
 		this.timestamp = timestamp
 	}
 }
