@@ -1,5 +1,5 @@
-import { InferenceSession } from "../agent/session"
+import { Interaction } from "../hypervisor/interaction"
 
 export interface ModelRequestMapper<R> {
-	map(session: InferenceSession): R
+	map(interaction: Interaction): R
 }

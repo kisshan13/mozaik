@@ -1,7 +1,6 @@
-import { InferenceResult } from "../agent/inference-result"
 import { ModelRequestMapper } from "./request-mapper"
-import { InferenceSession } from "../agent/session"
 import { ModelGateway } from "./gateway"
+import { Interaction } from "../hypervisor/interaction"
 
 export class ModelAdapter {
 	constructor(
@@ -9,14 +8,9 @@ export class ModelAdapter {
 		private readonly requestMapper: ModelRequestMapper<unknown>,
 	) {}
 
-	async generate(session: InferenceSession): Promise<InferenceSession> {
-		const modelRequest = this.requestMapper.map(session)
+	async generate(interaction: Interaction): Promise<unknown> {
+		const modelRequest = this.requestMapper.map(interaction)
 		const modelResponse = await this.modelGateway.generate(modelRequest)
-		const contextSummary = ``
-		const contextWindow = new ContextWindow(session.getContext().id, 0, 0, 0)
-		const timestamp = new Date()
-		const inferenceResult = new InferenceResult(contextSummary, contextWindow, timestamp, modelResponse)
-		session.addInferenceResult(inferenceResult)
-		return session
+		return modelResponse
 	}
 }
