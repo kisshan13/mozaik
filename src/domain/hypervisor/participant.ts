@@ -1,14 +1,19 @@
 import { Interaction } from "./interaction"
+import { Interpreter } from "./interpreter"
 import { Tool } from "./tool"
 
-export abstract class Participant {
+export class Participant {
 	readonly id: string
 	tools: Tool[]
+	interpreter: Interpreter
 
-	constructor(id: string, tools: Tool[]) {
+	constructor(id: string, tools: Tool[], interpreter: Interpreter) {
 		this.id = id
 		this.tools = tools
+		this.interpreter = interpreter
 	}
 
-	abstract observe(interaction: Interaction<unknown>): void
+	observe(interaction: Interaction<unknown>): void {
+		this.interpreter.execute(interaction)
+	}
 }
