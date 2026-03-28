@@ -16,7 +16,7 @@ export class Context {
 		this.episodes = episodes
 	}
 
-	submit(initiator: Participant, interaction: Interaction, context: Context): void {
+	submit(initiator: Participant, interaction: Interaction): void {
 		// validate participants belong to context
 		this.recordEpisode(initiator, interaction)
 
@@ -28,7 +28,7 @@ export class Context {
 		}
 
 		this.environment.absorb(interaction)
-		this.engageParticipants(interaction, context)
+		this.engageParticipants(interaction, this)
 	}
 
 	private recordEpisode(initiator: Participant, interaction: Interaction): void {

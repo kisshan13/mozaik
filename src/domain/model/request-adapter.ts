@@ -1,5 +1,5 @@
 import { Interaction } from "../hypervisor/interaction"
 
-export interface ModelRequestMapper<R> {
+export interface RequestAdapter<R> {
 	map(interaction: Interaction): R
 }

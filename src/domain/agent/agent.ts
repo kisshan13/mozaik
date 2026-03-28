@@ -1,23 +1,17 @@
 import { Context } from "../hypervisor/context"
-import { ContextEngineeringStrategy } from "./context-engineering-strategy"
 import { Interaction } from "../hypervisor/interaction"
 import { Participant } from "../hypervisor/participant"
-import { Interpreter } from "../hypervisor/interpreter"
+import { ContextEngineeringStrategy } from "./context-engineering-strategy"
 
-class AgentInterpreter implements Interpreter {
+export class Agent extends Participant {
 	private contextEngineeringStrategy: ContextEngineeringStrategy
 
-	constructor(contextEngineeringStrategy: ContextEngineeringStrategy) {
+	constructor(id: string, contextEngineeringStrategy: ContextEngineeringStrategy) {
+		super(id)
 		this.contextEngineeringStrategy = contextEngineeringStrategy
 	}
 
-	interpret(interaction: Interaction, context: Context): void {
+	observe(interaction: Interaction, context: Context): void {
 		this.contextEngineeringStrategy.execute(interaction, context)
-	}
-}
-
-export class Agent extends Participant {
-	constructor(id: string, contextEngineeringStrategy: ContextEngineeringStrategy) {
-		super(id, new AgentInterpreter(contextEngineeringStrategy))
 	}
 }
