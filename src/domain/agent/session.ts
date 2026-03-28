@@ -1,5 +1,5 @@
 import { InferenceResult } from "./inference-result"
-import { ModelConfig } from "./model/config"
+import { ModelConfig } from "../model/config"
 import { Tool } from "./tool"
 import { Context } from "../hypervisor/context"
 
