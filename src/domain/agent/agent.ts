@@ -1,7 +1,7 @@
-import { Interaction } from "../hypervisor/interaction"
-import { Observer } from "../hypervisor/observer"
-import { Actor } from "../hypervisor/actor"
-import { Tool } from "../hypervisor/tool"
+import { Interaction } from "../interaction/interaction"
+import { Observer } from "../interaction/observer"
+import { Actor } from "../interaction/actor"
+import { Tool } from "../interaction/tool"
 import { ModelAdapter } from "../model/adapter"
 
 export class Agent extends Actor implements Observer {

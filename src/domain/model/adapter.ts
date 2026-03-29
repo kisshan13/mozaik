@@ -1,4 +1,4 @@
-import { Interaction } from "../hypervisor/interaction"
+import { Interaction } from "../interaction/interaction"
 import { ModelGateway } from "./gateway"
 import { RequestAdapter } from "./request-adapter"
 

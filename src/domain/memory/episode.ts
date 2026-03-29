@@ -1,6 +1,6 @@
-import { Interaction } from "../hypervisor/interaction"
+import { Interaction } from "../interaction/interaction"
 
 export type Episode = {
 	id: string
-	interaction: Interaction<unknown>
+	interaction: Interaction
 }

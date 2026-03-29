@@ -1,6 +1,6 @@
-import { Interaction } from "../hypervisor/interaction"
+import { Interaction } from "../interaction/interaction"
 import { Episode } from "./episode"
-import { Observer } from "../hypervisor/observer"
+import { Observer } from "../interaction/observer"
 
 export class EpisodicMemory implements Observer {
 	readonly id: string
@@ -12,12 +12,12 @@ export class EpisodicMemory implements Observer {
 	}
 
 	
-	observe(interaction: Interaction<unknown>): void {
+	observe(interaction: Interaction): void {
 		this.recordEpisode(interaction)
 	}
 
 
-	private recordEpisode(interaction: Interaction<unknown>): void {
+	private recordEpisode(interaction: Interaction): void {
 		const episodeId = crypto.randomUUID()
 		const episode = {
 			id: episodeId,

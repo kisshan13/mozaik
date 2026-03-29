@@ -4,15 +4,16 @@ import { Tool } from "./tool"
 
 type ObserverId = string
 
-export class Interaction<D> {
+export class Interaction<I = unknown, O = unknown> {
 	readonly id: string
-	readonly input: D
+	readonly intent: I
 	readonly initiator: Actor
 	readonly recipients: Map<ObserverId, Observer>
+	private outcome?: O
 
-	constructor(input: D, initiator: Actor, participants: Map<ObserverId, Observer> = new Map()) {
+	constructor(intent: I, initiator: Actor, participants: Map<ObserverId, Observer> = new Map()) {
 		this.id = crypto.randomUUID()
-		this.input = input
+		this.intent = intent
 		this.initiator = initiator
 		this.recipients = participants
 	}
@@ -25,16 +26,24 @@ export class Interaction<D> {
 		return this.initiator
 	}
 
-	getInput(): D {
-		return this.input
+	getIntent(): I {
+		return this.intent
+	}
+
+	getOutcome(): O | undefined {
+		return this.outcome
+	}
+
+	isCommitted(): boolean {
+		return this.outcome !== undefined
 	}
 
 	async commit(tool: Tool){
+		const result = await tool.execute(this.intent)
+		this.outcome = result as O
 		for (const participant of this.recipients.values()) {
-			await participant.observe(this)
+			participant.observe(this)
 		}
-		
-		const data = await tool.execute(this.input)
 
 	}
 

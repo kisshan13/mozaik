@@ -10,7 +10,7 @@ export abstract class Actor {
 		this.tools = tools
 	}
 
-	interact(interaction: Interaction<unknown>, tool: Tool): Promise<unknown> {
+	interact(interaction: Interaction<unknown, unknown>, tool: Tool): Promise<unknown> {
 		return interaction.commit(tool)
 	}
 
