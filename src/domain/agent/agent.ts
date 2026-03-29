@@ -1,4 +1,4 @@
-import { Interaction } from "../runtime/tool-executor"
+import { ExecutionEvent } from "../runtime/execution-event"
 import { Listener } from "../runtime/listener"
 import { ToolCaller } from "../runtime/tool-caller"
 import { Tool } from "../runtime/tool"
@@ -13,18 +13,17 @@ export class Agent extends ToolCaller implements Listener {
 		super(id, tools)
 	}
 
-	async toolExecuted(interaction: Interaction<unknown>) {
+	async toolExecuted(event: ExecutionEvent) {
 		
 	}
 
-	async listen(interaction: Interaction<unknown>) {
+	async listen(event: ExecutionEvent) {
 
-		if (interaction.getInitiator() === this) {
-			this.toolExecuted(interaction)
+		if (event.getType() === "tool_call") {
+			this.toolExecuted(event)
 		}
 
-		
-		const modelResponse = await this.modelAdapter.adapt(interaction)
+		const modelResponse = await this.modelAdapter.adapt(event)
 		return modelResponse
 	}
 }
