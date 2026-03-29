@@ -2,7 +2,7 @@ import { ExecutionEvent } from "../runtime/execution-event"
 import { Episode } from "./episode"
 import { Listener } from "../runtime/listener"
 
-export class EpisodicMemory implements Listener {
+export class EpisodicMemoryListener implements Listener {
 	readonly id: string
 	readonly episodes: Episode[]
 

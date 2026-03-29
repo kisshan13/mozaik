@@ -14,7 +14,6 @@ export class ToolExecutor<I = unknown, O = unknown> {
 		return this.listeners
 	}
 
-
 	async executeTool(tool: Tool, args: ToolArgs){
 		const result = await tool.execute(args)
 		const toolCallEvent = new ToolCallEvent(crypto.randomUUID(), "tool_call", new Date(), {}, tool.name, tool.description, args, result)
