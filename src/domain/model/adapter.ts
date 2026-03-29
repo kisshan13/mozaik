@@ -1,14 +1,14 @@
-import { RequestAdapter } from "./request-adapter"
-import { ModelGateway } from "./gateway"
 import { Interaction } from "../hypervisor/interaction"
+import { ModelGateway } from "./gateway"
+import { RequestAdapter } from "./request-adapter"
 
-export class Inference {
+export class ModelAdapter {
 	constructor(
 		private readonly modelGateway: ModelGateway,
 		private readonly requestAdapter: RequestAdapter<unknown>,
 	) {}
 
-	async execute(interaction: Interaction<unknown>): Promise<unknown> {
+	async adapt(interaction: Interaction<unknown>): Promise<unknown> {
 		const modelRequest = this.requestAdapter.map(interaction)
 		const modelResponse = await this.modelGateway.generate(modelRequest)
 		return modelResponse
