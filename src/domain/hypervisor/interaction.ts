@@ -1,39 +1,41 @@
-import { Interpretation } from "./interpretation"
-import { Participant } from "./participant"
+import { Observer } from "./observer"
+import { Actor } from "./actor"
 import { Tool } from "./tool"
 
-type ParticipantId = string
+type ObserverId = string
 
 export class Interaction<D> {
 	readonly id: string
-	readonly data: D
-	readonly initiator: Participant
-	readonly participants: Map<ParticipantId, Participant>
+	readonly input: D
+	readonly initiator: Actor
+	readonly recipients: Map<ObserverId, Observer>
 
-	constructor(data: D, initiator: Participant, participants: Map<ParticipantId, Participant> = new Map()) {
+	constructor(input: D, initiator: Actor, participants: Map<ObserverId, Observer> = new Map()) {
 		this.id = crypto.randomUUID()
-		this.data = data
+		this.input = input
 		this.initiator = initiator
-		this.participants = participants
+		this.recipients = participants
 	}
 
-	getParticipants(): Map<ParticipantId, Participant> {
-		return this.participants
+	getParticipants(): Map<ObserverId, Observer> {
+		return this.recipients
 	}
 
-	getInitiator(): Participant {
+	getInitiator(): Actor {
 		return this.initiator
 	}
 
-	getData(): D {
-		return this.data
+	getInput(): D {
+		return this.input
 	}
 
-	public async simulate(tool: Tool): Promise<Interpretation<unknown>> {
-		const data = await tool.execute(this.data)
-		const interpretation: Interpretation<unknown> = {
-			data: data,
+	async commit(tool: Tool){
+		for (const participant of this.recipients.values()) {
+			await participant.observe(this)
 		}
-		return interpretation
+		
+		const data = await tool.execute(this.input)
+
 	}
+
 }

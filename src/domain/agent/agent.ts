@@ -1,9 +1,10 @@
 import { Interaction } from "../hypervisor/interaction"
-import { Participant } from "../hypervisor/participant"
+import { Observer } from "../hypervisor/observer"
+import { Actor } from "../hypervisor/actor"
 import { Tool } from "../hypervisor/tool"
 import { ModelAdapter } from "../model/adapter"
 
-export class Agent extends Participant {
+export class Agent extends Actor implements Observer {
 	constructor(
 		id: string,
 		tools: Tool[],
