@@ -1,6 +1,6 @@
-import { Interaction } from "../interaction/interaction"
+import { ExecutionEvent } from "../runtime/execution-event"
 
 export type Episode = {
 	id: string
-	interaction: Interaction
+	event: ExecutionEvent
 }

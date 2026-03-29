@@ -1,5 +1,5 @@
-import { Interaction } from "../interaction/interaction"
+import { ExecutionEvent } from "../runtime/execution-event"
 
 export interface RequestAdapter<R> {
-	map(interaction: Interaction<unknown>): R
+	map(event: ExecutionEvent): R
 }

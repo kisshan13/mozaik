@@ -1,8 +1,8 @@
-import { Interaction } from "../interaction/interaction"
+import { ExecutionEvent } from "../runtime/execution-event"
 import { Episode } from "./episode"
-import { Observer } from "../interaction/observer"
+import { Listener } from "../runtime/listener"
 
-export class EpisodicMemory implements Observer {
+export class EpisodicMemory implements Listener {
 	readonly id: string
 	readonly episodes: Episode[]
 
@@ -12,16 +12,15 @@ export class EpisodicMemory implements Observer {
 	}
 
 	
-	observe(interaction: Interaction): void {
-		this.recordEpisode(interaction)
+	listen(event: ExecutionEvent): void {
+		this.recordEpisode(event)
 	}
 
-
-	private recordEpisode(interaction: Interaction): void {
+	private recordEpisode(event: ExecutionEvent): void {
 		const episodeId = crypto.randomUUID()
-		const episode = {
+		const episode: Episode = {
 			id: episodeId,
-			interaction: interaction,
+			event: event,
 		}
 		this.episodes.push(episode)
 	}

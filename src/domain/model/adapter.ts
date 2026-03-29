@@ -1,4 +1,4 @@
-import { Interaction } from "../interaction/interaction"
+import { ExecutionEvent } from "../runtime/execution-event"
 import { ModelGateway } from "./gateway"
 import { RequestAdapter } from "./request-adapter"
 
@@ -8,8 +8,8 @@ export class ModelAdapter {
 		private readonly requestAdapter: RequestAdapter<unknown>,
 	) {}
 
-	async adapt(interaction: Interaction<unknown>): Promise<unknown> {
-		const modelRequest = this.requestAdapter.map(interaction)
+	async adapt(event: ExecutionEvent): Promise<unknown> {
+		const modelRequest = this.requestAdapter.map(event)
 		const modelResponse = await this.modelGateway.generate(modelRequest)
 		return modelResponse
 	}
