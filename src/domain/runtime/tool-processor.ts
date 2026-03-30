@@ -2,7 +2,7 @@ import { Listener, ListenerId } from "./listener"
 import { Tool, ToolArgs } from "./tool"
 import { ToolExecutedEvent } from "./tool-executed-event"
 
-export class ToolExecutor {
+export class ToolProcessor {
 
 	readonly listeners: Map<ListenerId, Listener>
 
@@ -24,7 +24,6 @@ export class ToolExecutor {
 		const result = await tool.execute(args)
 		const toolExecutedEvent = new ToolExecutedEvent(crypto.randomUUID(), "tool_executed", new Date(), {}, initiator, tool.name, tool.description, args, result)
 		this.notify(toolExecutedEvent)
-
 	}
 
 }

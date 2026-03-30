@@ -10,7 +10,7 @@ export type ToolArgs = Record<string, unknown>
 
 export type ToolInputSchema = Record<string, unknown>
 
-type ToolKind = "custom" | "inference"
+type ToolKind = "custom" | "inference" | "user_input"
 
 export abstract class BaseTool implements Tool {
 	constructor(
@@ -22,6 +22,16 @@ export abstract class BaseTool implements Tool {
   
 	abstract execute(args: ToolArgs): Promise<unknown>
 }
+
+type ToolCallSuggestion = {
+	name: string
+	description: string
+	args: ToolArgs
+}
+
+type InferenceResult =
+  | { suggestedNextStep: "tool_call"; data: ToolCallSuggestion }
+  | { suggestedNextStep: "respond" | "none"; data: unknown }
 
 export abstract class InferenceTool extends BaseTool {
 	readonly kind = "inference"
@@ -35,9 +45,9 @@ export abstract class InferenceTool extends BaseTool {
 	  )
 	}
   
-	async execute(args: ToolArgs): Promise<unknown> {
+	async execute(args: ToolArgs): Promise<InferenceResult> {
 	  return this.infer(args)
 	}
   
-	protected abstract infer(args: ToolArgs): Promise<unknown>
+	protected abstract infer(args: ToolArgs): Promise<InferenceResult>
 }
