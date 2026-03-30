@@ -1,23 +1,29 @@
-import { BaseEvent } from "../event/base-event"
+import { BaseEvent } from "../event/base"
 import { Listener } from "../runtime/listener"
 import { ToolCaller } from "../runtime/tool-caller"
-import { InferenceTool, Tool, ToolArgs, ToolInputProcessor } from "../runtime/tool"
-import { ToolProcessor } from "../processor/tool-processor"
+import { Tool, ToolArgs, ToolInputProcessor } from "../runtime/tool"
+import { ToolCallProcessor } from "../processor/tool-call"
+import { InferenceRequestProcessor } from "../processor/inference-request"
+import { ToolExecutedEvent } from "../event/tool-executed"
+import { InferenceEndedEvent } from "../event/inference-ended"
+import { UserMessageEvent } from "../event/user-message"
+import { UserMessageProcessor } from "../processor/user-message"
 
 export class Agent implements ToolCaller, Listener {
-	readonly toolProcessor: ToolProcessor
-	readonly inferenceTool: InferenceTool
+	readonly toolCallProcessor: ToolCallProcessor
+	readonly inferenceRequestProcessor: InferenceRequestProcessor
 	readonly inferenceArgs: ToolArgs
 
 	constructor(
 		private readonly id: string,
-		toolProcessor: ToolProcessor,
-		inferenceTool: InferenceTool,
+		toolCallProcessor: ToolCallProcessor,
+		inferenceRequestProcessor: InferenceRequestProcessor,
+		userMessageProcessor: UserMessageProcessor,
 		inferenceArgs: ToolArgs,
 	) {
 		this.id = id
-		this.toolProcessor = toolProcessor
-		this.inferenceTool = inferenceTool
+		this.toolCallProcessor = toolCallProcessor
+		this.inferenceRequestProcessor = inferenceRequestProcessor
 		this.inferenceArgs = inferenceArgs
 	}
 
@@ -25,22 +31,33 @@ export class Agent implements ToolCaller, Listener {
 		return this.id
 	}
 
-	getToolProcessor(): ToolProcessor {
-		return this.toolProcessor
+	getToolCallProcessor(): ToolCallProcessor {
+		return this.toolCallProcessor
 	}
 
 	callTool(tool: Tool, args: ToolArgs): Promise<unknown> {
 		const toolInput: ToolInputProcessor = { tool, args }
-		return this.toolProcessor.process(this.id, toolInput)
+		return this.toolCallProcessor.process(this.id, toolInput)
 	}
 
-	async listen(event: BaseEvent) {
-		if (event.getInitiator() === this.id && event.getType() === "tool_executed") {
-			this.callTool(this.inferenceTool, this.inferenceArgs)
-		}
+	callInference(request: unknown): Promise<unknown> {
+		return this.inferenceRequestProcessor.process(this.id, request)
+	}
 
-		if (event.getType() === "user_message") {
-			this.callTool(this.inferenceTool, this.inferenceArgs)
+	toolExecutedListener(event: ToolExecutedEvent) {
+		this.inferenceRequestProcessor.process(this.id, event)
+	}
+
+	inferenceEndedListener(event: InferenceEndedEvent) {
+		const result = event.getResult()
+		if (result.suggestedNextStep === "tool_call") {
+			//this.toolCallProcessor.process(this.id, result.suggestion)
+		} else if (event.getResult().suggestedNextStep === "respond_to_user") {
+			//this.userMessageProcessor.process(this.id, event.getResult().rawResponse)
 		}
+	}
+
+	userMessageListener(event: UserMessageEvent) {
+		this.inferenceRequestProcessor.process(this.id, event)
 	}
 }

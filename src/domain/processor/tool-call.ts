@@ -1,9 +1,9 @@
-import { BaseProcessor } from "./base-processor"
+import { BaseProcessor } from "./base"
 import { Listener, ListenerId } from "../runtime/listener"
 import { ToolInputProcessor } from "../runtime/tool"
-import { ToolExecutedEvent } from "../event/tool-executed-event"
+import { ToolExecutedEvent } from "../event/tool-executed"
 
-export class ToolProcessor extends BaseProcessor<ToolInputProcessor, ToolExecutedEvent> {
+export class ToolCallProcessor extends BaseProcessor<ToolInputProcessor, ToolExecutedEvent> {
 	constructor(listeners: Map<ListenerId, Listener> = new Map()) {
 		super(listeners)
 	}

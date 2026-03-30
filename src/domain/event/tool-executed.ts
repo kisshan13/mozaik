@@ -1,11 +1,11 @@
-import { BaseEvent } from "./base-event"
+import { BaseEvent } from "./base"
 import { ToolArgs } from "../runtime/tool"
 
 export class ToolExecutedEvent extends BaseEvent {
 	readonly toolName: string
 	readonly toolDescription: string
 	readonly toolArgs: ToolArgs
-	readonly result: unknown
+	readonly rawResponse: unknown
 
 	constructor(
 		id: string,
@@ -16,12 +16,12 @@ export class ToolExecutedEvent extends BaseEvent {
 		toolName: string,
 		toolDescription: string,
 		toolArgs: ToolArgs,
-		result: unknown,
+		rawResponse: unknown,
 	) {
 		super(id, type, timestamp, metadata, initiator)
 		this.toolName = toolName
 		this.toolDescription = toolDescription
 		this.toolArgs = toolArgs
-		this.result = result
+		this.rawResponse = rawResponse
 	}
 }

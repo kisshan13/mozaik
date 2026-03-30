@@ -1,8 +1,8 @@
-import { BaseProcessor } from "./base-processor"
+import { BaseProcessor } from "./base"
 import { Listener, ListenerId } from "../runtime/listener"
-import { BaseEvent } from "../event/base-event"
+import { BaseEvent } from "../event/base"
 
-export class UserInputProcessor extends BaseProcessor<unknown, BaseEvent> {
+export class UserMessageProcessor extends BaseProcessor<unknown, BaseEvent> {
 	constructor(listeners: Map<ListenerId, Listener> = new Map()) {
 		super(listeners)
 	}

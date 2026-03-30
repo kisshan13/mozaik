@@ -27,27 +27,3 @@ export abstract class BaseTool implements Tool {
 
 	abstract execute(args: ToolArgs): Promise<unknown>
 }
-
-type ToolCallSuggestion = {
-	name: string
-	description: string
-	args: ToolArgs
-}
-
-type InferenceResult =
-	| { suggestedNextStep: "tool_call"; data: ToolCallSuggestion }
-	| { suggestedNextStep: "respond" | "none"; data: unknown }
-
-export abstract class InferenceTool extends BaseTool {
-	readonly kind = "inference"
-
-	constructor() {
-		super("LLM inference", "Calls LLM to infer the answer", {}, "inference")
-	}
-
-	async execute(args: ToolArgs): Promise<InferenceResult> {
-		return this.infer(args)
-	}
-
-	protected abstract infer(args: ToolArgs): Promise<InferenceResult>
-}

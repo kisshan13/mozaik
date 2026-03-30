@@ -1,4 +1,7 @@
-import { BaseEvent } from "../event/base-event"
+import { BaseEvent } from "../event/base"
+import { InferenceEndedEvent } from "../event/inference-ended"
+import { ToolExecutedEvent } from "../event/tool-executed"
+import { UserMessageEvent } from "../event/user-message"
 import { Listener, ListenerId } from "../runtime/listener"
 
 export abstract class BaseProcessor<TInput, TEvent extends BaseEvent> {
@@ -14,7 +17,13 @@ export abstract class BaseProcessor<TInput, TEvent extends BaseEvent> {
 
 	notify(event: TEvent) {
 		for (const listener of this.listeners.values()) {
-			listener.listen(event)
+			if (event instanceof ToolExecutedEvent) {
+				listener.toolExecutedListener(event)
+			} else if (event instanceof InferenceEndedEvent) {
+				listener.inferenceEndedListener(event)
+			} else if (event instanceof UserMessageEvent) {
+				listener.userMessageListener(event)
+			}
 		}
 	}
 

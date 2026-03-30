@@ -1,5 +1,5 @@
-import { ExecutionEvent } from "../event/base-event"
+import { BaseEvent } from "../event/base"
 
 export interface RequestAdapter<R> {
-	map(event: ExecutionEvent): R
+	map(event: BaseEvent): R
 }

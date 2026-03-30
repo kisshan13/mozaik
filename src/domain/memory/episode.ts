@@ -1,6 +1,6 @@
-import { ExecutionEvent } from "../event/base-event"
+import { BaseEvent } from "../event/base"
 
 export type Episode = {
 	id: string
-	event: ExecutionEvent
+	event: BaseEvent
 }
