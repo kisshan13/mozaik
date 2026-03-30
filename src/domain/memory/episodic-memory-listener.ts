@@ -1,4 +1,4 @@
-import { ExecutionEvent } from "../runtime/execution-event"
+import { ExecutionEvent } from "../event/base-event"
 import { Episode } from "./episode"
 import { Listener } from "../runtime/listener"
 
@@ -11,7 +11,6 @@ export class EpisodicMemoryListener implements Listener {
 		this.episodes = []
 	}
 
-	
 	listen(event: ExecutionEvent): void {
 		this.recordEpisode(event)
 	}

@@ -1,4 +1,4 @@
-import { ExecutionEvent } from "../runtime/execution-event"
+import { ExecutionEvent } from "../event/base-event"
 
 export interface RequestAdapter<R> {
 	map(event: ExecutionEvent): R
