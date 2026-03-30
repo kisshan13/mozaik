@@ -1,29 +1,48 @@
 import { ExecutionEvent } from "../runtime/execution-event"
 import { Listener } from "../runtime/listener"
 import { ToolCaller } from "../runtime/tool-caller"
-import { Tool } from "../runtime/tool"
-import { ModelAdapter } from "../model/adapter"
+import { InferenceTool, Tool, ToolArgs } from "../runtime/tool"
+import { ToolExecutor } from "../runtime/tool-executor"
 
-export class Agent extends ToolCaller implements Listener {
+export class Agent implements ToolCaller, Listener {
+
+	readonly toolExecutor: ToolExecutor
+	readonly inferenceTool: InferenceTool
+	readonly inferenceArgs: ToolArgs
+
 	constructor(
-		id: string,
-		tools: Tool[],
-		private readonly modelAdapter: ModelAdapter,
+		private readonly id: string,
+		toolExecutor: ToolExecutor,
+		inferenceTool: InferenceTool,
+		inferenceArgs: ToolArgs,
 	) {
-		super(id, tools)
+		this.id = id
+		this.toolExecutor = toolExecutor
+		this.inferenceTool = inferenceTool
+		this.inferenceArgs = inferenceArgs
 	}
 
-	async toolExecuted(event: ExecutionEvent) {
-		
+	getId(): string {
+		return this.id
+	}
+
+	getToolExecutor(): ToolExecutor {
+		return this.toolExecutor
+	}
+
+	callTool(tool: Tool, args: ToolArgs): Promise<unknown> {
+		return this.toolExecutor.execute(this.id, tool, args)
 	}
 
 	async listen(event: ExecutionEvent) {
 
-		if (event.getType() === "tool_call") {
-			this.toolExecuted(event)
+		if (event.getInitiator() === this.id && event.getType() === "tool_executed") {
+			this.callTool(this.inferenceTool, this.inferenceArgs)
 		}
 
-		const modelResponse = await this.modelAdapter.adapt(event)
-		return modelResponse
+		if (event.getType() === "user_message") {
+			this.callTool(this.inferenceTool, this.inferenceArgs)
+		}
+
 	}
 }

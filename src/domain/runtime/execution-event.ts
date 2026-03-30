@@ -1,9 +1,11 @@
 export class ExecutionEvent {
+
     constructor(
         public readonly id: string,
         public readonly type: string,
         public readonly timestamp: Date = new Date(),
-        public readonly metadata: Record<string, unknown> = {}
+        public readonly metadata: Record<string, unknown> = {},
+        public readonly initiator: string
     ) {}
 
     getId(): string {
@@ -20,5 +22,9 @@ export class ExecutionEvent {
 
     getMetadata(): Record<string, unknown> {
         return this.metadata
+    }
+
+    getInitiator(): string {
+        return this.initiator
     }
 }

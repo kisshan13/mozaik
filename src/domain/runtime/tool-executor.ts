@@ -1,8 +1,8 @@
 import { Listener, ListenerId } from "./listener"
 import { Tool, ToolArgs } from "./tool"
-import { ToolCallEvent } from "./tool-call-event"
+import { ToolExecutedEvent } from "./tool-executed-event"
 
-export class ToolExecutor<I = unknown, O = unknown> {
+export class ToolExecutor {
 
 	readonly listeners: Map<ListenerId, Listener>
 
@@ -14,12 +14,16 @@ export class ToolExecutor<I = unknown, O = unknown> {
 		return this.listeners
 	}
 
-	async executeTool(tool: Tool, args: ToolArgs){
-		const result = await tool.execute(args)
-		const toolCallEvent = new ToolCallEvent(crypto.randomUUID(), "tool_call", new Date(), {}, tool.name, tool.description, args, result)
+	notify(event: ToolExecutedEvent) {
 		for (const listener of this.listeners.values()) {
-			listener.listen(toolCallEvent)
+			listener.listen(event)
 		}
+	}
+
+	async execute(initiator: string, tool: Tool, args: ToolArgs){
+		const result = await tool.execute(args)
+		const toolExecutedEvent = new ToolExecutedEvent(crypto.randomUUID(), "tool_executed", new Date(), {}, initiator, tool.name, tool.description, args, result)
+		this.notify(toolExecutedEvent)
 
 	}
 
