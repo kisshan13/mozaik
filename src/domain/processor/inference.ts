@@ -6,7 +6,7 @@ export type InferenceResult =
 	| { suggestedNextStep: "tool_call"; tool: Tool; toolArgs: ToolArgs; rawResponse: unknown }
 	| { suggestedNextStep: "respond"; rawResponse: unknown }
 
-export abstract class InferenceProcessor extends Processor<unknown, InferenceEndedEvent> {
+export abstract class InferenceProcessor extends Processor<InferenceEndedEvent> {
 	async process(initiator: string, input: unknown): Promise<void> {
 		const result: InferenceResult = await this.infer(input)
 		const inferenceEvent = new InferenceEndedEvent(
