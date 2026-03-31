@@ -1,11 +1,11 @@
 import { BaseEvent } from "../event/base"
 import { Episode } from "./episode"
-import { Listener } from "../runtime/listener"
 import { InferenceEndedEvent } from "../event/inference-ended"
 import { ToolExecutedEvent } from "../event/tool-executed"
 import { UserMessageEvent } from "../event/user-message"
+import { EventObserver } from "../communication/event-observer"
 
-export class EpisodicMemoryListener implements Listener {
+export class EpisodicMemoryListener implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | UserMessageEvent> {
 	readonly id: string
 	readonly episodes: Episode[]
 
@@ -13,14 +13,9 @@ export class EpisodicMemoryListener implements Listener {
 		this.id = crypto.randomUUID()
 		this.episodes = []
 	}
-	toolExecutedListener(event: ToolExecutedEvent): void {
-		throw new Error("Method not implemented.")
-	}
-	inferenceEndedListener(event: InferenceEndedEvent): void {
-		throw new Error("Method not implemented.")
-	}
-	userMessageListener(event: UserMessageEvent): void {
-		throw new Error("Method not implemented.")
+	
+	onEvent(event: InferenceEndedEvent | ToolExecutedEvent | UserMessageEvent): void {
+		this.recordEpisode(event)
 	}
 
 	private recordEpisode(event: BaseEvent): void {

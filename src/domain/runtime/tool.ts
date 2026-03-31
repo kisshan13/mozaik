@@ -17,13 +17,6 @@ export type ToolInputSchema = Record<string, unknown>
 
 type ToolKind = "custom" | "inference" | "user_input"
 
-export abstract class BaseTool implements Tool {
-	constructor(
-		public readonly name: string,
-		public readonly description: string,
-		public readonly inputSchema: ToolInputSchema,
-		public readonly kind: ToolKind,
-	) {}
-
-	abstract execute(args: ToolArgs): Promise<unknown>
+export interface ToolCaller {
+	callTool(tool: Tool, args: ToolArgs): Promise<unknown>
 }

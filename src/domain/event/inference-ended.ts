@@ -1,4 +1,4 @@
-import { InferenceResult } from "../processor/inference-request"
+import { InferenceResult } from "../processor/inference"
 import { BaseEvent } from "./base"
 
 export class InferenceEndedEvent extends BaseEvent {

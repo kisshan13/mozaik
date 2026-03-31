@@ -1,27 +1,12 @@
-import { BaseProcessor } from "./base"
-import { Listener, ListenerId } from "../runtime/listener"
-import { ToolInputProcessor } from "../runtime/tool"
+import { Processor } from "./processor"
+import { Tool, ToolArgs } from "../runtime/tool"
 import { ToolExecutedEvent } from "../event/tool-executed"
+import { ToolCallSuggestion } from "./inference"
 
-export class ToolCallProcessor extends BaseProcessor<ToolInputProcessor, ToolExecutedEvent> {
-	constructor(listeners: Map<ListenerId, Listener> = new Map()) {
-		super(listeners)
-	}
-
-	async process(initiator: string, toolInput: ToolInputProcessor): Promise<void> {
-		const { tool, args } = toolInput
-		const result = await tool.execute(args)
-		const toolExecutedEvent = new ToolExecutedEvent(
-			crypto.randomUUID(),
-			"tool_executed",
-			new Date(),
-			{},
-			initiator,
-			tool.name,
-			tool.description,
-			args,
-			result,
-		)
-		this.notify(toolExecutedEvent)
+export class ToolCallProcessor extends Processor<ToolCallSuggestion, ToolExecutedEvent> {
+	async process(initiator: string, tool: Tool, toolArgs: ToolArgs): Promise<void> {
+		const result = await tool.execute(toolArgs)
+		const event = new ToolExecutedEvent(crypto.randomUUID(), "tool_executed", new Date(), {}, initiator, tool.name, tool.description, toolArgs, result)
+		this.publish(event)
 	}
 }
