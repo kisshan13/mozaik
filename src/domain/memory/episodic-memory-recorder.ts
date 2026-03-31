@@ -5,7 +5,7 @@ import { ToolExecutedEvent } from "../event/tool-executed"
 import { MessageEvent } from "../event/message"
 import { EventObserver } from "../communication/event-observer"
 
-export class EpisodicMemoryListener implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
+export class EpisodicMemoryRecorder implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
 	readonly id: string
 	readonly episodes: Episode[]
 
