@@ -1,8 +1,7 @@
-import { InferenceResult } from "../processor/inference"
 import { BaseEvent } from "./base"
 
 export class InferenceEndedEvent extends BaseEvent {
-	readonly result: InferenceResult
+	readonly llmResponse: unknown
 
 	constructor(
 		id: string,
@@ -10,13 +9,10 @@ export class InferenceEndedEvent extends BaseEvent {
 		timestamp: Date,
 		metadata: Record<string, unknown>,
 		initiator: string,
-		result: InferenceResult,
+		llmResponse: unknown,
 	) {
 		super(id, type, timestamp, metadata, initiator)
-		this.result = result
+		this.llmResponse = llmResponse
 	}
 
-	getResult(): InferenceResult {
-		return this.result
-	}
 }

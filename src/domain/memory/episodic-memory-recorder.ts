@@ -3,7 +3,7 @@ import { Episode } from "./episode"
 import { InferenceEndedEvent } from "../event/inference-ended"
 import { ToolExecutedEvent } from "../event/tool-executed"
 import { MessageEvent } from "../event/message"
-import { EventObserver } from "../communication/event-observer"
+import { EventObserver } from "../communication/observer"
 
 export class EpisodicMemoryRecorder implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
 	readonly id: string

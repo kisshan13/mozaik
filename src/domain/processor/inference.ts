@@ -6,20 +6,22 @@ export type InferenceResult =
 	| { suggestedNextStep: "tool_call"; tool: Tool; toolArgs: ToolArgs; rawResponse: unknown }
 	| { suggestedNextStep: "respond"; rawResponse: unknown }
 
-export abstract class InferenceProcessor extends Processor<InferenceEndedEvent> {
-	async process(initiator: string, input: unknown): Promise<void> {
-		const result: InferenceResult = await this.infer(input)
-		const inferenceEvent = new InferenceEndedEvent(
-			crypto.randomUUID(),
-			"inference_ended",
-			new Date(),
-			{},
-			initiator,
-			result,
-		)
+export abstract class InferenceProcessor extends Processor {
+	readonly tools: Tool[]
 
-		this.publish(inferenceEvent)
+	constructor(tools: Tool[]) {
+		super()
+		this.tools = tools
 	}
 
-	abstract infer(input: unknown): Promise<InferenceResult>
+	async process(initiator: string, input: unknown): Promise<void> {
+
+	}
+
+	abstract sendLLMRequest(input: unknown): Promise<unknown>
+	
+	infer(input: unknown): Promise<InferenceResult>{
+
+		const llmResponse = await this.sendLLMRequest(input)
+	}
 }
