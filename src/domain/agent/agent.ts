@@ -7,15 +7,15 @@ import { InferenceResult } from "./inference-result"
 
 export abstract class Agent extends Publisher implements Observer {
 
-	readonly tools: Tool[]
+	readonly requestParameters: Record<string, unknown>
 	
 	constructor(
 		private readonly id: string,
-		tools: Tool[],
+		requestParameters: Record<string, unknown>,
 	) {
 		super()
 		this.id = id
-		this.tools = tools
+		this.requestParameters = requestParameters
 	}
 
 	onEvent(event: string, data: unknown): Promise<void> | void {
@@ -36,9 +36,9 @@ export abstract class Agent extends Publisher implements Observer {
 		this.infer(event)
 	}
 
-	onInferenceEnded(event: InferenceEndedEvent) {
-		const result = event.getResult()
-		if (result.suggestedNextStep === "tool_call") {
+	onLlmResponse(event: InferenceEndedEvent) {
+		const llmResponse = event.llmResponse
+		if (event.result.suggestedNextStep === "tool_call") {
 			this.publish("tool_call", { initiator: this.id, tool: result.tool, toolArgs: result.toolArgs })
 		} else if (event.getResult().suggestedNextStep === "respond") {
 			this.publish("message", event.getResult().rawResponse)

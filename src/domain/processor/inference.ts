@@ -19,9 +19,20 @@ export abstract class InferenceProcessor extends Processor {
 	}
 
 	abstract sendLLMRequest(input: unknown): Promise<unknown>
-	
-	infer(input: unknown): Promise<InferenceResult>{
+
+	async infer(input: unknown): Promise<InferenceResult>{
 
 		const llmResponse = await this.sendLLMRequest(input)
+
+		const inferenceEvent = new InferenceEndedEvent(
+			crypto.randomUUID(),
+			"inference_ended",
+			new Date(),
+			{},
+			this.id,
+			llmResponse,
+		)
+
+		this.publish("inference_ended", inferenceEvent)
 	}
 }
