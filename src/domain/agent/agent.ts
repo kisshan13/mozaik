@@ -1,16 +1,14 @@
-import { ToolArgs } from "../runtime/tool"
 import { ToolCallProcessor } from "../processor/tool-call"
 import { InferenceProcessor } from "../processor/inference"
 import { ToolExecutedEvent } from "../event/tool-executed"
 import { InferenceEndedEvent } from "../event/inference-ended"
-import { UserMessageEvent } from "../event/user-message"
+import { MessageEvent } from "../event/message"
 import { MessageConnector } from "../connector/message-connector"
 import { EventObserver } from "../communication/event-observer"
 
-export class Agent implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | UserMessageEvent> {
+export class Agent implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
 	readonly toolCallProcessor: ToolCallProcessor
 	readonly inferenceProcessor: InferenceProcessor
-	readonly inferenceArgs: ToolArgs
 	readonly messageConnector: MessageConnector<unknown>
 
 	constructor(
@@ -18,24 +16,20 @@ export class Agent implements EventObserver<InferenceEndedEvent | ToolExecutedEv
 		toolCallProcessor: ToolCallProcessor,
 		inferenceProcessor: InferenceProcessor,
 		messageConnector: MessageConnector<unknown>,
-		inferenceArgs: ToolArgs,
 	) {
 		this.id = id
 		this.toolCallProcessor = toolCallProcessor
 		this.inferenceProcessor = inferenceProcessor
-		this.inferenceArgs = inferenceArgs
 		this.messageConnector = messageConnector
 	}
 
-
-	onEvent(event: ToolExecutedEvent | InferenceEndedEvent | UserMessageEvent): void {
-		
+	onEvent(event: ToolExecutedEvent | InferenceEndedEvent | MessageEvent): void {
 		if (event instanceof ToolExecutedEvent) {
 			this.onToolExecuted(event)
 		} else if (event instanceof InferenceEndedEvent) {
 			this.onInferenceEnded(event)
-		} else if (event instanceof UserMessageEvent) {
-			this.onUserMessage(event)
+		} else if (event instanceof MessageEvent) {
+			this.onMessage(event)
 		}
 	}
 
@@ -52,7 +46,7 @@ export class Agent implements EventObserver<InferenceEndedEvent | ToolExecutedEv
 		}
 	}
 
-	onUserMessage(event: UserMessageEvent) {
+	onMessage(event: MessageEvent) {
 		this.inferenceProcessor.process(this.id, event)
 	}
 }

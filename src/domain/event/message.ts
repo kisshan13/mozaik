@@ -1,6 +1,6 @@
 import { BaseEvent } from "./base"
 
-export class UserMessageEvent extends BaseEvent {
+export class MessageEvent extends BaseEvent {
 	readonly message: string
 	readonly messageData: unknown
 

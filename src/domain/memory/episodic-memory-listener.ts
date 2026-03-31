@@ -2,10 +2,10 @@ import { BaseEvent } from "../event/base"
 import { Episode } from "./episode"
 import { InferenceEndedEvent } from "../event/inference-ended"
 import { ToolExecutedEvent } from "../event/tool-executed"
-import { UserMessageEvent } from "../event/user-message"
+import { MessageEvent } from "../event/message"
 import { EventObserver } from "../communication/event-observer"
 
-export class EpisodicMemoryListener implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | UserMessageEvent> {
+export class EpisodicMemoryListener implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
 	readonly id: string
 	readonly episodes: Episode[]
 
@@ -13,8 +13,8 @@ export class EpisodicMemoryListener implements EventObserver<InferenceEndedEvent
 		this.id = crypto.randomUUID()
 		this.episodes = []
 	}
-	
-	onEvent(event: InferenceEndedEvent | ToolExecutedEvent | UserMessageEvent): void {
+
+	onEvent(event: InferenceEndedEvent | ToolExecutedEvent | MessageEvent): void {
 		this.recordEpisode(event)
 	}
 
