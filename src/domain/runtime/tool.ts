@@ -1,7 +1,7 @@
 export interface Tool {
 	name: string
 	description: string
-	inputSchema: ToolInputSchema
+	inputSchema?: ToolInputSchema
 	kind: ToolKind
 	execute(args: ToolArgs): Promise<unknown>
 }
