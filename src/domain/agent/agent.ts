@@ -1,27 +1,18 @@
-import { Observer } from "../communication/observer"
-import { Publisher } from "../communication/publisher"
+import { SessionContext } from "../session/state"
+import { Workflow } from "../workflow/workflow"
 
-export abstract class Agent extends Publisher implements Observer {
-	readonly requestParameters: Record<string, unknown>
+export abstract class Agent {
+	
+	readonly workflow: Workflow
+	readonly context: SessionContext
 
-	constructor(
-		private readonly id: string,
-		requestParameters: Record<string, unknown>,
-	) {
-		super()
-		this.id = id
-		this.requestParameters = requestParameters
+	constructor(workflow: Workflow, context: SessionContext) {
+		this.workflow = workflow
+		this.context = context
 	}
 
-	onLlmResponse(llmResponse: unknown): Promise<void> | void {
-		throw new Error("Method not implemented.")
-	}
-	onToolCall(initiator: string, toolName: string, toolArgs: unknown): Promise<void> | void {
-		throw new Error("Method not implemented.")
-	}
-	onToolCallResult(toolName: string, toolArgs: unknown, result: unknown): Promise<void> | void {
-		throw new Error("Method not implemented.")
+	async start(): Promise<unknown> {
+		return this.workflow.start(this.context)
 	}
 
-	onMessage(messageType: string, data: unknown): Promise<void> | void {}
 }
