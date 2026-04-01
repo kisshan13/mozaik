@@ -1,9 +1,5 @@
-import { ToolCall } from "../event/tool-executed"
-import { InferenceEndedEvent } from "../event/inference-ended"
-import { Tool } from "../session/tool"
 import { AgentRuntime } from "../communication/observer"
 import { Publisher } from "../communication/publisher"
-import { InferenceResult } from "./inference-result"
 
 export abstract class Agent extends Publisher implements AgentRuntime {
 	readonly requestParameters: Record<string, unknown>
