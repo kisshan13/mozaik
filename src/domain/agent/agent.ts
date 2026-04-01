@@ -1,7 +1,7 @@
-import { AgentRuntime } from "../communication/observer"
+import { Observer } from "../communication/observer"
 import { Publisher } from "../communication/publisher"
 
-export abstract class Agent extends Publisher implements AgentRuntime {
+export abstract class Agent extends Publisher implements Observer {
 	readonly requestParameters: Record<string, unknown>
 
 	constructor(

@@ -1,8 +1,8 @@
 import { BaseEvent } from "../event/base"
 import { Episode } from "./episode"
-import { AgentRuntime } from "../communication/observer"
+import { Observer } from "../communication/observer"
 
-export class EpisodicMemoryRecorder implements AgentRuntime {
+export class EpisodicMemoryRecorder implements Observer {
 	readonly id: string
 	readonly episodes: Episode[]
 

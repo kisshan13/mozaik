@@ -1,4 +1,4 @@
-export interface AgentRuntime {
+export interface Observer {
 	onLlmResponse(llmResponse: unknown): Promise<void> | void
 	onToolCall(initiator: string, toolName: string, toolArgs: unknown): Promise<void> | void
 	onToolCallResult(toolName: string, toolArgs: unknown, result: unknown): Promise<void> | void
