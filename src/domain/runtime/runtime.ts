@@ -1,11 +1,5 @@
 import { Session, Inference, ResponseProcessing, ToolExecution, State, StateId, Start } from "./state"
 
-export interface RuntimeContext {
-	context: Context
-	providerRequest: any | null
-	providerResponse: any | null
-}
-
 export class RuntimeEngine {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
@@ -19,17 +13,17 @@ export class RuntimeEngine {
 		this.states.set(StateId.LOOP_END, new LoopEnd())
 	}
 
-	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
-		while (!execution.isTerminal()) {
-			const state = this.states.get(execution.currentState)
+	public async run(session: Session): Promise<void> {
+		while (!session.isTerminal()) {
+			const state = this.states.get(session.currentState)
 
 			if (!state) {
-				throw new Error(`State ${execution.currentState} not found`)
+				throw new Error(`State ${session.currentState} not found`)
 			}
 
-			const transition = await state.run(execution, context)
+			const transition = await state.run(session)
 
-			transition.apply(execution, context)
+			transition.apply(session)
 		}
 	}
 }
