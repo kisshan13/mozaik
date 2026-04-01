@@ -1,6 +1,6 @@
 import { InferenceResult } from "./inference-result"
 import { ModelConfig } from "../model/config"
-import { Tool } from "../runtime/tool"
+import { Tool } from "../session/tool"
 
 export class InferenceSession {
 	private id: string

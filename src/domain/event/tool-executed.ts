@@ -1,5 +1,5 @@
 import { BaseEvent } from "./base"
-import { Tool, ToolArgs } from "../runtime/tool"
+import { Tool, ToolArgs } from "../session/tool"
 
 export class ToolCall extends BaseEvent {
 	readonly toolName: string

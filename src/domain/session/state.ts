@@ -1,13 +1,13 @@
 import { Tool } from "./tool"
 
 export enum StateId {
-	LOOP_START,
+	SESSION_START,
 	CONTEXT_UPDATE,
 	INFERENCE,
 	RESPONSE_PROCESSING,
 	DECIDE,
 	TOOL_EXECUTION,
-	LOOP_END,
+	SESSION_END,
 }
 
 export enum ExecutionStatus {
@@ -16,7 +16,7 @@ export enum ExecutionStatus {
 	FAILED,
 }
 
-export class Session {
+export class SessionContext {
 	sessionId: string
 	selectedTool: Tool | null
 	currentState: StateId
@@ -29,7 +29,7 @@ export class Session {
 		this.sessionId = sessionId
 		this.previousState = null
 		this.status = ExecutionStatus.RUNNING
-		this.currentState = StateId.LOOP_START
+		this.currentState = StateId.SESSION_START
 		this.selectedTool = null
 		this.stepCount = 0
 		this.retryCounts = new Map<StateId, number>()
@@ -41,7 +41,7 @@ export class Session {
 }
 
 export interface Transition {
-	apply(session: Session): Promise<void>
+	apply(sessionContext: SessionContext): Promise<void>
 }
 
 export class GoTo implements Transition {
@@ -51,10 +51,10 @@ export class GoTo implements Transition {
 		this.next = next
 	}
 
-	async apply(session: Session): Promise<void> {
-		session.previousState = session.currentState
-		session.currentState = this.next
-		session.stepCount++
+	async apply(sessionContext: SessionContext): Promise<void> {
+		sessionContext.previousState = sessionContext.currentState
+		sessionContext.currentState = this.next
+		sessionContext.stepCount++
 	}
 }
 
@@ -64,8 +64,8 @@ export class Complete implements Transition {
 		this.result = result
 	}
 
-	async apply(session: Session): Promise<void> {
-		session.status = ExecutionStatus.COMPLETED
+	async apply(sessionContext: SessionContext): Promise<void> {
+		sessionContext.status = ExecutionStatus.COMPLETED
 	}
 }
 
@@ -76,29 +76,29 @@ export class Fail implements Transition {
 		this.error = error
 	}
 
-	async apply(session: Session): Promise<void> {
-		session.status = ExecutionStatus.FAILED
+	async apply(sessionContext: SessionContext): Promise<void> {
+		sessionContext.status = ExecutionStatus.FAILED
 	}
 }
 
 export interface State {
-	run(session: Session): Promise<Transition>
+	run(sessionContext: SessionContext): Promise<Transition>
 }
 
-export class LoopStart implements State {
-	async run(session: Session): Promise<Transition> {
+export class SessionStart implements State {
+	async run(sessionContext: SessionContext): Promise<Transition> {
 		return new GoTo(StateId.CONTEXT_UPDATE)
 	}
 }
 
 export class ContextUpdate implements State {
-	async run(session: Session): Promise<Transition> {
+	async run(sessionContext: SessionContext): Promise<Transition> {
 		return new GoTo(StateId.INFERENCE)
 	}
 }
 
 export class Inference implements State {
-	async run(session: Session): Promise<Transition> {
+	async run(sessionContext: SessionContext): Promise<Transition> {
 		return new GoTo(StateId.RESPONSE_PROCESSING)
 	}
 }
@@ -114,19 +114,19 @@ export class ToolExecution implements State {
 		this.toolExecutionAdapter = toolExecutionAdapter
 	}
 
-	async run(session: Session): Promise<Transition> {
-		if (!session.selectedTool) {
+	async run(sessionContext: SessionContext): Promise<Transition> {
+		if (!sessionContext.selectedTool) {
 			throw new Error("No tool selected")
 		}
 
-		await this.toolExecutionAdapter.execute(session.selectedTool)
+		await this.toolExecutionAdapter.execute(sessionContext.selectedTool)
 
 		return new GoTo(StateId.RESPONSE_PROCESSING)
 	}
 }
 
 export class ResponseProcessing implements State {
-	async run(session: Session): Promise<Transition> {
+	async run(sessionContext: SessionContext): Promise<Transition> {
 		return new GoTo(StateId.TOOL_EXECUTION)
 	}
 }

@@ -1,5 +1,5 @@
 import { Processor } from "./processor"
-import { Tool, ToolArgs } from "../runtime/tool"
+import { Tool, ToolArgs } from "../session/tool"
 import { ToolCall } from "../event/tool-executed"
 
 export class ToolCallProcessor extends Processor {

@@ -1,5 +1,5 @@
 import { Processor } from "./processor"
-import { Tool, ToolArgs } from "../runtime/tool"
+import { Tool, ToolArgs } from "../session/tool"
 import { InferenceEndedEvent } from "../event/inference-ended"
 
 export type InferenceResult =
