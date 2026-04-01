@@ -10,7 +10,7 @@ export enum StateId {
 	SESSION_END,
 }
 
-export enum ExecutionStatus {
+export enum SessionStatus {
 	RUNNING,
 	COMPLETED,
 	FAILED,
@@ -21,14 +21,14 @@ export class SessionContext {
 	selectedTool: Tool | null
 	currentState: StateId
 	previousState: StateId | null
-	status: ExecutionStatus
+	status: SessionStatus
 	stepCount: number
 	retryCounts: Map<StateId, number>
 
 	constructor(sessionId: string) {
 		this.sessionId = sessionId
 		this.previousState = null
-		this.status = ExecutionStatus.RUNNING
+		this.status = SessionStatus.RUNNING
 		this.currentState = StateId.SESSION_START
 		this.selectedTool = null
 		this.stepCount = 0
@@ -36,7 +36,7 @@ export class SessionContext {
 	}
 
 	isTerminal(): boolean {
-		return this.status == ExecutionStatus.COMPLETED || this.status == ExecutionStatus.FAILED
+		return this.status == SessionStatus.COMPLETED || this.status == SessionStatus.FAILED
 	}
 }
 
@@ -65,7 +65,7 @@ export class Complete implements Transition {
 	}
 
 	async apply(sessionContext: SessionContext): Promise<void> {
-		sessionContext.status = ExecutionStatus.COMPLETED
+		sessionContext.status = SessionStatus.COMPLETED
 	}
 }
 
@@ -77,56 +77,10 @@ export class Fail implements Transition {
 	}
 
 	async apply(sessionContext: SessionContext): Promise<void> {
-		sessionContext.status = ExecutionStatus.FAILED
+		sessionContext.status = SessionStatus.FAILED
 	}
 }
 
 export interface State {
 	run(sessionContext: SessionContext): Promise<Transition>
-}
-
-export class SessionStart implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.CONTEXT_UPDATE)
-	}
-}
-
-export class ContextUpdate implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.INFERENCE)
-	}
-}
-
-export class Inference implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.RESPONSE_PROCESSING)
-	}
-}
-
-export interface ToolExecutionAdapter {
-	execute(tool: Tool): Promise<unknown>
-}
-
-export class ToolExecution implements State {
-	private toolExecutionAdapter: ToolExecutionAdapter
-
-	constructor(toolExecutionAdapter: ToolExecutionAdapter) {
-		this.toolExecutionAdapter = toolExecutionAdapter
-	}
-
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		if (!sessionContext.selectedTool) {
-			throw new Error("No tool selected")
-		}
-
-		await this.toolExecutionAdapter.execute(sessionContext.selectedTool)
-
-		return new GoTo(StateId.RESPONSE_PROCESSING)
-	}
-}
-
-export class ResponseProcessing implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.TOOL_EXECUTION)
-	}
 }
