@@ -1,7 +1,7 @@
 import { BaseEvent } from "./base"
-import { ToolArgs } from "../runtime/tool"
+import { Tool, ToolArgs } from "../runtime/tool"
 
-export class ToolExecutedEvent extends BaseEvent {
+export class ToolCall extends BaseEvent {
 	readonly toolName: string
 	readonly toolDescription: string
 	readonly toolArgs: ToolArgs
@@ -23,5 +23,13 @@ export class ToolExecutedEvent extends BaseEvent {
 		this.toolDescription = toolDescription
 		this.toolArgs = toolArgs
 		this.rawResponse = rawResponse
+	}
+
+	onStart(initiator: string, tool: Tool, toolArgs: ToolArgs): Promise<void> | void {
+		throw new Error("Method not implemented.")
+	}
+
+	onEnd(initiator: string, tool: Tool, toolArgs: ToolArgs, result: unknown): Promise<void> | void {
+		throw new Error("Method not implemented.")
 	}
 }

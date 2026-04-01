@@ -1,11 +1,8 @@
 import { BaseEvent } from "../event/base"
 import { Episode } from "./episode"
-import { InferenceEndedEvent } from "../event/inference-ended"
-import { ToolExecutedEvent } from "../event/tool-executed"
-import { MessageEvent } from "../event/message"
-import { EventObserver } from "../communication/observer"
+import { AgentRuntime } from "../communication/observer"
 
-export class EpisodicMemoryRecorder implements EventObserver<InferenceEndedEvent | ToolExecutedEvent | MessageEvent> {
+export class EpisodicMemoryRecorder implements AgentRuntime {
 	readonly id: string
 	readonly episodes: Episode[]
 
@@ -13,9 +10,17 @@ export class EpisodicMemoryRecorder implements EventObserver<InferenceEndedEvent
 		this.id = crypto.randomUUID()
 		this.episodes = []
 	}
-
-	onEvent(event: InferenceEndedEvent | ToolExecutedEvent | MessageEvent): void {
-		this.recordEpisode(event)
+	onLlmResponse(llmResponse: unknown): Promise<void> | void {
+		throw new Error("Method not implemented.")
+	}
+	onToolCall(initiator: string, toolName: string, toolArgs: unknown): Promise<void> | void {
+		throw new Error("Method not implemented.")
+	}
+	onToolCallResult(toolName: string, toolArgs: unknown, result: unknown): Promise<void> | void {
+		throw new Error("Method not implemented.")
+	}
+	onMessage(messageType: string, data: unknown): Promise<void> | void {
+		throw new Error("Method not implemented.")
 	}
 
 	private recordEpisode(event: BaseEvent): void {

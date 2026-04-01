@@ -2,7 +2,7 @@ export interface Tool {
 	name: string
 	description: string
 	inputSchema?: ToolInputSchema
-	kind: ToolKind
+	type: ToolType
 	execute(args: ToolArgs): Promise<unknown>
 }
 
@@ -15,7 +15,10 @@ export type ToolArgs = Record<string, unknown>
 
 export type ToolInputSchema = Record<string, unknown>
 
-type ToolKind = "custom" | "inference" | "user_input"
+export enum ToolType {
+	CUSTOM = "custom",
+	PROVIDER = "provider",
+}
 
 export interface ToolCaller {
 	callTool(tool: Tool, args: ToolArgs): Promise<unknown>
