@@ -1,11 +1,12 @@
-import { GenerationContext, State, StateId } from "./generation-context"
-import { Inference } from "./states/inference"
-import { CycleEnd } from "./states/cycle-end"
-import { CycleStart } from "./states/cycle-start"
-import { OutputValidation } from "./states/output-validation"
-import { OutputExtraction } from "./states/output-extraction"
-import { OutputExecution } from "./states/output-execution"
-import { OutputRejection } from "./states/output-rejection"
+import { GenerationContext } from "./generation-context"
+import { Inference } from "./state/inference"
+import { CycleEnd } from "./state/cycle-end"
+import { CycleStart } from "./state/cycle-start"
+import { OutputValidation } from "./state/output-validation"
+import { OutputExtraction } from "./state/output-extraction"
+import { OutputExecution } from "./state/output-execution"
+import { OutputRejection } from "./state/output-rejection"
+import { State, StateId } from "./state"
 
 export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
