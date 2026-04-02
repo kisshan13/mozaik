@@ -1,8 +1,8 @@
+import { GenerativeModel } from "../generative-model"
 import { Tool } from "./tool"
 
 export enum StateId {
 	CYCLE_START,
-	CONTEXT_CONSTRUCTION,
 	INFERENCE,
 	OUTPUT_EXTRACTION,
 	OUTPUT_VALIDATION,
@@ -11,25 +11,27 @@ export enum StateId {
 	CYCLE_END,
 }
 
-export enum SessionStatus {
+export enum GenerationStatus {
 	RUNNING,
 	COMPLETED,
 	FAILED,
 }
 
-export class SessionContext {
+export class GenerationContext {
 	sessionId: string
+	generativeModel: GenerativeModel
 	selectedTool: Tool | null
 	currentState: StateId
 	previousState: StateId | null
-	status: SessionStatus
+	status: GenerationStatus
 	stepCount: number
 	retryCounts: Map<StateId, number>
 
-	constructor(sessionId: string) {
+	constructor(sessionId: string, generativeModel: GenerativeModel) {
 		this.sessionId = sessionId
+		this.generativeModel = generativeModel
 		this.previousState = null
-		this.status = SessionStatus.RUNNING
+		this.status = GenerationStatus.RUNNING
 		this.currentState = StateId.CYCLE_START
 		this.selectedTool = null
 		this.stepCount = 0
@@ -37,12 +39,12 @@ export class SessionContext {
 	}
 
 	isTerminal(): boolean {
-		return this.status == SessionStatus.COMPLETED || this.status == SessionStatus.FAILED
+		return this.status == GenerationStatus.COMPLETED || this.status == GenerationStatus.FAILED
 	}
 }
 
 export interface Transition {
-	apply(sessionContext: SessionContext): Promise<void>
+	apply(generationContext: GenerationContext): Promise<void>
 }
 
 export class GoTo implements Transition {
@@ -52,10 +54,10 @@ export class GoTo implements Transition {
 		this.next = next
 	}
 
-	async apply(sessionContext: SessionContext): Promise<void> {
-		sessionContext.previousState = sessionContext.currentState
-		sessionContext.currentState = this.next
-		sessionContext.stepCount++
+	async apply(generationContext: GenerationContext): Promise<void> {
+		generationContext.previousState = generationContext.currentState
+		generationContext.currentState = this.next
+		generationContext.stepCount++
 	}
 }
 
@@ -65,8 +67,8 @@ export class Complete implements Transition {
 		this.result = result
 	}
 
-	async apply(sessionContext: SessionContext): Promise<void> {
-		sessionContext.status = SessionStatus.COMPLETED
+	async apply(generationContext: GenerationContext): Promise<void> {
+		generationContext.status = GenerationStatus.COMPLETED
 	}
 }
 
@@ -77,11 +79,11 @@ export class Fail implements Transition {
 		this.error = error
 	}
 
-	async apply(sessionContext: SessionContext): Promise<void> {
-		sessionContext.status = SessionStatus.FAILED
+	async apply(generationContext: GenerationContext): Promise<void> {
+		generationContext.status = GenerationStatus.FAILED
 	}
 }
 
 export interface State {
-	run(sessionContext: SessionContext): Promise<Transition>
+	run(generationContext: GenerationContext): Promise<Transition>
 }

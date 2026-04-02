@@ -1,7 +1,7 @@
-import { GoTo, SessionContext, State, StateId, Transition } from "../../session"
+import { GoTo, GenerationContext, State, StateId, Transition } from "../../generation-context"
 
 export class OutputExecution implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
+	async run(generationContext: GenerationContext): Promise<Transition> {
 		return new GoTo(StateId.OUTPUT_EXECUTION)
 	}
 }

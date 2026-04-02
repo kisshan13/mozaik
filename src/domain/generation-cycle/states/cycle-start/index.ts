@@ -1,7 +1,7 @@
-import { GoTo, SessionContext, State, StateId, Transition } from "../../session"
+import { GoTo, GenerationContext, State, StateId, Transition } from "../../generation-context"
 
-export class GenerationCycleStart implements State {
-	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.CONTEXT_CONSTRUCTION)
+export class CycleStart implements State {
+	async run(generationContext: GenerationContext): Promise<Transition> {
+		return new GoTo(StateId.INFERENCE)
 	}
 }

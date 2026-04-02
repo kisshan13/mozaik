@@ -1,8 +1,7 @@
-import { SessionContext, State, StateId } from "./session"
-import { ContextConstruction } from "./states/context-construction"
+import { GenerationContext, State, StateId } from "./generation-context"
 import { Inference } from "./states/inference"
 import { CycleEnd } from "./states/cycle-end"
-import { GenerationCycleStart } from "./states/cycle-start"
+import { CycleStart } from "./states/cycle-start"
 import { OutputValidation } from "./states/output-validation"
 import { OutputExtraction } from "./states/output-extraction"
 import { OutputExecution } from "./states/output-execution"
@@ -12,8 +11,7 @@ export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor() {
-		this.states.set(StateId.CYCLE_START, new GenerationCycleStart())
-		this.states.set(StateId.CONTEXT_CONSTRUCTION, new ContextConstruction())
+		this.states.set(StateId.CYCLE_START, new CycleStart())
 		this.states.set(StateId.INFERENCE, new Inference())
 		this.states.set(StateId.OUTPUT_EXTRACTION, new OutputExtraction())
 		this.states.set(StateId.OUTPUT_VALIDATION, new OutputValidation())
@@ -22,17 +20,17 @@ export class GenerationCycle {
 		this.states.set(StateId.CYCLE_END, new CycleEnd())
 	}
 
-	public async start(sessionContext: SessionContext): Promise<void> {
-		while (!sessionContext.isTerminal()) {
-			const state = this.states.get(sessionContext.currentState)
+	public async start(generationContext: GenerationContext): Promise<void> {
+		while (!generationContext.isTerminal()) {
+			const state = this.states.get(generationContext.currentState)
 
 			if (!state) {
-				throw new Error(`State ${sessionContext.currentState} not found`)
+				throw new Error(`State ${generationContext.currentState} not found`)
 			}
 
-			const transition = await state.run(sessionContext)
+			const transition = await state.run(generationContext)
 
-			transition.apply(sessionContext)
+			transition.apply(generationContext)
 		}
 	}
 }
