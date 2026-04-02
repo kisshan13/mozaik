@@ -1,6 +1,6 @@
-import { Transition } from "../"
-import { GenerationContext } from "../../generation-context"
-import { StateId } from "../../state"
+import { Transition } from "@generation-cycle/transition"
+import { GenerationContext } from "@generation-cycle/generation-context"
+import { StateId } from "@generation-cycle/state"
 
 export class GoTo implements Transition {
 	next: StateId

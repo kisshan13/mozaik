@@ -12,9 +12,8 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
-			"@core/*": ["src/app/core/*"],
-			"@providers/*": ["src/infra/providers/*"],
-			"@/*": ["src/*"] // if you’re using aliases like '@/types/type'
+			"@generation-cycle/*": ["src/domain/generation-cycle/*"],
+			"@generative-model/*": ["src/domain/generative-model/*"]
 		},
 		"esModuleInterop": true,
 		"skipLibCheck": true,

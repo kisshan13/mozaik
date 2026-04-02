@@ -1,5 +1,5 @@
-import { GenerativeModel, TokenUsage } from "../generative-model"
-import { StateId } from "./state"
+import { GenerativeModel, TokenUsage } from "@generative-model/index"
+import { StateId } from "@generation-cycle/state"
 
 export enum GenerationStatus {
 	TRIGGERED,

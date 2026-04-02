@@ -1,5 +1,5 @@
-import { Transition } from "../"
-import { GenerationContext, GenerationStatus } from "../../generation-context"
+import { Transition } from "@generation-cycle/transition"
+import { GenerationContext, GenerationStatus } from "@generation-cycle/generation-context"
 
 export class Complete implements Transition {
 	result: string

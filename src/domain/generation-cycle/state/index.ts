@@ -1,5 +1,5 @@
-import { GenerationContext } from "../generation-context"
-import { Transition } from "../transition"
+import { GenerationContext } from "@generation-cycle/generation-context"
+import { Transition } from "@generation-cycle/transition"
 
 export enum StateId {
 	CYCLE_START,
