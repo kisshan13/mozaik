@@ -19,6 +19,6 @@ export class ToolExecution implements State {
 
 		await this.toolExecutionAdapter.execute(sessionContext.selectedTool)
 
-		return new GoTo(StateId.RESPONSE_PROCESSING)
+		return new GoTo(StateId.OUTPUT_INTERPRETATION)
 	}
 }
