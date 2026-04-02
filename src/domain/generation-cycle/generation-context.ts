@@ -1,4 +1,4 @@
-import { GenerativeModel } from "../generative-model"
+import { GenerativeModel, TokenUsage } from "../generative-model"
 import { Tool } from "./tool"
 
 export enum StateId {
@@ -19,9 +19,12 @@ export enum GenerationStatus {
 }
 
 export class GenerationContext {
-	sessionId: string
+	generationId: string
 	prompt: string
-	generatedOutput: string | null
+	generatedOutput: unknown | null
+	extractedOutput: unknown | null
+	extractedTokenUsage: TokenUsage | null
+	extractedCost: number | null
 	generativeModel: GenerativeModel
 	selectedTool: Tool | null
 	currentState: StateId
@@ -30,14 +33,17 @@ export class GenerationContext {
 	stepCount: number
 	retryCounts: Map<StateId, number>
 
-	constructor(sessionId: string, generativeModel: GenerativeModel, prompt: string) {
-		this.sessionId = sessionId
+	constructor(generationId: string, generativeModel: GenerativeModel, prompt: string) {
+		this.generationId = generationId
 		this.generativeModel = generativeModel
 		this.previousState = null
 		this.status = GenerationStatus.TRIGGERED
 		this.currentState = StateId.CYCLE_START
 		this.prompt = prompt
 		this.generatedOutput = null
+		this.extractedOutput = null
+		this.extractedTokenUsage = null
+		this.extractedCost = null
 		this.selectedTool = null
 		this.stepCount = 0
 		this.retryCounts = new Map<StateId, number>()
