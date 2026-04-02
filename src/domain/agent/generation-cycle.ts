@@ -5,18 +5,18 @@ import { Inference } from "../session/state/inference"
 import { OutputInterpretation } from "../session/state/output-interpretation"
 import { SessionEnd } from "../session/state/session-end"
 import { SessionStart } from "../session/state/session-start"
-import { ToolExecution, ToolExecutionAdapter } from "../session/state/tool-execution"
+import { ToolExecution } from "../session/state/tool-execution"
 
 export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
-	constructor(toolExecutionAdapter: ToolExecutionAdapter) {
+	constructor() {
 		this.states.set(StateId.SESSION_START, new SessionStart())
 		this.states.set(StateId.CONTEXT_CONSTRUCTION, new ContextConstruction())
 		this.states.set(StateId.INFERENCE, new Inference())
 		this.states.set(StateId.OUTPUT_INTERPRETATION, new OutputInterpretation())
 		this.states.set(StateId.DECISION_MAKING, new DecisionMaking())
-		this.states.set(StateId.TOOL_EXECUTION, new ToolExecution(toolExecutionAdapter))
+		this.states.set(StateId.TOOL_EXECUTION, new ToolExecution())
 		this.states.set(StateId.SESSION_END, new SessionEnd())
 	}
 

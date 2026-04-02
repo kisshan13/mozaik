@@ -6,18 +6,12 @@ export interface ToolExecutionAdapter {
 }
 
 export class ToolExecution implements State {
-	private toolExecutionAdapter: ToolExecutionAdapter
-
-	constructor(toolExecutionAdapter: ToolExecutionAdapter) {
-		this.toolExecutionAdapter = toolExecutionAdapter
-	}
-
 	async run(sessionContext: SessionContext): Promise<Transition> {
 		if (!sessionContext.selectedTool) {
 			throw new Error("No tool selected")
 		}
 
-		await this.toolExecutionAdapter.execute(sessionContext.selectedTool)
+		//await this.toolExecutionAdapter.execute(sessionContext.selectedTool)
 
 		return new GoTo(StateId.OUTPUT_INTERPRETATION)
 	}

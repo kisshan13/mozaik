@@ -1,18 +1,19 @@
 import { SessionContext } from "../session/state"
-import { Workflow } from "../workflow/workflow"
+import { GenerationCycle } from "../workflow/generation-cycle"
 
 export abstract class Agent {
 	
-	readonly workflow: Workflow
 	readonly context: SessionContext
+	readonly cycles: GenerationCycle[]
 
-	constructor(workflow: Workflow, context: SessionContext) {
-		this.workflow = workflow
+	constructor(context: SessionContext, generationCycles: GenerationCycle[]) {
 		this.context = context
+		this.cycles = generationCycles
 	}
 
 	async start(): Promise<unknown> {
-		return this.workflow.start(this.context)
+		const generationCycle = new GenerationCycle()
+		return generationCycle.start(this.context)
 	}
 
 }
