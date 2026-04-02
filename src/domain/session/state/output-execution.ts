@@ -1,7 +1,7 @@
 import { GoTo, SessionContext, State, StateId, Transition } from "../state"
 
-export class OutputInterpretation implements State {
+export class OutputExecution implements State {
 	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.TOOL_EXECUTION)
+		return new GoTo(StateId.OUTPUT_EXECUTION)
 	}
 }

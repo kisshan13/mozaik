@@ -1,13 +1,14 @@
 import { Tool } from "./tool"
 
 export enum StateId {
-	SESSION_START,
+	CYCLE_START,
 	CONTEXT_CONSTRUCTION,
 	INFERENCE,
-	OUTPUT_INTERPRETATION,
-	DECISION_MAKING,
-	TOOL_EXECUTION,
-	SESSION_END,
+	OUTPUT_EXTRACTION,
+	OUTPUT_VALIDATION,
+	OUTPUT_EXECUTION,
+	OUTPUT_REJECTION,
+	CYCLE_END,
 }
 
 export enum SessionStatus {
@@ -29,7 +30,7 @@ export class SessionContext {
 		this.sessionId = sessionId
 		this.previousState = null
 		this.status = SessionStatus.RUNNING
-		this.currentState = StateId.SESSION_START
+		this.currentState = StateId.CYCLE_START
 		this.selectedTool = null
 		this.stepCount = 0
 		this.retryCounts = new Map<StateId, number>()

@@ -1,23 +1,25 @@
 import { SessionContext, State, StateId } from "../session/state"
 import { ContextConstruction } from "../session/state/context-construction"
-import { DecisionMaking } from "../session/state/decision-making"
 import { Inference } from "../session/state/inference"
-import { OutputInterpretation } from "../session/state/output-interpretation"
-import { SessionEnd } from "../session/state/session-end"
-import { SessionStart } from "../session/state/session-start"
-import { ToolExecution } from "../session/state/tool-execution"
+import { GenerationCycleEnd } from "../session/state/generation-cycle-end"
+import { GenerationCycleStart } from "../session/state/generation-cycle-start"
+import { OutputValidation } from "../session/state/output-validation"
+import { OutputExtraction } from "../session/state/output-extraction"
+import { OutputExecution } from "../session/state/output-execution"
+import { OutputRejection } from "../session/state/output-rejection"
 
 export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor() {
-		this.states.set(StateId.SESSION_START, new SessionStart())
+		this.states.set(StateId.CYCLE_START, new GenerationCycleStart())
 		this.states.set(StateId.CONTEXT_CONSTRUCTION, new ContextConstruction())
 		this.states.set(StateId.INFERENCE, new Inference())
-		this.states.set(StateId.OUTPUT_INTERPRETATION, new OutputInterpretation())
-		this.states.set(StateId.DECISION_MAKING, new DecisionMaking())
-		this.states.set(StateId.TOOL_EXECUTION, new ToolExecution())
-		this.states.set(StateId.SESSION_END, new SessionEnd())
+		this.states.set(StateId.OUTPUT_EXTRACTION, new OutputExtraction())
+		this.states.set(StateId.OUTPUT_VALIDATION, new OutputValidation())
+		this.states.set(StateId.OUTPUT_EXECUTION, new OutputExecution())
+		this.states.set(StateId.OUTPUT_REJECTION, new OutputRejection())
+		this.states.set(StateId.CYCLE_END, new GenerationCycleEnd())
 	}
 
 	public async start(sessionContext: SessionContext): Promise<void> {

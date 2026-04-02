@@ -1,5 +1,5 @@
 import { SessionContext } from "../session/state"
-import { GenerationCycle } from "../workflow/generation-cycle"
+import { GenerationCycle } from "./generation-cycle"
 
 export abstract class Agent {
 	

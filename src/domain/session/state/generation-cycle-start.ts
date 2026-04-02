@@ -1,7 +1,7 @@
 import { GoTo, SessionContext, State, StateId, Transition } from "../state"
 
-export class SessionEnd implements State {
+export class GenerationCycleStart implements State {
 	async run(sessionContext: SessionContext): Promise<Transition> {
-		return new GoTo(StateId.CONTEXT_UPDATE)
+		return new GoTo(StateId.CONTEXT_CONSTRUCTION)
 	}
 }
