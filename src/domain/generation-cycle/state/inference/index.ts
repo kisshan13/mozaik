@@ -1,4 +1,9 @@
-import { GoTo, GenerationContext, State, StateId, Transition, Fail } from "../../generation-context"
+import { GenerationContext } from "../../generation-context"
+import { GoTo } from "../../transition/go-to"
+import { StateId } from "../../state"
+import { Transition } from "../../transition"
+import { State } from "../../state"
+import { Fail } from "../../transition/fail"
 
 export class Inference implements State {
 	async run(generationContext: GenerationContext): Promise<Transition> {

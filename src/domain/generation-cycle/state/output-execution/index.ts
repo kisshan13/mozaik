@@ -1,4 +1,8 @@
-import { GoTo, GenerationContext, State, StateId, Transition } from "../../generation-context"
+import { GenerationContext } from "../../generation-context"
+import { GoTo } from "../../transition/go-to"
+import { StateId } from "../../state"
+import { Transition } from "../../transition"
+import { State } from "../../state"
 
 export class OutputExecution implements State {
 	async run(generationContext: GenerationContext): Promise<Transition> {

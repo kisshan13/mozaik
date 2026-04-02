@@ -1,4 +1,8 @@
-import { GoTo, GenerationContext, State, StateId, Transition, GenerationStatus } from "../../generation-context"
+import { GenerationContext, GenerationStatus } from "../../generation-context"
+import { GoTo } from "../../transition/go-to"
+import { StateId } from "../../state"
+import { Transition } from "../../transition"
+import { State } from "../../state"
 
 export class CycleStart implements State {
 	async run(generationContext: GenerationContext): Promise<Transition> {
