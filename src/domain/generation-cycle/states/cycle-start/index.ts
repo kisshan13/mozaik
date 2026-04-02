@@ -1,4 +1,4 @@
-import { GoTo, SessionContext, State, StateId, Transition } from "../state"
+import { GoTo, SessionContext, State, StateId, Transition } from "../../session"
 
 export class GenerationCycleStart implements State {
 	async run(sessionContext: SessionContext): Promise<Transition> {

@@ -1,12 +1,12 @@
-import { SessionContext, State, StateId } from "../session/state"
-import { ContextConstruction } from "./state/context-construction"
-import { Inference } from "./state/inference"
-import { GenerationCycleEnd } from "./state/generation-cycle-end"
-import { GenerationCycleStart } from "./state/generation-cycle-start"
-import { OutputValidation } from "./state/output-validation"
-import { OutputExtraction } from "./state/output-extraction"
-import { OutputExecution } from "./state/output-execution"
-import { OutputRejection } from "./state/output-rejection"
+import { SessionContext, State, StateId } from "./session"
+import { ContextConstruction } from "./states/context-construction"
+import { Inference } from "./states/inference"
+import { CycleEnd } from "./states/cycle-end"
+import { GenerationCycleStart } from "./states/cycle-start"
+import { OutputValidation } from "./states/output-validation"
+import { OutputExtraction } from "./states/output-extraction"
+import { OutputExecution } from "./states/output-execution"
+import { OutputRejection } from "./states/output-rejection"
 
 export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
@@ -19,7 +19,7 @@ export class GenerationCycle {
 		this.states.set(StateId.OUTPUT_VALIDATION, new OutputValidation())
 		this.states.set(StateId.OUTPUT_EXECUTION, new OutputExecution())
 		this.states.set(StateId.OUTPUT_REJECTION, new OutputRejection())
-		this.states.set(StateId.CYCLE_END, new GenerationCycleEnd())
+		this.states.set(StateId.CYCLE_END, new CycleEnd())
 	}
 
 	public async start(sessionContext: SessionContext): Promise<void> {
