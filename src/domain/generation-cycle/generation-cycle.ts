@@ -1,12 +1,12 @@
 import { SessionContext, State, StateId } from "../session/state"
-import { ContextConstruction } from "../session/state/context-construction"
-import { Inference } from "../session/state/inference"
-import { GenerationCycleEnd } from "../session/state/generation-cycle-end"
-import { GenerationCycleStart } from "../session/state/generation-cycle-start"
-import { OutputValidation } from "../session/state/output-validation"
-import { OutputExtraction } from "../session/state/output-extraction"
-import { OutputExecution } from "../session/state/output-execution"
-import { OutputRejection } from "../session/state/output-rejection"
+import { ContextConstruction } from "./state/context-construction"
+import { Inference } from "./state/inference"
+import { GenerationCycleEnd } from "./state/generation-cycle-end"
+import { GenerationCycleStart } from "./state/generation-cycle-start"
+import { OutputValidation } from "./state/output-validation"
+import { OutputExtraction } from "./state/output-extraction"
+import { OutputExecution } from "./state/output-execution"
+import { OutputRejection } from "./state/output-rejection"
 
 export class GenerationCycle {
 	private states: Map<StateId, State> = new Map<StateId, State>()
