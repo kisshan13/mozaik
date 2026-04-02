@@ -12,6 +12,7 @@ export enum StateId {
 }
 
 export enum GenerationStatus {
+	TRIGGERED,
 	RUNNING,
 	COMPLETED,
 	FAILED,
@@ -19,6 +20,8 @@ export enum GenerationStatus {
 
 export class GenerationContext {
 	sessionId: string
+	prompt: string
+	generatedOutput: string | null
 	generativeModel: GenerativeModel
 	selectedTool: Tool | null
 	currentState: StateId
@@ -27,12 +30,14 @@ export class GenerationContext {
 	stepCount: number
 	retryCounts: Map<StateId, number>
 
-	constructor(sessionId: string, generativeModel: GenerativeModel) {
+	constructor(sessionId: string, generativeModel: GenerativeModel, prompt: string) {
 		this.sessionId = sessionId
 		this.generativeModel = generativeModel
 		this.previousState = null
-		this.status = GenerationStatus.RUNNING
+		this.status = GenerationStatus.TRIGGERED
 		this.currentState = StateId.CYCLE_START
+		this.prompt = prompt
+		this.generatedOutput = null
 		this.selectedTool = null
 		this.stepCount = 0
 		this.retryCounts = new Map<StateId, number>()
