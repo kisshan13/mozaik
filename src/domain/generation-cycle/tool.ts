@@ -19,7 +19,3 @@ export enum ToolType {
 	CUSTOM = "custom",
 	PROVIDER = "provider",
 }
-
-export interface ToolCaller {
-	callTool(tool: Tool, args: ToolArgs): Promise<unknown>
-}
