@@ -1,9 +1,9 @@
 import { GenerationContext } from "@generation-cycle/generation-context"
-import { GoTo } from "@generation-cycle/transition/go-to"
+import { GoTo } from "@generation-cycle/transitions/go-to"
 import { StateId } from "@generation-cycle/state"
 import { Transition } from "@generation-cycle/transition"
 import { State } from "@generation-cycle/state"
-import { Fail } from "@generation-cycle/transition/fail"
+import { Fail } from "@generation-cycle/transitions/fail"
 
 export class Inference implements State {
 	async run(generationContext: GenerationContext): Promise<Transition> {
