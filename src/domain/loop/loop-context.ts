@@ -1,14 +1,14 @@
 import { GenerativeModel, TokenUsage } from "@generative-model/index"
-import { StateId } from "@generation-cycle/state"
+import { StateId } from "src/domain/loop/loop-state"
 
-export enum GenerationStatus {
+export enum LoopStatus {
 	TRIGGERED,
 	RUNNING,
 	COMPLETED,
 	FAILED,
 }
 
-export class GenerationContext {
+export class LoopContext {
 	generationId: string
 	prompt: string
 	generatedOutput: unknown | null
@@ -18,14 +18,14 @@ export class GenerationContext {
 	generativeModel: GenerativeModel
 	currentState: StateId
 	previousState: StateId | null
-	status: GenerationStatus
+	status: LoopStatus
 
 	constructor(generationId: string, generativeModel: GenerativeModel, prompt: string) {
 		this.generationId = generationId
 		this.generativeModel = generativeModel
 		this.previousState = null
-		this.status = GenerationStatus.TRIGGERED
-		this.currentState = StateId.CYCLE_START
+		this.status = LoopStatus.TRIGGERED
+		this.currentState = StateId.LOOP_START
 		this.prompt = prompt
 		this.generatedOutput = null
 		this.extractedOutput = null
@@ -33,7 +33,7 @@ export class GenerationContext {
 		this.extractedCost = null
 	}
 
-	isTerminal(): boolean {
-		return this.status == GenerationStatus.COMPLETED || this.status == GenerationStatus.FAILED
+	isTerminated(): boolean {
+		return this.status == LoopStatus.COMPLETED || this.status == LoopStatus.FAILED
 	}
 }

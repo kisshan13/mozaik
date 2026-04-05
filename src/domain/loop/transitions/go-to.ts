@@ -1,6 +1,6 @@
-import { Transition } from "@generation-cycle/transition"
-import { GenerationContext } from "@generation-cycle/generation-context"
-import { StateId } from "@generation-cycle/state"
+import { Transition } from "src/domain/loop/transition"
+import { GenerationContext } from "src/domain/loop/loop-context"
+import { StateId } from "src/domain/loop/loop-state"
 
 export class GoTo implements Transition {
 	next: StateId

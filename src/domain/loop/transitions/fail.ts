@@ -1,5 +1,5 @@
-import { Transition } from "@generation-cycle/transition"
-import { GenerationContext, GenerationStatus } from "@generation-cycle/generation-context"
+import { Transition } from "src/domain/loop/transition"
+import { GenerationContext, GenerationStatus } from "src/domain/loop/loop-context"
 
 export class Fail implements Transition {
 	error: string
