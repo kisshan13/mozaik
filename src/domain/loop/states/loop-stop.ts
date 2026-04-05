@@ -1,11 +1,9 @@
-import { LoopContext } from "src/domain/loop/loop-context"
-import { GoTo } from "src/domain/loop/transitions/go-to"
-import { StateId } from "src/domain/loop/loop-state"
-import { Transition } from "src/domain/loop/transition"
+import { Loop } from "@loop/loop"
 import { LoopState } from "src/domain/loop/loop-state"
 
 export class LoopStop implements LoopState {
-	async run(loopContext: LoopContext): Promise<Transition> {
-		return new GoTo(StateId.INFERENCE)
+	run(loop: Loop): void {
+		const loopContext = loop.getLoopContext()
+		console.log("LoopStop: Context updated", loopContext)
 	}
 }

@@ -1,60 +1,56 @@
-import { LoopContext, LoopStatus } from "src/domain/loop/loop-context"
-import { GoTo } from "src/domain/loop/transitions/go-to"
-import { StateId } from "src/domain/loop/loop-state"
-import { Transition } from "src/domain/loop/transition"
+import { Loop } from "@loop/loop"
+import { InferenceRun } from "src/domain/commands/command-sender"
+import { InferenceCommandSender } from "src/domain/commands/inference"
+import { LoopContext } from "src/domain/loop/loop-context"
 import { LoopState } from "src/domain/loop/loop-state"
-import { Fail } from "src/domain/loop/transitions/fail"
-import {
-	InferenceEventPublisher,
-	InferenceSignalListener,
-	InferenceSignalPublisher,
-} from "src/domain/events/inference-publisher"
-import { InferenceEvent, InferenceSignal } from "src/domain/events/topics/inference"
+import { InferenceNotificationListener, InferenceNotificationPublisher } from "src/domain/notifications/inference"
 
-export class CompletionReceivedListener implements InferenceSignalListener {
-	onSignal(loopContext: LoopContext): void {
+export enum InferenceNotification {
+	COMPLETION_RECEIVED = "inference.completion.received",
+	COMPLETED = "inference.completed",
+	ERROR = "inference.error",
+}
+
+export class CompletionReceivedListener implements InferenceNotificationListener {
+	onNotification(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
-export class InferenceCompletedListener implements InferenceSignalListener {
-	onSignal(loopContext: LoopContext): void {
+export class InferenceCompletedListener implements InferenceNotificationListener {
+	onNotification(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
-export class InferenceErrorListener implements InferenceSignalListener {
-	onSignal(loopContext: LoopContext): void {
+export class InferenceErrorListener implements InferenceNotificationListener {
+	onNotification(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
 export class Inference implements LoopState {
-	private signalPublisher: InferenceSignalPublisher
-	private eventPublisher: InferenceEventPublisher = new InferenceEventPublisher()
+	private notificationPublisher: InferenceNotificationPublisher
+	private commandSender: InferenceCommandSender = new InferenceCommandSender()
 
-	constructor(signalPublisher: InferenceSignalPublisher) {
-		this.signalPublisher = signalPublisher
-		this.signalPublisher.subscribe(InferenceSignal.COMPLETION_RECEIVED, new CompletionReceivedListener())
-		this.signalPublisher.subscribe(InferenceSignal.COMPLETED, new InferenceCompletedListener())
-		this.signalPublisher.subscribe(InferenceSignal.ERROR, new InferenceErrorListener())
+	constructor(notificationPublisher: InferenceNotificationPublisher) {
+		this.notificationPublisher = notificationPublisher
 	}
 
-	onContextUpdate(loopContext: LoopContext): Transition | void {
-		console.log("Inference: Context updated", loopContext)
-
-		if (loopContext.status == LoopStatus.COMPLETED) {
-			return new GoTo(StateId.COMPLETION_RECEIVED)
-		}
-	}
-
-	async run(loopContext: LoopContext): Promise<Transition> {
+	run(loop: Loop): void {
+		const loopContext = loop.getLoopContext()
 		if (!loopContext.prompt) {
-			return new Fail("Inference: Prompt is required")
+			throw new Error("Inference: Prompt is required")
 		}
 
-		this.eventPublisher.publish(InferenceEvent.REQUESTED, loopContext)
+		this.notificationPublisher.subscribe(
+			InferenceNotification.COMPLETION_RECEIVED,
+			new CompletionReceivedListener(),
+		)
 
-		return new GoTo(StateId.COMPLETION_RECEIVED)
+		this.notificationPublisher.subscribe(InferenceNotification.COMPLETED, new InferenceCompletedListener())
+		this.notificationPublisher.subscribe(InferenceNotification.ERROR, new InferenceErrorListener())
+
+		this.commandSender.send(loop.getId(), new InferenceRun(loopContext.prompt))
 	}
 }

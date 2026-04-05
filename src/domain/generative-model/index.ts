@@ -6,8 +6,8 @@ export interface TokenUsage {
 }
 
 export interface GenerativeModel {
-	generate(prompt: string): Promise<unknown>
-	extractOutput(response: unknown): Promise<unknown>
-	extractTokenUsage(response: unknown): Promise<TokenUsage>
-	calculateCost(usage: TokenUsage): Promise<number>
+	generate(prompt: string): unknown
+	extractOutput(response: unknown): unknown
+	extractTokenUsage(response: unknown): TokenUsage
+	calculateCost(usage: TokenUsage): number
 }

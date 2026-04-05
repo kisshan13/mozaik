@@ -1,5 +1,4 @@
-import { LoopContext } from "src/domain/loop/loop-context"
-import { Transition } from "src/domain/loop/transition"
+import { Loop } from "./loop"
 
 export enum StateId {
 	LOOP_START,
@@ -12,5 +11,5 @@ export enum StateId {
 }
 
 export interface LoopState {
-	run(loopContext: LoopContext): Promise<Transition>
+	run(loop: Loop): void
 }
