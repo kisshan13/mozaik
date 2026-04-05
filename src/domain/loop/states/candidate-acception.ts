@@ -4,8 +4,8 @@ import { StateId } from "src/domain/loop/loop-state"
 import { Transition } from "src/domain/loop/transition"
 import { LoopState } from "src/domain/loop/loop-state"
 
-export class ApplyCandidate implements LoopState {
+export class CandidateAcception implements LoopState {
 	async run(loopContext: LoopContext): Promise<Transition> {
-		return new GoTo(StateId.LOOP_END)
+		return new GoTo(StateId.LOOP_STOP)
 	}
 }

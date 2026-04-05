@@ -22,6 +22,6 @@ export class CompletionReceived implements LoopState {
 		const cost = await model.calculateCost(tokenUsage)
 		loopContext.extractedCost = cost
 
-		return new GoTo(StateId.LOOP_END)
+		return new GoTo(StateId.CANDIDATE_MUTATION)
 	}
 }

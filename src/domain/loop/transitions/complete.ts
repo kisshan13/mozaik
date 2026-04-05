@@ -1,5 +1,5 @@
 import { Transition } from "src/domain/loop/transition"
-import { GenerationContext, GenerationStatus } from "src/domain/loop/loop-context"
+import { LoopContext, LoopStatus } from "src/domain/loop/loop-context"
 
 export class Complete implements Transition {
 	result: string
@@ -7,7 +7,7 @@ export class Complete implements Transition {
 		this.result = result
 	}
 
-	async apply(generationContext: GenerationContext): Promise<void> {
-		generationContext.status = GenerationStatus.COMPLETED
+	async apply(loopContext: LoopContext): Promise<void> {
+		loopContext.status = LoopStatus.COMPLETED
 	}
 }

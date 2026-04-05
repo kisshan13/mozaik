@@ -7,6 +7,6 @@ import { LoopState } from "src/domain/loop/loop-state"
 export class CandidateRejection implements LoopState {
 	async run(loopContext: LoopContext): Promise<Transition> {
 		loopContext.status = LoopStatus.FAILED
-		return new GoTo(StateId.LOOP_END)
+		return new GoTo(StateId.LOOP_STOP)
 	}
 }

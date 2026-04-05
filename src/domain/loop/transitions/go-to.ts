@@ -1,5 +1,5 @@
 import { Transition } from "src/domain/loop/transition"
-import { GenerationContext } from "src/domain/loop/loop-context"
+import { LoopContext } from "src/domain/loop/loop-context"
 import { StateId } from "src/domain/loop/loop-state"
 
 export class GoTo implements Transition {
@@ -9,8 +9,8 @@ export class GoTo implements Transition {
 		this.next = next
 	}
 
-	async apply(generationContext: GenerationContext): Promise<void> {
-		generationContext.previousState = generationContext.currentState
-		generationContext.currentState = this.next
+	async apply(loopContext: LoopContext): Promise<void> {
+		loopContext.previousState = loopContext.currentState
+		loopContext.currentState = this.next
 	}
 }
