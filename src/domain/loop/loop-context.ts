@@ -9,7 +9,7 @@ export enum LoopStatus {
 }
 
 export class LoopContext {
-	generationId: string
+	loopId: string
 	prompt: string
 	generatedOutput: unknown | null
 	extractedOutput: unknown | null
@@ -20,8 +20,8 @@ export class LoopContext {
 	previousState: StateId | null
 	status: LoopStatus
 
-	constructor(generationId: string, generativeModel: GenerativeModel, prompt: string) {
-		this.generationId = generationId
+	constructor(loopId: string, generativeModel: GenerativeModel, prompt: string) {
+		this.loopId = loopId
 		this.generativeModel = generativeModel
 		this.previousState = null
 		this.status = LoopStatus.TRIGGERED
