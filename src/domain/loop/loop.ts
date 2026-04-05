@@ -7,13 +7,13 @@ import { LoopStart } from "./states/loop-start"
 import { CandidateRejection } from "./states/candidate-rejection"
 import { CandidateMutation } from "./states/candidate-mutation"
 import { CandidateAcception } from "./states/candidate-acception"
-import { ContextPublisher } from "../events/subject"
+import { InferencePublisher } from "../events/inference-publisher"
 
 export class Loop {
 	private states: Map<StateId, LoopState> = new Map<StateId, LoopState>()
-	private publisher: ContextPublisher
+	private publisher: InferencePublisher
 
-	constructor(publisher: ContextPublisher) {
+	constructor(publisher: InferencePublisher) {
 		this.publisher = publisher
 		this.states.set(StateId.LOOP_START, new LoopStart())
 		this.states.set(StateId.INFERENCE, new Inference(this.publisher))

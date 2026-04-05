@@ -4,33 +4,40 @@ import { StateId } from "src/domain/loop/loop-state"
 import { Transition } from "src/domain/loop/transition"
 import { LoopState } from "src/domain/loop/loop-state"
 import { Fail } from "src/domain/loop/transitions/fail"
-import { ContextPublisher, ContextListener, Topic } from "src/domain/events/subject"
+import {
+	InferenceEventPublisher,
+	InferenceSignalListener,
+	InferenceSignalPublisher,
+} from "src/domain/events/inference-publisher"
+import { InferenceEvent, InferenceSignal } from "src/domain/events/topics/inference"
 
-export class CompletionReceivedListener implements ContextListener {
-	onContextUpdate(loopContext: LoopContext): void {
+export class CompletionReceivedListener implements InferenceSignalListener {
+	onSignal(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
-export class InferenceCompletedListener implements ContextListener {
-	onContextUpdate(loopContext: LoopContext): void {
+export class InferenceCompletedListener implements InferenceSignalListener {
+	onSignal(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
-export class InferenceErrorListener implements ContextListener {
-	onContextUpdate(loopContext: LoopContext): void {
+export class InferenceErrorListener implements InferenceSignalListener {
+	onSignal(loopContext: LoopContext): void {
 		console.log("Inference: Context updated", loopContext)
 	}
 }
 
 export class Inference implements LoopState {
-	private publisher: ContextPublisher
-	constructor(publisher: ContextPublisher) {
-		this.publisher = publisher
-		this.publisher.subscribe(Topic.INFERENCE_COMPLETION_RECEIVED, new CompletionReceivedListener())
-		this.publisher.subscribe(Topic.INFERENCE_COMPLETED, new InferenceCompletedListener())
-		this.publisher.subscribe(Topic.INFERENCE_ERROR, new InferenceErrorListener())
+	private signalPublisher: InferenceSignalPublisher
+	private eventPublisher: InferenceEventPublisher = new InferenceEventPublisher()
+
+	constructor(signalPublisher: InferenceSignalPublisher) {
+		this.signalPublisher = signalPublisher
+		this.signalPublisher.subscribe(InferenceSignal.COMPLETION_RECEIVED, new CompletionReceivedListener())
+		this.signalPublisher.subscribe(InferenceSignal.COMPLETED, new InferenceCompletedListener())
+		this.signalPublisher.subscribe(InferenceSignal.ERROR, new InferenceErrorListener())
 	}
 
 	onContextUpdate(loopContext: LoopContext): Transition | void {
@@ -46,7 +53,7 @@ export class Inference implements LoopState {
 			return new Fail("Inference: Prompt is required")
 		}
 
-		this.publisher.publish(Topic.INFERENCE_REQUESTED, loopContext)
+		this.eventPublisher.publish(InferenceEvent.REQUESTED, loopContext)
 
 		return new GoTo(StateId.COMPLETION_RECEIVED)
 	}

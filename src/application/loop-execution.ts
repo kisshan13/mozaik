@@ -1,15 +1,15 @@
 import { Loop } from "@loop/loop"
 import { LoopContext } from "@loop/loop-context"
-import { ContextPublisher } from "src/domain/events/subject"
+import { InferenceEventPublisher, InferenceSignalPublisher } from "src/domain/events/inference-publisher"
 
 export class LoopExecution {
-	private publisher: ContextPublisher
-	constructor(publisher: ContextPublisher) {
-		this.publisher = publisher
+	private signalPublisher: InferenceSignalPublisher
+	constructor(signalPublisher: InferenceSignalPublisher) {
+		this.signalPublisher = signalPublisher
 	}
 
 	async execute(loopContext: LoopContext): Promise<void> {
-		const loop = new Loop(this.publisher)
+		const loop = new Loop(this.signalPublisher)
 		loop.start(loopContext)
 	}
 }
