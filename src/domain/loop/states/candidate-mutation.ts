@@ -6,6 +6,6 @@ import { LoopState } from "src/domain/loop/loop-state"
 
 export class CandidateMutation implements LoopState {
 	async run(loopContext: LoopContext): Promise<Transition> {
-		return new GoTo(StateId.LOOP_END)
+		return new GoTo(StateId.CANDIDATE_ACCEPTION)
 	}
 }
