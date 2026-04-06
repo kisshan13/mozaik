@@ -51,6 +51,6 @@ export class Inference implements LoopState {
 		this.notificationPublisher.subscribe(InferenceNotification.COMPLETED, new InferenceCompletedListener())
 		this.notificationPublisher.subscribe(InferenceNotification.ERROR, new InferenceErrorListener())
 
-		this.commandSender.send(loop.getId(), new InferenceRun(loopContext.prompt))
+		this.commandSender.send(loop.getId(), new InferenceRun(loop))
 	}
 }

@@ -1,3 +1,5 @@
+import { Loop } from "@loop/loop"
+
 export enum CommandType {
 	INFERENCE_RUN = "inference.run",
 }
@@ -7,31 +9,31 @@ export abstract class Command {
 }
 
 export class InferenceRun extends Command {
-	constructor(public readonly prompt: string) {
+	constructor(public readonly loop: Loop) {
 		super(CommandType.INFERENCE_RUN)
 	}
 }
 
-export abstract class CommandListener {
-	abstract onCommand(loopId: string, command: Command): void
+export abstract class CommandHandler {
+	abstract handle(loopId: string, command: Command): void
 }
 
 export class CommandSender<T extends Command> {
-	private loops: Map<string, CommandListener[]> = new Map()
+	private commandHandlers: Map<string, CommandHandler[]> = new Map()
 
-	subscribe(loopId: string, listener: CommandListener): void {
-		if (!this.loops.has(loopId)) {
-			this.loops.set(loopId, [])
+	subscribe(loopId: string, handler: CommandHandler): void {
+		if (!this.commandHandlers.has(loopId)) {
+			this.commandHandlers.set(loopId, [])
 		}
 
-		this.loops.get(loopId)!.push(listener)
+		this.commandHandlers.get(loopId)!.push(handler)
 	}
 
 	send(loopId: string, command: T): void {
-		if (!this.loops.has(loopId)) {
+		if (!this.commandHandlers.has(loopId)) {
 			return
 		}
 
-		this.loops.get(loopId)!.forEach((listener) => listener.onCommand(loopId, command))
+		this.commandHandlers.get(loopId)!.forEach((handler) => handler.handle(loopId, command))
 	}
 }
