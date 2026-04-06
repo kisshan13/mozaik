@@ -1,6 +1,6 @@
 import { Loop } from "@loop/loop"
-import { CommandManager, InferenceRun } from "src/domain/commands/command-sender"
-import { InferenceCommandManager, InferenceCommandSender } from "src/domain/commands/inference"
+import { InferenceRun } from "src/domain/commands/command-sender"
+import { InferenceCommandSender } from "src/domain/commands/inference"
 import { LoopContext } from "src/domain/loop/loop-context"
 import { LoopState } from "src/domain/loop/loop-state"
 import { InferenceNotificationListener, InferenceNotificationPublisher } from "src/domain/notifications/inference"
@@ -39,7 +39,7 @@ export class Inference implements LoopState {
 	}
 
 	run(loop: Loop): void {
-		const loopContext = loop.getLoopContext()
+		const loopContext = loop.getContext()
 		if (!loopContext.prompt) {
 			throw new Error("Inference: Prompt is required")
 		}

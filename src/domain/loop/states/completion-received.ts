@@ -3,7 +3,7 @@ import { LoopState } from "src/domain/loop/loop-state"
 
 export class CompletionReceived implements LoopState {
 	run(loop: Loop): void {
-		const loopContext = loop.getLoopContext()
+		const loopContext = loop.getContext()
 		const model = loopContext.generativeModel
 
 		if (!loopContext.generatedOutput) {

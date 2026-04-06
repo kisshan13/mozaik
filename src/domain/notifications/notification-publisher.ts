@@ -40,6 +40,6 @@ export class NotificationPublisher {
 			return
 		}
 
-		loopListeners.forEach((listener) => listener.onNotification(notification.getLoop().getLoopContext()))
+		loopListeners.forEach((listener) => listener.onNotification(notification.getLoop().getContext()))
 	}
 }

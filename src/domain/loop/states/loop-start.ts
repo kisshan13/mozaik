@@ -4,7 +4,7 @@ import { LoopState } from "src/domain/loop/loop-state"
 
 export class LoopStart implements LoopState {
 	run(loop: Loop): void {
-		const loopContext = loop.getLoopContext()
+		const loopContext = loop.getContext()
 		loopContext.status = LoopStatus.RUNNING
 	}
 }
