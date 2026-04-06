@@ -17,4 +17,31 @@ export class Context {
 		this.extractedCost = null
 	}
 
+	getGenerativeModel(): GenerativeModel {
+		return this.generativeModel
+	}
+
+	getPrompt(): string {
+		return this.prompt
+	}
+
+	getGeneratedOutput(): unknown | null {
+		return this.generatedOutput
+	}
+
+	getExtractedOutput(): unknown | null {
+		return this.extractedOutput
+	}
+
+	getExtractedTokenUsage(): TokenUsage | null {
+		return this.extractedTokenUsage
+	}
+
+	getExtractedCost(): number | null {
+		return this.extractedCost
+	}
+
+	setGeneratedOutput(generatedOutput: unknown): void {
+		this.generatedOutput = generatedOutput
+	}
 }

@@ -1,28 +1,42 @@
 import { Context } from "./context"
-import { StateId } from "./loop-state"
 
-export enum LoopStatus {
-	NOT_STARTED = "not_started",
-	RUNNING = "running",
-	COMPLETED = "completed",
-	FAILED = "failed",
+export enum DeliveryMode {
+	SINGLE_RESPONSE = "single_response",
+	STREAMING = "streaming",
 }
 
+export enum StateId {
+	INITIALIZED = "initialized",
+	LOOP_START = "loop_start",
+	INFERENCE = "inference",
+	CANDIDATE_MUTATION = "candidate_mutation",
+	CANDIDATE_ACCEPTION = "candidate_acception",
+	CANDIDATE_REJECTION = "candidate_rejection",
+	LOOP_END = "loop_end",
+}
 
 export class Loop {
 	private id: string
 	private context: Context
 	private currentState: StateId
 	private previousState: StateId | null
-	private status: LoopStatus
-	
+	private nextState: StateId | null
+	private deliveryMode: DeliveryMode
 
-	constructor(id: string, status: LoopStatus, context: Context, currentState: StateId, previousState: StateId | null) {
+	constructor(
+		id: string,
+		context: Context,
+		currentState: StateId,
+		previousState: StateId | null,
+		nextState: StateId | null,
+		deliveryMode: DeliveryMode,
+	) {
 		this.id = id
 		this.context = context
-		this.status = status
 		this.currentState = currentState
 		this.previousState = previousState
+		this.nextState = nextState
+		this.deliveryMode = deliveryMode
 	}
 
 	getId(): string {
@@ -33,10 +47,6 @@ export class Loop {
 		return this.context
 	}
 
-	isTerminated(): boolean {
-		return this.status == LoopStatus.COMPLETED || this.status == LoopStatus.FAILED
-	}
-
 	getCurrentState(): StateId {
 		return this.currentState
 	}
@@ -45,21 +55,32 @@ export class Loop {
 		return this.previousState
 	}
 
-	getStatus(): LoopStatus {
-		return this.status
-	}
-	
-	transitionTo(nextState: StateId): void {
-		if (this.isTerminated()) {
-		  throw new Error("Cannot transition terminated loop")
-		}
-	
-		this.previousState = this.currentState
-		this.currentState = nextState
+	getDeliveryMode(): DeliveryMode {
+		return this.deliveryMode
 	}
 
-	static create(context: Context) {
+	getNextState(): StateId | null {
+		return this.nextState
+	}
+
+	setCurrentState(state: StateId): void {
+		this.previousState = this.currentState
+		this.currentState = state
+	}
+
+	setNextState(state: StateId | null): void {
+		this.nextState = state
+	}
+
+	isTerminated(): boolean {
+		return this.currentState == StateId.LOOP_END
+	}
+
+	static create(context: Context, deliveryMode: DeliveryMode = DeliveryMode.SINGLE_RESPONSE) {
 		const id = crypto.randomUUID()
-		return new Loop(id, LoopStatus.NOT_STARTED, context, StateId.INITIALIZED, null)
+		const currentState = StateId.INITIALIZED
+		const previousState = null
+		const nextState = StateId.LOOP_START
+		return new Loop(id, context, currentState, previousState, nextState, deliveryMode)
 	}
 }

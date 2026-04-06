@@ -1,9 +1,9 @@
-import { Loop } from "@loop/loop"
-import { LoopState } from "src/domain/loop/loop-state"
+import { Loop, StateId } from "@loop/loop"
+import { LoopState } from "@loop/loop-state"
 
-export class LoopStop implements LoopState {
+export class LoopEnd implements LoopState {
 	run(loop: Loop): void {
-		const context = loop.getContext()
-		console.log("LoopStop: Context updated", context)
+		loop.setCurrentState(StateId.LOOP_END)
+		loop.setNextState(null)
 	}
 }
