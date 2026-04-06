@@ -1,10 +1,9 @@
 import { Loop } from "@loop/loop"
-import { LoopStatus } from "src/domain/loop/loop-context"
 import { LoopState } from "src/domain/loop/loop-state"
 
 export class LoopStart implements LoopState {
 	run(loop: Loop): void {
-		const loopContext = loop.getContext()
-		loopContext.status = LoopStatus.RUNNING
+		const context = loop.getContext()
+		console.log("LoopStart: Loop started: ", context)
 	}
 }

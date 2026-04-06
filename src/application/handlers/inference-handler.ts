@@ -1,20 +1,21 @@
-import { InferenceNotification } from "@loop/states/inference"
+import { InferenceNotification } from "@loop/inference/state"
 import { Loop } from "@loop/loop"
 import { InferenceNotificationPublisher } from "src/domain/notifications/inference"
 import { Notification } from "src/domain/notifications/notification-publisher"
-import { CommandHandler, InferenceRun } from "src/domain/commands/command-sender"
-import { InferenceCommandManager } from "src/domain/commands/inference"
+import { InferenceRun } from "@loop/inference/command"
+import { CommandHandler } from "src/domain/command/handler"
+import { CommandSubscription } from "src/domain/command/subscription"
 
-export class InferenceCommandHandler implements CommandHandler {
+export class InferenceCommandHandler implements CommandHandler<InferenceRun> {
 	private notificationPublisher: InferenceNotificationPublisher
-	private inferenceCommandManager: InferenceCommandManager
+	private inferenceRunSubscription: CommandSubscription<InferenceRun>
 
 	constructor(
 		notificationPublisher: InferenceNotificationPublisher,
-		inferenceCommandManager: InferenceCommandManager,
+		inferenceRun: CommandSubscription<InferenceRun>,
 	) {
 		this.notificationPublisher = notificationPublisher
-		this.inferenceCommandManager = inferenceCommandManager
+		this.inferenceRunSubscription = inferenceRun
 	}
 
 	handle(loopId: string, inferenceRun: InferenceRun): void {
@@ -23,8 +24,8 @@ export class InferenceCommandHandler implements CommandHandler {
 	}
 
 	async start(loop: Loop): Promise<void> {
-		//loop.start(loopContext)
+		//loop.start(Context)
 
-		this.inferenceCommandManager.subscribe(loop.getId(), this)
+		this.inferenceRunSubscription.subscribe(loop.getId(), this)
 	}
 }

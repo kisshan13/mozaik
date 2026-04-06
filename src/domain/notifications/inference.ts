@@ -1,10 +1,10 @@
-import { LoopContext } from "@loop/loop-context"
+import { Context } from "@loop/context"
 import { NotificationPublisher } from "./notification-publisher"
 import { NotificationListener } from "./notification-listener"
 import { Notification } from "./notification-publisher"
 
 export abstract class InferenceNotificationListener extends NotificationListener {
-	abstract onNotification(loopContext: LoopContext): void
+	abstract onNotification(Context: Context): void
 }
 
 export class InferenceNotificationPublisher extends NotificationPublisher {

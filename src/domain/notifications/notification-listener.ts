@@ -1,5 +1,5 @@
-import { LoopContext } from "@loop/loop-context"
+import { Context } from "@loop/context"
 
 export abstract class NotificationListener {
-	abstract onNotification(loopContext: LoopContext): void
+	abstract onNotification(Context: Context): void
 }

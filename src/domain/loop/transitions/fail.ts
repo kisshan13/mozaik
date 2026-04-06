@@ -1,5 +1,5 @@
 import { Transition } from "src/domain/loop/transition"
-import { LoopContext, LoopStatus } from "src/domain/loop/loop-context"
+import { Context } from "@loop/context"
 
 export class Fail implements Transition {
 	error: string
@@ -8,7 +8,6 @@ export class Fail implements Transition {
 		this.error = error
 	}
 
-	async apply(loopContext: LoopContext): Promise<void> {
-		loopContext.status = LoopStatus.FAILED
+	async apply(Context: Context): Promise<void> {
 	}
 }

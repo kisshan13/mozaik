@@ -1,13 +1,14 @@
 import { Loop } from "./loop"
 
 export enum StateId {
-	LOOP_START,
-	INFERENCE,
-	COMPLETION_RECEIVED,
-	CANDIDATE_MUTATION,
-	CANDIDATE_ACCEPTION,
-	CANDIDATE_REJECTION,
-	LOOP_STOP,
+	INITIALIZED = "initialized",
+	LOOP_START = "loop_start",
+	INFERENCE = "inference",
+	COMPLETION_RECEIVED = "completion_received",
+	CANDIDATE_MUTATION = "candidate_mutation",
+	CANDIDATE_ACCEPTION = "candidate_acception",
+	CANDIDATE_REJECTION = "candidate_rejection",
+	LOOP_STOP = "loop_stop",
 }
 
 export interface LoopState {

@@ -1,8 +1,12 @@
-import { CommandHandler, CommandManager, CommandSender, InferenceRun } from "./command-sender"
+import { CommandSender } from "src/domain/command/sender"
+import { InferenceRun } from "./command"
+import { CommandHandler } from "src/domain/command/handler"
+import { CommandManager } from "src/domain/command/manager"
 
 export type InferenceCommandSender = CommandSender<InferenceRun>
+
 export class InferenceCommandManager extends CommandManager<InferenceRun> {
-	subscribe(loopId: string, handler: CommandHandler): void {
+	subscribe(loopId: string, handler: CommandHandler<InferenceRun>): void {
 		console.log("InferenceCommandSender: Subscribing to loop", loopId)
 		super.subscribe(loopId, handler)
 	}

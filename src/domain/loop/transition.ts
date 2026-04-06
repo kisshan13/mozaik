@@ -1,5 +1,5 @@
-import { LoopContext } from "src/domain/loop/loop-context"
+import { Context } from "@loop/context"
 
 export interface Transition {
-	apply(loopContext: LoopContext): Promise<void>
+	apply(Context: Context): Promise<void>
 }
