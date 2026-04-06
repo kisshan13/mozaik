@@ -1,7 +1,24 @@
-import { LoopContext } from "@loop/loop-context"
 import { NotificationListener } from "./notification-listener"
+import { Loop } from "@loop/loop"
 
-export class NotificationPublisher<T> {
+export class Notification {
+	private notificationType: string
+	private loop: Loop
+
+	constructor(notificationType: string, loop: Loop) {
+		this.notificationType = notificationType
+		this.loop = loop
+	}
+
+	getNotificationType(): string {
+		return this.notificationType
+	}
+
+	getLoop(): Loop {
+		return this.loop
+	}
+}
+export class NotificationPublisher {
 	private loops: Map<string, NotificationListener[]> = new Map()
 
 	subscribe(loopId: string, listener: NotificationListener): void {
@@ -12,7 +29,7 @@ export class NotificationPublisher<T> {
 		this.loops.get(loopId)!.push(listener)
 	}
 
-	notify(loopId: string, loopContext: LoopContext): void {
+	notify(loopId: string, notification: Notification): void {
 		if (!this.loops.has(loopId)) {
 			return
 		}
@@ -23,6 +40,6 @@ export class NotificationPublisher<T> {
 			return
 		}
 
-		loopListeners.forEach((listener) => listener.onNotification(loopContext))
+		loopListeners.forEach((listener) => listener.onNotification(notification.getLoop().getLoopContext()))
 	}
 }

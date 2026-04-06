@@ -9,6 +9,14 @@ export class Loop {
 		this.loopContext = loopContext
 	}
 
+	getId(): string {
+		return this.id
+	}
+
+	getLoopContext(): LoopContext {
+		return this.loopContext
+	}
+
 	static create(loopContext: LoopContext) {
 		const id = crypto.randomUUID()
 		return new Loop(id, loopContext)

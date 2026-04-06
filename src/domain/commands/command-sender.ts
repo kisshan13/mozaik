@@ -27,7 +27,7 @@ export class CommandSender<T extends Command> {
 		this.loops.get(loopId)!.push(listener)
 	}
 
-	send(loopId: string, command: Command): void {
+	send(loopId: string, command: T): void {
 		if (!this.loops.has(loopId)) {
 			return
 		}
