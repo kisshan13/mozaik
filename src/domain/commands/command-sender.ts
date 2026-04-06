@@ -18,7 +18,15 @@ export abstract class CommandHandler {
 	abstract handle(loopId: string, command: Command): void
 }
 
-export class CommandSender<T extends Command> {
+export interface CommandSubscriptions {
+	subscribe(loopId: string, handler: CommandHandler): void
+}
+
+export interface CommandSender<T extends Command> {
+	send(loopId: string, command: T): void
+}
+
+export class CommandManager<T extends Command> implements CommandSubscriptions, CommandSender<T> {
 	private commandHandlers: Map<string, CommandHandler[]> = new Map()
 
 	subscribe(loopId: string, handler: CommandHandler): void {

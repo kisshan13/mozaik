@@ -3,15 +3,18 @@ import { Loop } from "@loop/loop"
 import { InferenceNotificationPublisher } from "src/domain/notifications/inference"
 import { Notification } from "src/domain/notifications/notification-publisher"
 import { CommandHandler, InferenceRun } from "src/domain/commands/command-sender"
-import { InferenceCommandSender } from "src/domain/commands/inference"
+import { InferenceCommandManager } from "src/domain/commands/inference"
 
 export class InferenceCommandHandler implements CommandHandler {
 	private notificationPublisher: InferenceNotificationPublisher
-	private inferenceCommandSender: InferenceCommandSender
+	private inferenceCommandManager: InferenceCommandManager
 
-	constructor(notificationPublisher: InferenceNotificationPublisher, inferenceCommandSender: InferenceCommandSender) {
+	constructor(
+		notificationPublisher: InferenceNotificationPublisher,
+		inferenceCommandManager: InferenceCommandManager,
+	) {
 		this.notificationPublisher = notificationPublisher
-		this.inferenceCommandSender = inferenceCommandSender
+		this.inferenceCommandManager = inferenceCommandManager
 	}
 
 	handle(loopId: string, inferenceRun: InferenceRun): void {
@@ -22,6 +25,6 @@ export class InferenceCommandHandler implements CommandHandler {
 	async start(loop: Loop): Promise<void> {
 		//loop.start(loopContext)
 
-		this.inferenceCommandSender.subscribe(loop.getId(), this)
+		this.inferenceCommandManager.subscribe(loop.getId(), this)
 	}
 }

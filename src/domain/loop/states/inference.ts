@@ -1,6 +1,6 @@
 import { Loop } from "@loop/loop"
-import { InferenceRun } from "src/domain/commands/command-sender"
-import { InferenceCommandSender } from "src/domain/commands/inference"
+import { CommandManager, InferenceRun } from "src/domain/commands/command-sender"
+import { InferenceCommandManager, InferenceCommandSender } from "src/domain/commands/inference"
 import { LoopContext } from "src/domain/loop/loop-context"
 import { LoopState } from "src/domain/loop/loop-state"
 import { InferenceNotificationListener, InferenceNotificationPublisher } from "src/domain/notifications/inference"
@@ -31,10 +31,11 @@ export class InferenceErrorListener implements InferenceNotificationListener {
 
 export class Inference implements LoopState {
 	private notificationPublisher: InferenceNotificationPublisher
-	private commandSender: InferenceCommandSender = new InferenceCommandSender()
+	private commandSender: InferenceCommandSender
 
 	constructor(notificationPublisher: InferenceNotificationPublisher) {
 		this.notificationPublisher = notificationPublisher
+		this.commandSender = new InferenceCommandManager()
 	}
 
 	run(loop: Loop): void {
