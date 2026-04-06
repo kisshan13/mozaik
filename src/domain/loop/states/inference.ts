@@ -33,9 +33,9 @@ export class Inference implements LoopState {
 	private notificationPublisher: InferenceNotificationPublisher
 	private commandSender: InferenceCommandSender
 
-	constructor(notificationPublisher: InferenceNotificationPublisher) {
+	constructor(notificationPublisher: InferenceNotificationPublisher, commandSender: InferenceCommandSender) {
 		this.notificationPublisher = notificationPublisher
-		this.commandSender = new InferenceCommandManager()
+		this.commandSender = commandSender
 	}
 
 	run(loop: Loop): void {
