@@ -1,7 +1,7 @@
-import { Context } from "./context"
+import { Context } from "../context"
 
-export enum DeliveryMode {
-	SINGLE_RESPONSE = "single_response",
+export enum TokenDeliveryMode {
+	BUFFERING = "buffering",
 	STREAMING = "streaming",
 }
 
@@ -15,25 +15,25 @@ export enum StateId {
 	LOOP_END = "loop_end",
 }
 
-export class Loop {
+export class WorkflowRun {
 	private id: string
 	private context: Context
 	private currentState: StateId
 	private previousState: StateId | null
-	private deliveryMode: DeliveryMode
+	private tokenDeliveryMode: TokenDeliveryMode
 
 	constructor(
 		id: string,
 		context: Context,
 		currentState: StateId,
 		previousState: StateId | null,
-		deliveryMode: DeliveryMode,
+		tokenDeliveryMode: TokenDeliveryMode,
 	) {
 		this.id = id
 		this.context = context
 		this.currentState = currentState
 		this.previousState = previousState
-		this.deliveryMode = deliveryMode
+		this.tokenDeliveryMode = tokenDeliveryMode
 	}
 
 	getId(): string {
@@ -52,8 +52,8 @@ export class Loop {
 		return this.previousState
 	}
 
-	getDeliveryMode(): DeliveryMode {
-		return this.deliveryMode
+	getTokenDeliveryMode(): TokenDeliveryMode {
+		return this.tokenDeliveryMode
 	}
 
 	setCurrentState(state: StateId): void {
@@ -65,10 +65,10 @@ export class Loop {
 		return this.currentState == StateId.LOOP_END
 	}
 
-	static create(context: Context, deliveryMode: DeliveryMode = DeliveryMode.SINGLE_RESPONSE) {
+	static create(context: Context, tokenDeliveryMode: TokenDeliveryMode = TokenDeliveryMode.BUFFERING) {
 		const id = crypto.randomUUID()
 		const currentState = StateId.INITIALIZED
 		const previousState = null
-		return new Loop(id, context, currentState, previousState, deliveryMode)
+		return new WorkflowRun(id, context, currentState, previousState, tokenDeliveryMode)
 	}
 }

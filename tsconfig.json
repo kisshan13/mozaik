@@ -12,7 +12,7 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
-			"@loop/*": ["src/domain/loop/*"],
+			"@agent/*": ["src/domain/agent/*"],
 			"@generative-model/*": ["src/domain/generative-model/*"]
 		},
 		"esModuleInterop": true,
