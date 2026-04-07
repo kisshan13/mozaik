@@ -1,4 +1,4 @@
-import { GenerativeModel, TokenUsage } from "@generative-model/index"
+import { GenerativeModel, TokenUsage } from "@generative-model/generative-model"
 
 export class Context {
 	prompt: string
