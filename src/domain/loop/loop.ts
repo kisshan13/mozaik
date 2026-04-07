@@ -8,7 +8,8 @@ export enum DeliveryMode {
 export enum StateId {
 	INITIALIZED = "initialized",
 	LOOP_START = "loop_start",
-	INFERENCE = "inference",
+	WAITING_INFERENCE = "waiting_inference",
+	STREAMING_INFERENCE = "streaming_inference",
 	CANDIDATE_MUTATION = "candidate_mutation",
 	CANDIDATE_ACCEPTION = "candidate_acception",
 	CANDIDATE_REJECTION = "candidate_rejection",
