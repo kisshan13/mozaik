@@ -10,10 +10,6 @@ export class DefaultOrchestrator implements LoopExecutionOrchestrator {
 			return StepId.CONTEXT_PREPARATION
 		}
 
-		if (current === StateId.LOOP_START) {
-			return StepId.INFERENCE_REQUEST
-		}
-
 		if (current === StateId.WAITING_INFERENCE) {
 			return StepId.CANDIDATE_MUTATION
 		}

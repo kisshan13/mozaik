@@ -7,7 +7,6 @@ export enum DeliveryMode {
 
 export enum StateId {
 	INITIALIZED = "initialized",
-	LOOP_START = "loop_start",
 	WAITING_INFERENCE = "waiting_inference",
 	STREAMING_INFERENCE = "streaming_inference",
 	CANDIDATE_MUTATION = "candidate_mutation",
@@ -21,7 +20,6 @@ export class Loop {
 	private context: Context
 	private currentState: StateId
 	private previousState: StateId | null
-	private nextState: StateId | null
 	private deliveryMode: DeliveryMode
 
 	constructor(
@@ -29,14 +27,12 @@ export class Loop {
 		context: Context,
 		currentState: StateId,
 		previousState: StateId | null,
-		nextState: StateId | null,
 		deliveryMode: DeliveryMode,
 	) {
 		this.id = id
 		this.context = context
 		this.currentState = currentState
 		this.previousState = previousState
-		this.nextState = nextState
 		this.deliveryMode = deliveryMode
 	}
 
@@ -60,17 +56,9 @@ export class Loop {
 		return this.deliveryMode
 	}
 
-	getNextState(): StateId | null {
-		return this.nextState
-	}
-
 	setCurrentState(state: StateId): void {
 		this.previousState = this.currentState
 		this.currentState = state
-	}
-
-	setNextState(state: StateId | null): void {
-		this.nextState = state
 	}
 
 	isTerminated(): boolean {
@@ -81,7 +69,6 @@ export class Loop {
 		const id = crypto.randomUUID()
 		const currentState = StateId.INITIALIZED
 		const previousState = null
-		const nextState = StateId.LOOP_START
-		return new Loop(id, context, currentState, previousState, nextState, deliveryMode)
+		return new Loop(id, context, currentState, previousState, deliveryMode)
 	}
 }

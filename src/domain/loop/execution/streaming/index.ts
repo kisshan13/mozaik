@@ -10,7 +10,7 @@ export class StreamingOrchestrator implements LoopExecutionOrchestrator {
 			return StepId.CONTEXT_PREPARATION
 		}
 
-		if (current === StateId.LOOP_START && signal === LoopSignal.INFERENCE_STARTED) {
+		if (current === StateId.WAITING_INFERENCE && signal === LoopSignal.INFERENCE_STARTED) {
 			return StepId.INFERENCE_REQUEST
 		}
 
