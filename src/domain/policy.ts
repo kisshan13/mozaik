@@ -1,6 +1,6 @@
 import { Context } from "src/domain/context"
 
-export type Candidate = Context
+export type Candidate = Context | unknown
 
 export interface Policy {
 	isSatisfiedBy(candidate: Candidate): boolean

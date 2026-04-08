@@ -1,10 +1,10 @@
-import { GenerativeModel, TokenUsage } from "@generative-model/generative-model"
+import { GenerativeModel, Usage } from "@generative-model/generative-model"
 
 export class Context {
 	prompt: string
 	generatedOutput: unknown | null
 	extractedOutput: unknown | null
-	extractedTokenUsage: TokenUsage | null
+	extractedTokenUsage: Usage | null
 	extractedCost: number | null
 	generativeModel: GenerativeModel
 
@@ -33,7 +33,7 @@ export class Context {
 		return this.extractedOutput
 	}
 
-	getExtractedTokenUsage(): TokenUsage | null {
+	getExtractedTokenUsage(): Usage | null {
 		return this.extractedTokenUsage
 	}
 
