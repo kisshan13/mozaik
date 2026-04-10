@@ -30,15 +30,16 @@ export class Gpt54Model implements GenerativeModel {
 		const params = request as any
 		params.model = "gpt-5.4"
 		params.reasoning = {
-			effort: "none",
+			effort: "medium",
 		}
+
 		const response = await this.client.responses.create(params)
 
 		this.extractTokenUsage(response)
 		return response
 	}
 
-	extractTokenUsage(response: unknown): Usage {
+	extractTokenUsage(response: any): Usage {
 		console.log(response)
 		const usage: Usage = {
 			inputTokens: 0,

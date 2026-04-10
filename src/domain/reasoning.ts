@@ -1,5 +1,5 @@
-import { Item } from "./item/item"
-import { ItemStatus } from "./item/item-status"
+import { Item } from "./context-engine/context/context-item"
+import { ItemStatus } from "./context-engine/context/context-unit-status"
 
 export class Reasoning extends Item {
 	public readonly content?: string
