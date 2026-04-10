@@ -1,6 +1,6 @@
 import { GenerativeModel, Usage } from "@generative-model/generative-model"
 import OpenAI from "openai"
-import { Policy } from "src/domain/policy"
+import { Policy } from "src/domain/context-engine/condition/condition"
 
 export class Gpt54Model implements GenerativeModel {
 	private readonly client: OpenAI
