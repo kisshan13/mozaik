@@ -1,15 +1,19 @@
 import { Item } from "./item"
-import { ItemState } from "./item-state"
+import { ItemStatus } from "./item-status"
+import { ModelContent } from "./model-content"
+import { InputTextContent, UserContent } from "./user-content"
+
+export type Content = UserContent | ModelContent
 
 export class Message extends Item {
 	constructor(
 		id: string,
 		type: string,
-		state: ItemState,
+		status: ItemStatus,
 		public readonly role: string,
-		public readonly content: string,
+		public readonly content: InputTextContent[],
 	) {
-		super(id, type, state)
+		super(id, type, status)
 		this.role = role
 		this.content = content
 	}

@@ -1,17 +1,13 @@
-import { ItemState } from "./item-state"
+import { ItemStatus } from "./item-status"
 
 export class Item {
 	readonly id: string
 	readonly type: string
-	readonly state: ItemState
+	readonly status: ItemStatus
 
-	constructor(id: string, type: string, state: ItemState) {
+	constructor(id: string, type: string, status: ItemStatus) {
 		this.id = id
 		this.type = type
-		this.state = state
-	}
-
-	changeStatus(status: string): void {
-		this.state.changeStatus(status)
+		this.status = status
 	}
 }

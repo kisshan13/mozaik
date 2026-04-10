@@ -1,8 +1,21 @@
 import { Item } from "./item/item"
-import { ItemState } from "./item/item-state"
+import { ItemStatus } from "./item/item-status"
 
 export class Reasoning extends Item {
-	constructor(id: string, type: string, state: ItemState) {
-		super(id, type, state)
+	public readonly content?: string
+	public readonly encryptedContent?: string
+	public readonly summary?: string
+	constructor(
+		id: string,
+		type: string,
+		status: ItemStatus,
+		content?: string,
+		encryptedContent?: string,
+		summary?: string,
+	) {
+		super(id, type, status)
+		this.content = content
+		this.encryptedContent = encryptedContent
+		this.summary = summary
 	}
 }

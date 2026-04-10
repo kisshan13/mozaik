@@ -1,14 +1,14 @@
 import { Item } from "./item"
-import { ItemState } from "./item-state"
+import { ItemStatus } from "./item-status"
 
 export class ToolCalling extends Item {
 	constructor(
 		id: string,
 		type: string,
-		state: ItemState,
+		status: ItemStatus,
 		public readonly toolName: string,
 		public readonly toolArguments: Record<string, unknown>,
 	) {
-		super(id, type, state)
+		super(id, type, status)
 	}
 }
