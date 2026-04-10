@@ -15,10 +15,16 @@ async function main() {
 					{
 						type: "input_text",
 						text: "Write me a poem about a cats",
-					}
+					},
 				],
 			},
-			{ id: "fc_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892", call_id: "fc_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892", type: "function_call", name: "reduce_poem", arguments: "100" },
+			{
+				id: "fc_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892",
+				call_id: "fc_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892",
+				type: "function_call",
+				name: "reduce_poem",
+				arguments: "100",
+			},
 			{
 				type: "function_call_output",
 				call_id: "fc_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892",
@@ -42,23 +48,25 @@ async function main() {
     'With mischief tucked inside its heart.\n' +
     '\n' +
     'And when the world feels hard and flat,  \n' +
-    'There’s comfort in the shape of cat.`
+    'There’s comfort in the shape of cat.`,
 					},
 				],
-			},{
+			},
+			{
 				role: "user",
 				content: [
 					{
 						type: "input_text",
 						text: "Reduce the poem to 100 characters.",
-					}
+					},
 				],
-			}, {
-				id: 'rs_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892',
-				type: 'reasoning',
-				summary: []
-			  }
-		]
+			},
+			{
+				id: "rs_0f77fc6162e828830069d8fb32aba8819f82484616cb16b892",
+				type: "reasoning",
+				summary: [],
+			},
+		],
 	}
 	const policy = new MaxTokensPolicy()
 	const model = new Gpt54Model(undefined)
