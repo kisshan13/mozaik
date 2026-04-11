@@ -1,11 +1,12 @@
 import { GenerativeModel, Usage } from "@generative-model/generative-model"
 import OpenAI from "openai"
-import { Policy } from "src/domain/context-engine/condition/condition"
+import { Condition } from "src/domain/context-engine/condition/condition"
+import { Context } from "src/domain/context/context"
 
 export class Gpt54Model implements GenerativeModel {
 	private readonly client: OpenAI
 
-	constructor(private readonly policy: Policy | undefined) {
+	constructor(private readonly condition: Condition<Context> | undefined) {
 		this.client = new OpenAI()
 	}
 
@@ -24,9 +25,9 @@ export class Gpt54Model implements GenerativeModel {
 		return response
 	}
 	async call(request: unknown): Promise<unknown> {
-		if (this.policy && !this.policy.isSatisfiedBy(request)) {
-			throw new Error("Policy not satisfied.")
-		}
+		// if (this.condition && !this.condition.isSatisfiedBy(request)) {
+		// 	throw new Error("Policy not satisfied.")
+		// }
 		const params = request as any
 		params.model = "gpt-5.4"
 		params.reasoning = {

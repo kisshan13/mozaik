@@ -1,5 +1,5 @@
 import "dotenv/config"
-import { MaxTokensPolicy } from "./max-tokens-policy"
+import { FunctionCallCondition } from "./funcion-call-condtionion"
 import { Gpt54Model } from "./gpt-5-4"
 
 async function main() {
@@ -68,8 +68,8 @@ async function main() {
 			},
 		],
 	}
-	const policy = new MaxTokensPolicy()
-	const model = new Gpt54Model(undefined)
+	const condition = new FunctionCallCondition()
+	const model = new Gpt54Model(condition)
 	await model.call(request)
 }
 
