@@ -16,4 +16,13 @@ export class FunctionCall extends ContextItem {
 	static rehydrate(data: { callId: string; name: string; args: string }): FunctionCall {
 		return new FunctionCall(data.callId, data.name, data.args)
 	}
+
+	toJSON(): any {
+		return {
+			type: this.type,
+			callId: this.callId,
+			name: this.name,
+			arguments: this.args,
+		}
+	}
 }

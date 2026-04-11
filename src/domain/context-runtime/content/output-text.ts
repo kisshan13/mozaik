@@ -10,4 +10,11 @@ export class OutputTextContent extends Content {
 	static rehydrate(data: { text: string }): OutputTextContent {
 		return new OutputTextContent(data.text)
 	}
+
+	toJSON(): Record<string, any> {
+		return {
+			type: this.type,
+			text: this.text,
+		}
+	}
 }

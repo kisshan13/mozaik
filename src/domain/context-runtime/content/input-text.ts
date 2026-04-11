@@ -14,4 +14,13 @@ export class InputTextContent extends Content {
 	static rehydrate(data: { text: string }): InputTextContent {
 		return new InputTextContent(data.text)
 	}
+
+	toJSON(): any {
+		return [
+			{
+				type: this.type,
+				text: this.text,
+			},
+		]
+	}
 }

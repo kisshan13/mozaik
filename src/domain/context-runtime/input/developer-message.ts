@@ -11,6 +11,14 @@ export class DeveloperMessage extends ContextItem {
 		this.content = content
 	}
 
+	toJSON(): any {
+		return {
+			type: this.type,
+			role: this.role,
+			content: this.content.toJSON(),
+		}
+	}
+
 	static create(text: string): DeveloperMessage {
 		const content = InputTextContent.create(text)
 		return new DeveloperMessage(content)
