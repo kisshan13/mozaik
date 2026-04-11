@@ -7,11 +7,20 @@ export class Context {
 		this.items = items
 	}
 
-	addItem(item: ContextItem): void {
+	addItem(item: ContextItem): Context {
 		this.items.push(item)
+		return this
 	}
 
 	getItems(): ContextItem[] {
 		return this.items
+	}
+
+	static create(): Context {
+		return new Context([])
+	}
+
+	toJSON(): any {
+		return this.items.map((item) => item.toJSON())
 	}
 }

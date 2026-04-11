@@ -15,7 +15,7 @@ export class InputText extends Content {
 		return new InputText(data.text)
 	}
 
-	toJSON(): any {
+	toJSON(): any[] {
 		return [
 			{
 				type: this.type,

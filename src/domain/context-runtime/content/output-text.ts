@@ -11,10 +11,12 @@ export class OutputText extends Content {
 		return new OutputText(data.text)
 	}
 
-	toJSON(): Record<string, any> {
-		return {
-			type: this.type,
-			text: this.text,
-		}
+	toJSON(): any[] {
+		return [
+			{
+				type: this.type,
+				text: this.text,
+			},
+		]
 	}
 }

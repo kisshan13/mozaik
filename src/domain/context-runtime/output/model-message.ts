@@ -6,7 +6,7 @@ export class ModelMessage extends ContextItem {
 	readonly role = "assistant"
 	readonly content: OutputText
 
-	constructor(content: OutputText) {
+	private constructor(content: OutputText) {
 		super()
 		this.content = content
 	}

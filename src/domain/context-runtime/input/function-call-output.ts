@@ -6,7 +6,7 @@ export class FunctionCallOutput extends ContextItem {
 	readonly callId: string
 	readonly output: InputText[]
 
-	constructor(callId: string, output: InputText[]) {
+	private constructor(callId: string, output: InputText[]) {
 		super()
 		this.callId = callId
 		this.output = output

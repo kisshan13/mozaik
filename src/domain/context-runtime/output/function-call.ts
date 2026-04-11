@@ -6,7 +6,7 @@ export class FunctionCall extends ContextItem {
 	readonly name: string
 	readonly args: string
 
-	constructor(callId: string, name: string, args: string) {
+	private constructor(callId: string, name: string, args: string) {
 		super()
 		this.callId = callId
 		this.name = name
