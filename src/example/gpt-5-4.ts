@@ -1,7 +1,7 @@
 import { GenerativeModel, Usage } from "@generative-model/generative-model"
 import OpenAI from "openai"
 import { Condition } from "src/domain/context-engine/condition/condition"
-import { Context } from "src/domain/context/context"
+import { Context } from "src/domain/context-runtime/context"
 
 export class Gpt54Model implements GenerativeModel {
 	private readonly client: OpenAI
