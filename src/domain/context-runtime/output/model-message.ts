@@ -1,18 +1,18 @@
 import { ContextItem } from "../context-item"
-import { OutputTextContent } from "../content/output-text"
+import { OutputText } from "../content/output-text"
 
 export class ModelMessage extends ContextItem {
 	readonly type = "message"
 	readonly role = "assistant"
-	readonly content: OutputTextContent
+	readonly content: OutputText
 
-	constructor(content: OutputTextContent) {
+	constructor(content: OutputText) {
 		super()
 		this.content = content
 	}
 
 	static rehydrate(data: { text: string }): ModelMessage {
-		const content = OutputTextContent.rehydrate(data)
+		const content = OutputText.rehydrate(data)
 		return new ModelMessage(content)
 	}
 

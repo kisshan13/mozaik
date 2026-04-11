@@ -1,23 +1,23 @@
 import { ContextItem } from "../context-item"
-import { InputTextContent } from "../content/input-text"
+import { InputText } from "../content/input-text"
 
 export class UserMessage extends ContextItem {
 	readonly type = "message"
 	readonly role = "user"
-	readonly content: InputTextContent
+	readonly content: InputText
 
-	constructor(content: InputTextContent) {
+	constructor(content: InputText) {
 		super()
 		this.content = content
 	}
 
 	static create(text: string): UserMessage {
-		const content = InputTextContent.create(text)
+		const content = InputText.create(text)
 		return new UserMessage(content)
 	}
 
 	static rehydrate(data: { text: string }): UserMessage {
-		const content = InputTextContent.rehydrate(data)
+		const content = InputText.rehydrate(data)
 		return new UserMessage(content)
 	}
 

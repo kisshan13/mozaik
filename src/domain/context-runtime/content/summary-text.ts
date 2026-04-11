@@ -1,14 +1,14 @@
 import { Content } from "../content"
 
-export class SummaryTextContent extends Content {
+export class SummaryText extends Content {
 	readonly type = "summary_text"
 
 	private constructor(public readonly text: string) {
 		super()
 	}
 
-	static rehydrate(data: { text: string }): SummaryTextContent {
-		return new SummaryTextContent(data.text)
+	static rehydrate(data: { text: string }): SummaryText {
+		return new SummaryText(data.text)
 	}
 
 	toJSON(): Record<string, any> {

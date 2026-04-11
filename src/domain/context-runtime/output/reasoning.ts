@@ -1,17 +1,17 @@
-import { InputTextContent } from "../content/input-text"
-import { SummaryTextContent } from "../content/summary-text"
+import { InputText } from "../content/input-text"
+import { SummaryText } from "../content/summary-text"
 import { ContextItem } from "../context-item"
 
 export class Reasoning extends ContextItem {
 	readonly type = "reasoning"
-	readonly content: InputTextContent | undefined
+	readonly content: InputText | undefined
 	readonly encryptedContent: string | undefined
-	readonly summary: SummaryTextContent[]
+	readonly summary: SummaryText[]
 
 	private constructor(
-		content: InputTextContent | undefined,
+		content: InputText | undefined,
 		encryptedContent?: string | undefined,
-		summary: SummaryTextContent[] = [],
+		summary: SummaryText[] = [],
 	) {
 		super()
 		this.content = content
@@ -20,9 +20,9 @@ export class Reasoning extends ContextItem {
 	}
 
 	static rehydrate(data: {
-		content: InputTextContent | undefined
+		content: InputText | undefined
 		encryptedContent: string | undefined
-		summary: SummaryTextContent[]
+		summary: SummaryText[]
 	}): Reasoning {
 		return new Reasoning(data.content, data.encryptedContent, data.summary)
 	}
