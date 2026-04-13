@@ -12,6 +12,11 @@ export class Context {
 		return this
 	}
 
+	addItems(items: ContextItem[]): Context {
+		this.items.push(...items)
+		return this
+	}
+
 	getItems(): ContextItem[] {
 		return this.items
 	}
