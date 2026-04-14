@@ -1,6 +1,18 @@
 # Mozaik
 
-Mozaik is a TypeScript library for orchestrating AI agents.
+**Mozaik** is a TypeScript library for building, managing, and evolving **LLM context**.
+
+Instead of focusing on agents themselves, Mozaik provides a structured way to **model, manipulate, persist, and restore the context** that drives language model behavior. It implements a clean object model aligned with the **OpenResponses specification**, enabling developers to work with LLM inputs and outputs as composable, typed entities.
+
+With Mozaik, you can:
+
+- Structure interactions as ordered **context items** (messages, reasoning steps, function calls, etc.)
+- Append and evolve context across multiple model calls
+- Persist and reload context from storage
+- Manage context size and avoid overflow
+- Build complex workflows through **context composition**, not ad-hoc prompt strings
+
+Mozaik treats context as a **first-class primitive**, making it easier to design scalable, maintainable, and provider-agnostic LLM applications.
 
 ![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
 
