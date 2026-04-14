@@ -35,6 +35,14 @@ It abstracts away vendor-specific APIs (e.g. OpenAI) and provides a domain-centr
 
 This domain model is fully compatible with the **Open Responses** specification for multi-provider LLM interfaces ([openresponses.org](https://www.openresponses.org/)).
 
+![OpenResponses overview](public/openresponses-overview.png)
+
+The core idea of OpenResponses is a **unified specification across LLM providers**: while vendors differ in details, most models follow the same interaction architecture and principles. OpenResponses standardizes that shared shape using **typed context items** (and clarifies that any item type can be streamed).
+
+- **Input (context)**: client-provided context items such as **user_message**, **developer_message**, and **function_call_output**
+- **Output (response)**: model-produced context items such as **reasoning**, **function_call**, and **model_message**
+- **Streaming (optional)**: items may be delivered incrementally as **semantic events** (meaningful events at the item level, not just raw token streams)
+
 ## Core Concepts
 
 ### Context
