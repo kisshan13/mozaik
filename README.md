@@ -21,9 +21,9 @@ Make sure to set your API keys in a `.env` file at the root of your project:
 OPENAI_API_KEY=your-openai-key-here
 ```
 
-## Context Engine (Overview)
+## Context Runtime (Overview)
 
-The **Context Engine** models the core behavior of a language model:
+The **Context Runtime** models the core behavior of a language model:
 
 > Given a structured **context**, produce a **response**.
 
