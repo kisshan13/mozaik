@@ -62,6 +62,35 @@ Examples:
 
 ---
 
+## Example (Context + OpenAI Responses)
+
+This is a minimal end-to-end example that:
+
+- builds a `Context` from a developer message + user message
+- calls a model (OpenAI Responses API)
+- stores/restores the context using a repository
+
+```ts
+const message = UserMessage.create("Tell me a joke about birds")
+const developerMessage = DeveloperMessage.create(
+	"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
+)
+
+const projectId = `pr-${crypto.randomUUID()}`
+const contextRepository = new InMemoryContextRepository()
+const context = Context.create(projectId).addItem(developerMessage).addItem(message)
+
+await contextRepository.save(context)
+
+const model = new GPT54Model()
+const newContextItems = await model.call(context)
+context.addItems(newContextItems)
+
+await contextRepository.save(context)
+const restoredContexts = await contextRepository.getByProjectId(projectId)
+console.log(restoredContexts)
+```
+
 ## Author & License
 
 Created by [JigJoy](https://jigjoy.io) team
