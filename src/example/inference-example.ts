@@ -1,26 +1,34 @@
 import { Context } from "src/domain/context-runtime/context"
 import { ContextItem } from "src/domain/context-runtime/context-item"
-import { InferenceGateway } from "src/domain/inference-gateway"
 import { UserMessage } from "src/domain/context-runtime/input/user-message"
 import { DeveloperMessage } from "src/domain/context-runtime/input/developer-message"
 import { ModelMessage } from "src/domain/context-runtime/output/model-message"
 import { FunctionCall } from "src/domain/context-runtime/output/function-call"
 import { Reasoning } from "src/domain/context-runtime/output/reasoning"
+import { GenerativeModel } from "src/domain/generative-model/generative-model"
 import OpenAI from "openai"
 import "dotenv/config"
 
-export class GPT54InferenceGateway implements InferenceGateway {
+export class GPT54Model extends GenerativeModel {
 	private readonly client: OpenAI
 
 	constructor() {
+		super()
 		this.client = new OpenAI()
 	}
 
-	private mapInputToJSON(context: Context): any[] {
+	infer(request: any): Promise<any> {
+		return this.client.responses.create({
+			model: "gpt-5.4",
+			input: request,
+		})
+	}
+
+	mapContextToRequest(context: Context): any[] {
 		return context.getItems().map((item) => item.toJSON())
 	}
 
-	private extractContextItems(response: any): ContextItem[] {
+	extractContextItems(response: any): ContextItem[] {
 		return response.output.map((item: any) => {
 			if (item.type === "message" && item.status === "completed") {
 				return ModelMessage.rehydrate(item.content[0] as { text: string })
@@ -33,15 +41,6 @@ export class GPT54InferenceGateway implements InferenceGateway {
 			}
 		})
 	}
-
-	async infer(context: Context): Promise<ContextItem[]> {
-		const inputJSON = this.mapInputToJSON(context)
-		const response = await this.client.responses.create({
-			model: "gpt-5.4",
-			input: inputJSON,
-		})
-		return this.extractContextItems(response)
-	}
 }
 
 async function main() {
@@ -51,8 +50,8 @@ async function main() {
 	)
 
 	const context = Context.create().addItem(developerMessage).addItem(message)
-	const inferenceGateway = new GPT54InferenceGateway()
-	const newContextItems = await inferenceGateway.infer(context)
+	const model = new GPT54Model()
+	const newContextItems = await model.call(context)
 	context.addItems(newContextItems)
 	console.log(context)
 }
