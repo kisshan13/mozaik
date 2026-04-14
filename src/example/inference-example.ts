@@ -4,11 +4,10 @@ import { InferenceGateway } from "src/domain/inference-gateway"
 import { UserMessage } from "src/domain/context-runtime/input/user-message"
 import { DeveloperMessage } from "src/domain/context-runtime/input/developer-message"
 import { ModelMessage } from "src/domain/context-runtime/output/model-message"
-import OpenAI from "openai"
-import "dotenv/config"
-import { FunctionCallOutput } from "src/domain/context-runtime/input/function-call-output"
 import { FunctionCall } from "src/domain/context-runtime/output/function-call"
 import { Reasoning } from "src/domain/context-runtime/output/reasoning"
+import OpenAI from "openai"
+import "dotenv/config"
 
 export class GPT54InferenceGateway implements InferenceGateway {
 	private readonly client: OpenAI
