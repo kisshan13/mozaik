@@ -19,6 +19,7 @@ Make sure to set your API keys in a `.env` file at the root of your project:
 ```env
 # For OpenAI
 OPENAI_API_KEY=your-openai-key-here
+```
 
 ## Context Engine (Overview)
 
@@ -65,4 +66,7 @@ Examples:
 
 Created by [JigJoy](https://jigjoy.io) team
 Licensed under the MIT License.
+
+```
+
 ```
