@@ -4,13 +4,6 @@ export interface Action<T> {
 	apply(candidate: T): T
 }
 
-export class ConsoleAction<T> implements Action<T> {
-	apply(candidate: T): T {
-		console.log(candidate)
-		return candidate
-	}
-}
-
 export class Rule<T> {
 	private condition: Condition<T>
 	private action: Action<T>
