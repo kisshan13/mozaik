@@ -7,6 +7,7 @@ import { FunctionCall } from "@core/context-runtime/output/function-call"
 import { Reasoning } from "@core/context-runtime/output/reasoning"
 import { GenerativeModel } from "@core/generative-model/generative-model"
 import { FunctionCallOutput } from "@core/context-runtime/input/function-call-output"
+import { ContextRepository } from "@core/context-runtime/context-repository"
 
 export {
 	Context,
@@ -18,4 +19,5 @@ export {
 	FunctionCallOutput,
 	Reasoning,
 	GenerativeModel,
+	ContextRepository,
 }
