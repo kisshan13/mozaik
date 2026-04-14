@@ -66,7 +66,3 @@ Examples:
 
 Created by [JigJoy](https://jigjoy.io) team
 Licensed under the MIT License.
-
-```
-
-```
