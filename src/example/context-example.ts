@@ -8,6 +8,7 @@ import { Reasoning } from "src/domain/context-runtime/output/reasoning"
 import { GenerativeModel } from "src/domain/generative-model/generative-model"
 import OpenAI from "openai"
 import "dotenv/config"
+import { InMemoryContextRepository } from "./in-memory-context-repository"
 
 export class GPT54Model extends GenerativeModel {
 	private readonly client: OpenAI
@@ -49,11 +50,19 @@ async function main() {
 		"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
 	)
 
-	const context = Context.create().addItem(developerMessage).addItem(message)
+	const projectId = `pr-${crypto.randomUUID()}`
+	const contextRepository = new InMemoryContextRepository()
+	const context = Context.create(projectId).addItem(developerMessage).addItem(message)
+
+	await contextRepository.save(context)
+
 	const model = new GPT54Model()
 	const newContextItems = await model.call(context)
 	context.addItems(newContextItems)
-	console.log(context)
+
+	await contextRepository.save(context)
+	const restoredContexts = await contextRepository.getByProjectId(projectId)
+	console.log(restoredContexts)
 }
 
 main().catch((error) => {

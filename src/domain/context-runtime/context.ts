@@ -1,9 +1,13 @@
 import { ContextItem } from "./context-item"
 
 export class Context {
+	readonly id: string
+	readonly projectId: string
 	readonly items: ContextItem[]
 
-	constructor(items: ContextItem[]) {
+	constructor(id: string, projectId: string, items: ContextItem[]) {
+		this.projectId = projectId
+		this.id = id
 		this.items = items
 	}
 
@@ -21,8 +25,13 @@ export class Context {
 		return this.items
 	}
 
-	static create(): Context {
-		return new Context([])
+	static create(projectId: string): Context {
+		const id = crypto.randomUUID()
+		return new Context(id, projectId, [])
+	}
+
+	static rehydrate(data: { id: string; projectId: string; items: ContextItem[] }): Context {
+		return new Context(data.id, data.projectId, data.items)
 	}
 
 	toJSON(): any {
