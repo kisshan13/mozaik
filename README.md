@@ -43,7 +43,9 @@ The core idea of OpenResponses is a **unified specification across LLM providers
 - **Output (response)**: model-produced context items such as **reasoning**, **function_call**, and **model_message**
 - **Streaming (optional)**: items may be delivered incrementally as **semantic events** (meaningful events at the item level, not just raw token streams)
 
-## Core Concepts
+## Mozaik Core Concepts
+
+Mozaik turns the OpenResponses specification into a practical **object model** so developers can manipulate LLM context in different ways (compose it, append model outputs, **persist it**, and **restore it** from a database/repository, etc.). This is a starting point—our main goal is to address core **context engineering** problems like **context bloating**, **context window overflow**, and **sequential agent collaboration**.
 
 ### Context
 
