@@ -71,13 +71,13 @@ This is a minimal end-to-end example that:
 - stores/restores the context using a repository
 
 ```ts
+const contextRepository = new InMemoryContextRepository()
+
 const message = UserMessage.create("Tell me a joke about birds")
 const developerMessage = DeveloperMessage.create(
 	"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
 )
-
 const projectId = `pr-${crypto.randomUUID()}`
-const contextRepository = new InMemoryContextRepository()
 const context = Context.create(projectId).addItem(developerMessage).addItem(message)
 
 await contextRepository.save(context)
