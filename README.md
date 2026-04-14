@@ -33,7 +33,7 @@ It abstracts away vendor-specific APIs (e.g. OpenAI) and provides a domain-centr
 
 ## Compatibility
 
-This domain model is fully compatible with the **Open Responses** specification for multi-provider LLM interfaces (`https://www.openresponses.org/`).
+This domain model is fully compatible with the **Open Responses** specification for multi-provider LLM interfaces ([openresponses.org](https://www.openresponses.org/)).
 
 ## Core Concepts
 
