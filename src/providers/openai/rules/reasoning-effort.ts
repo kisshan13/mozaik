@@ -9,16 +9,22 @@ export class ReasoningEffortSupported extends BaseCondition<InferenceRequest> {
 	}
 }
 
-export class GetReasoningEffort implements Action<InferenceRequest, "low" | "medium" | "high" | "xhigh" | "none"> {
-	apply(candidate: InferenceRequest): "low" | "medium" | "high" | "xhigh" | "none" {
+export class SetReasoningEffort implements Action<InferenceRequest> {
+	apply(candidate: InferenceRequest): InferenceRequest {
 		const reasoningCapability = candidate.model.capabilities.find((capability) => capability instanceof ReasoningEffort)
 		if (reasoningCapability) {
-			return reasoningCapability.getReasoningEffort()
+            const providerRequest = candidate.providerRequest
+			candidate.providerRequest = {
+                ...providerRequest,
+				reasoning: {
+					effort: reasoningCapability.getReasoningEffort()
+				}
+			}
 		}
-		throw new Error("Reasoning capability not supported")
+		return candidate
 	}
 }
 export const reasoningEffortRule = new Rule({
 	when: new ReasoningEffortSupported(),
-	then: new GetReasoningEffort(),
+	then: new SetReasoningEffort(),
 })

@@ -17,12 +17,12 @@ export class OpenAIResponses implements ModelRuntime {
 
 	async infer(inferenceRequest: InferenceRequest): Promise<ContextItem[]> {
 		const input = this.mapContextToRequest(inferenceRequest.context)
+
+		reasoningEffortRule.apply(inferenceRequest)
 		const response = await this.client.responses.create({
 			model: inferenceRequest.model.id,
 			input: input,
-			reasoning: {
-				effort: reasoningEffortRule.apply(inferenceRequest)
-			}
+			...inferenceRequest.providerRequest
 		})
 		return this.extractContextItems(response)
 	}

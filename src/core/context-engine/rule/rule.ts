@@ -1,22 +1,22 @@
 import { Condition } from "@core/context-engine/condition/condition"
 
-export interface Action<T, R> {
-	apply(candidate: T): R
+export interface Action<T> {
+	apply(candidate: T): T
 }
 
-export class Rule<T, R> {
+export class Rule<T> {
 	private condition: Condition<T>
-	private action: Action<T, R>
+	private action: Action<T>
 
-	constructor({ when, then }: { when: Condition<T>; then: Action<T, R> }) {
+	constructor({ when, then }: { when: Condition<T>; then: Action<T> }) {
 		this.condition = when	
 		this.action = then
 	}
 
-	apply(candidate: T): R {
+	apply(candidate: T): T {
 		if (this.condition.isSatisfiedBy(candidate)) {
 			return this.action.apply(candidate)
 		}
-		throw new Error("Condition not satisfied")
+		return candidate
 	}
 }
