@@ -17,6 +17,15 @@ export class Context {
 	}
 
 	applyModelOutput(items: ContextItem[]): Context {
+		for (const item of items) {
+			if (
+				item.getType() !== "function_call" ||
+				item.getType() !== "model_message" ||
+				item.getType() !== "reasoning"
+			) {
+				throw new Error(`Invalid item type: ${item.getType()}`)
+			}
+		}
 		this.items.push(...items)
 		return this
 	}
