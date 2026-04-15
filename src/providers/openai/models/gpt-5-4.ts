@@ -1,15 +1,44 @@
-import { Capability } from "@core/generative-model/capabilities/capability"
 import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
 import { GenerativeModel } from "@core/generative-model/generative-model"
 
-export const openaiReasoningEffort = new ReasoningEffort<"xhigh" | "high" | "medium" | "low" | "none">(
-	["xhigh", "high", "medium", "low", "none"],
-	"none",
-)
+export type OpenAIReasoningEffortType = "xhigh" | "high" | "medium" | "low" | "none"
 
-export class GPT54 implements GenerativeModel<"gpt-5.4"> {
-	readonly id = "gpt-5.4"
-	readonly capabilities: Capability[] = [openaiReasoningEffort]
+export class OpenAIReasoningEffort implements ReasoningEffort<OpenAIReasoningEffortType> {
+	reasoningEffort: OpenAIReasoningEffortType
+
+	constructor(reasoningEffort: OpenAIReasoningEffortType) {
+		this.reasoningEffort = reasoningEffort
+	}
+
+	setReasoningEffort(effort: OpenAIReasoningEffortType): void {
+		this.reasoningEffort = effort
+	}
+	getReasoningEffort(): OpenAIReasoningEffortType {
+		if (!this.reasoningEffort) {
+			throw new Error("Reasoning effort not supported")
+		}
+		return this.reasoningEffort
+	}
 }
 
-export const gpt54 = new GPT54()
+export class GPT54 implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType> {
+	readonly specification = {
+		name: "gpt-5.4",
+		supportReasoningEffort: true,
+		defaultReasoningEffort: "none" as OpenAIReasoningEffortType,
+		supportStreaming: true,
+	}
+
+	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(
+		this.specification.defaultReasoningEffort,
+	)
+
+	setReasoningEffort(effort: OpenAIReasoningEffortType): void {
+		this.effort.setReasoningEffort(effort)
+	}
+	getReasoningEffort(): OpenAIReasoningEffortType {
+		return this.effort.getReasoningEffort()
+	}
+}
+
+export const gpt54: GPT54 = new GPT54()

@@ -5,12 +5,10 @@ import { ModelMessage } from "@core/context-runtime/output/model-message"
 import { Reasoning } from "@core/context-runtime/output/reasoning"
 import { InferenceRequest } from "@core/generative-model/inference-request"
 import { ModelRuntime } from "@core/generative-model/runtime/model-runtime"
-import { reasoningEffortRule } from "@openai/rules/reasoning-effort"
 import OpenAI from "openai"
 
 export class OpenAIResponses implements ModelRuntime {
 	private readonly client: OpenAI
-
 	constructor() {
 		this.client = new OpenAI()
 	}
@@ -18,13 +16,19 @@ export class OpenAIResponses implements ModelRuntime {
 	async infer(inferenceRequest: InferenceRequest): Promise<ContextItem[]> {
 		const input = this.mapContextToRequest(inferenceRequest.context)
 
-		reasoningEffortRule.apply(inferenceRequest)
-
-		const response = await this.client.responses.create({
-			model: inferenceRequest.model.id,
+		const specification = inferenceRequest.model.specification
+		let request: any = {
+			model: specification.name,
 			input: input,
-			...inferenceRequest.providerRequest,
-		})
+		}
+
+		if (specification.supportReasoningEffort) {
+			request.reasoning = {
+				effort: inferenceRequest.model.getReasoningEffort(),
+			}
+		}
+
+		const response = await this.client.responses.create(request)
 
 		return this.extractContextItems(response)
 	}
