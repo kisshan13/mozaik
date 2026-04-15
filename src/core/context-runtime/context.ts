@@ -18,8 +18,9 @@ export class Context {
 
 	applyModelOutput(items: ContextItem[]): Context {
 		for (const item of items) {
-			if (item.getType() !== "function_call" || item.getType() !== "message" || item.getType() !== "reasoning") {
-				throw new Error(`Invalid item type: ${item.getType()}`)
+			const itemType = item.getType()
+			if (itemType !== "function_call" && itemType !== "message" && itemType !== "reasoning") {
+				throw new Error(`Invalid item type: ${itemType}`)
 			}
 		}
 		this.items.push(...items)
