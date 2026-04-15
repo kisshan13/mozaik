@@ -93,24 +93,24 @@ This is a minimal end-to-end example that:
 - stores/restores the context using a repository
 
 ```ts
-const contextRepository = new InMemoryContextRepository()
+	const message = UserMessage.create("Tell me a joke about birds")
+	const developerMessage = DeveloperMessage.create(
+		"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
+	)
 
-const message = UserMessage.create("Tell me a joke about birds")
-const developerMessage = DeveloperMessage.create(
-	"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
-)
-const projectId = `pr-${crypto.randomUUID()}`
-const context = Context.create(projectId).addItem(developerMessage).addItem(message)
+	const projectId = `pr-${crypto.randomUUID()}`
+	const contextRepository = new InMemoryContextRepository()
+	const context = Context.create(projectId).addItem(developerMessage).addItem(message)
 
-await contextRepository.save(context)
+	await contextRepository.save(context)
 
-const model = new GPT54Model()
-const newContextItems = await model.call(context)
-context.addItems(newContextItems)
+	const openresponses = new OpenAIResponses()
+	const newContextItems = await openresponses.infer(gpt54, context)
+	context.applyModelOutput(newContextItems)
 
-await contextRepository.save(context)
-const restoredContexts = await contextRepository.getByProjectId(projectId)
-console.log(restoredContexts)
+	await contextRepository.save(context)
+	const restoredContexts = await contextRepository.getByProjectId(projectId)
+	console.log(restoredContexts)
 ```
 
 ## Author & License
