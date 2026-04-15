@@ -19,11 +19,13 @@ export class OpenAIResponses implements ModelRuntime {
 		const input = this.mapContextToRequest(inferenceRequest.context)
 
 		reasoningEffortRule.apply(inferenceRequest)
+
 		const response = await this.client.responses.create({
 			model: inferenceRequest.model.id,
 			input: input,
-			...inferenceRequest.providerRequest
+			...inferenceRequest.providerRequest,
 		})
+
 		return this.extractContextItems(response)
 	}
 
@@ -39,7 +41,7 @@ export class OpenAIResponses implements ModelRuntime {
 			if (item.type === "function_call" && item.status === "completed") {
 				return FunctionCall.rehydrate(item)
 			}
-			if (item.type === "reasoning" && item.status === "completed") {
+			if (item.type === "reasoning") {
 				return Reasoning.rehydrate(item)
 			}
 		})

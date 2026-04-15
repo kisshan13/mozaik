@@ -1,4 +1,4 @@
-import { BaseCondition } from "@core/context-engine/condition/base-condition"
+import { BaseCondition } from "@core/context-engine/condition/condition"
 import { Action, Rule } from "@core/context-engine/rule/rule"
 import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
 import { InferenceRequest } from "@core/generative-model/inference-request"
@@ -11,14 +11,16 @@ export class ReasoningEffortSupported extends BaseCondition<InferenceRequest> {
 
 export class SetReasoningEffort implements Action<InferenceRequest> {
 	apply(candidate: InferenceRequest): InferenceRequest {
-		const reasoningCapability = candidate.model.capabilities.find((capability) => capability instanceof ReasoningEffort)
+		const reasoningCapability = candidate.model.capabilities.find(
+			(capability) => capability instanceof ReasoningEffort,
+		)
 		if (reasoningCapability) {
-            const providerRequest = candidate.providerRequest
+			const providerRequest = candidate.providerRequest
 			candidate.providerRequest = {
-                ...providerRequest,
+				...providerRequest,
 				reasoning: {
-					effort: reasoningCapability.getReasoningEffort()
-				}
+					effort: reasoningCapability.getReasoningEffort(),
+				},
 			}
 		}
 		return candidate

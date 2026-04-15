@@ -1,4 +1,4 @@
-import { BaseCondition } from "@core/context-engine/condition/base-condition"
+import { BaseCondition } from "@core/context-engine/condition/condition"
 import { Action, Rule } from "@core/context-engine/rule/rule"
 import { Context } from "@core/context-runtime/context"
 
