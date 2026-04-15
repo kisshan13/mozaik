@@ -40,5 +40,3 @@ export class GPT54 implements GenerativeModel, ReasoningEffort<OpenAIReasoningEf
 		return this.effort.getReasoningEffort()
 	}
 }
-
-export const gpt54: GPT54 = new GPT54()
