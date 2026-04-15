@@ -3,22 +3,26 @@ import { ContextItem } from "@core/context-runtime/context-item"
 import { FunctionCall } from "@core/context-runtime/output/function-call"
 import { ModelMessage } from "@core/context-runtime/output/model-message"
 import { Reasoning } from "@core/context-runtime/output/reasoning"
+import { InferenceRequest } from "@core/generative-model/inference-request"
 import { ModelRuntime } from "@core/generative-model/runtime/model-runtime"
-import { GPT54 } from "@openai/models/gpt-5-4"
+import { reasoningEffortRule } from "@openai/rules/reasoning-effort"
 import OpenAI from "openai"
 
-export class OpenAIResponses implements ModelRuntime<"gpt-5.4"> {
+export class OpenAIResponses implements ModelRuntime {
 	private readonly client: OpenAI
 
 	constructor() {
 		this.client = new OpenAI()
 	}
 
-	async infer(model: GPT54, context: Context): Promise<ContextItem[]> {
-		const request = this.mapContextToRequest(context)
+	async infer(inferenceRequest: InferenceRequest): Promise<ContextItem[]> {
+		const input = this.mapContextToRequest(inferenceRequest.context)
 		const response = await this.client.responses.create({
-			model: model.id,
-			input: request,
+			model: inferenceRequest.model.id,
+			input: input,
+			reasoning: {
+				effort: reasoningEffortRule.apply(inferenceRequest)
+			}
 		})
 		return this.extractContextItems(response)
 	}

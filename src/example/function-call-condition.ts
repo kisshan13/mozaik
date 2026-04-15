@@ -1,6 +1,8 @@
 import { BaseCondition } from "@core/context-engine/condition/base-condition"
 import { Action, Rule } from "@core/context-engine/rule/rule"
 import { Context } from "@core/context-runtime/context"
+import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
+import { InferenceRequest } from "@core/generative-model/inference-request"
 
 export class FunctionCallCondition extends BaseCondition<Context> {
 	isSatisfiedBy(candidate: Context): boolean {
@@ -9,10 +11,9 @@ export class FunctionCallCondition extends BaseCondition<Context> {
 	}
 }
 
-export class ConsoleLogger<T> implements Action<T> {
-	apply(candidate: T): T {
+export class ConsoleLogger<T> implements Action<T, void> {
+	apply(candidate: T): void {
 		console.log(candidate)
-		return candidate
 	}
 }
 
