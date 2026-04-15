@@ -10,6 +10,7 @@ import { FunctionCallOutput } from "@core/context-runtime/input/function-call-ou
 import { ContextRepository } from "@core/context-runtime/context-repository"
 import { OpenAIResponses } from "@openai/runtime/openai-responses"
 import { gpt54 } from "@openai/models/gpt-5-4"
+import { InferenceRequest } from "@core/generative-model/inference-request"
 
 export {
 	Context,
@@ -24,4 +25,5 @@ export {
 	ContextRepository,
 	OpenAIResponses,
 	gpt54,
+	InferenceRequest,
 }
