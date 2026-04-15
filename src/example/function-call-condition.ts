@@ -1,6 +1,6 @@
-import { BaseCondition } from "src/domain/context-engine/condition/base-condition"
-import { Action, Rule } from "src/domain/context-engine/rule/rule"
-import { Context } from "src/domain/context-runtime/context"
+import { BaseCondition } from "@core/context-engine/condition/base-condition"
+import { Action, Rule } from "@core/context-engine/rule/rule"
+import { Context } from "@core/context-runtime/context"
 
 export class FunctionCallCondition extends BaseCondition<Context> {
 	isSatisfiedBy(candidate: Context): boolean {

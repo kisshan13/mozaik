@@ -8,6 +8,8 @@ import { Reasoning } from "@core/context-runtime/output/reasoning"
 import { GenerativeModel } from "@core/generative-model/generative-model"
 import { FunctionCallOutput } from "@core/context-runtime/input/function-call-output"
 import { ContextRepository } from "@core/context-runtime/context-repository"
+import { OpenAIResponses } from "@openai/runtime/openai-responses"
+import { gpt54 } from "@openai/models/gpt-5-4"
 
 export {
 	Context,
@@ -20,4 +22,6 @@ export {
 	Reasoning,
 	GenerativeModel,
 	ContextRepository,
+	OpenAIResponses,
+	gpt54,
 }
