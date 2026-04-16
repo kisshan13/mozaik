@@ -27,6 +27,8 @@ export class GPT54 implements GenerativeModel, ReasoningEffort<OpenAIReasoningEf
 		supportReasoningEffort: true,
 		defaultReasoningEffort: "none" as OpenAIReasoningEffortType,
 		supportStreaming: true,
+		contextWindowSize: 1_050_000,
+		maxOutputTokens: 128_000,
 	}
 
 	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(

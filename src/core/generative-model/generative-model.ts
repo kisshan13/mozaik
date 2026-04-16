@@ -3,6 +3,8 @@ export type ModelSpecification = {
 	supportReasoningEffort: boolean
 	defaultReasoningEffort: string | undefined
 	supportStreaming: boolean
+	contextWindowSize: number
+	maxOutputTokens: number
 }
 
 export interface GenerativeModel {
