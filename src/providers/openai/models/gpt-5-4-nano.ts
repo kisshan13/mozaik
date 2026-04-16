@@ -2,9 +2,9 @@ import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-e
 import { GenerativeModel } from "@core/generative-model/generative-model"
 import { OpenAIReasoningEffort, OpenAIReasoningEffortType } from "@openai/reasoning-effort"
 
-export class Gpt54 implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType> {
+export class Gpt54Nano implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType> {
 	readonly specification = {
-		name: "gpt-5.4",
+		name: "gpt-5.4-nano",
 		supportReasoningEffort: true,
 		defaultReasoningEffort: "none" as OpenAIReasoningEffortType,
 		supportStreaming: true,

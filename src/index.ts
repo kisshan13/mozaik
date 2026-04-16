@@ -9,8 +9,9 @@ import { GenerativeModel } from "@core/generative-model/generative-model"
 import { FunctionCallOutput } from "@core/context-runtime/input/function-call-output"
 import { ContextRepository } from "@core/context-runtime/context-repository"
 import { OpenAIResponses } from "@openai/runtime/openai-responses"
-import { GPT54 } from "@openai/models/gpt-5-4"
 import { InferenceRequest } from "@core/generative-model/inference-request"
+import { Gpt54Nano } from "@openai/models/gpt-5-4-nano"
+import { Gpt54 } from "@openai/models/gpt-5-4"
 
 export {
 	Context,
@@ -24,6 +25,7 @@ export {
 	GenerativeModel,
 	ContextRepository,
 	OpenAIResponses,
-	GPT54,
+	Gpt54,
+	Gpt54Nano,
 	InferenceRequest,
 }
