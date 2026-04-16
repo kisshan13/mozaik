@@ -1,25 +1,6 @@
 import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
 import { GenerativeModel } from "@core/generative-model/generative-model"
-
-export type OpenAIReasoningEffortType = "xhigh" | "high" | "medium" | "low" | "none"
-
-export class OpenAIReasoningEffort implements ReasoningEffort<OpenAIReasoningEffortType> {
-	reasoningEffort: OpenAIReasoningEffortType
-
-	constructor(reasoningEffort: OpenAIReasoningEffortType) {
-		this.reasoningEffort = reasoningEffort
-	}
-
-	setReasoningEffort(effort: OpenAIReasoningEffortType): void {
-		this.reasoningEffort = effort
-	}
-	getReasoningEffort(): OpenAIReasoningEffortType {
-		if (!this.reasoningEffort) {
-			throw new Error("Reasoning effort not supported")
-		}
-		return this.reasoningEffort
-	}
-}
+import { OpenAIReasoningEffort, OpenAIReasoningEffortType } from "@openai/reasoning-effort"
 
 export class GPT54 implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType> {
 	readonly specification = {
