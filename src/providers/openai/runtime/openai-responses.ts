@@ -4,7 +4,9 @@ import { FunctionCall } from "@core/context-runtime/output/function-call"
 import { ModelMessage } from "@core/context-runtime/output/model-message"
 import { Reasoning } from "@core/context-runtime/output/reasoning"
 import { InferenceRequest } from "@core/generative-model/inference-request"
+import { InferenceResponse } from "@core/generative-model/inference-response"
 import { ModelRuntime } from "@core/generative-model/runtime/model-runtime"
+import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@core/generative-model/token-usage"
 import OpenAI from "openai"
 
 export class OpenAIResponses implements ModelRuntime {
@@ -13,7 +15,7 @@ export class OpenAIResponses implements ModelRuntime {
 		this.client = new OpenAI()
 	}
 
-	async infer(inferenceRequest: InferenceRequest): Promise<ContextItem[]> {
+	async infer(inferenceRequest: InferenceRequest): Promise<InferenceResponse> {
 		const input = this.mapContextToRequest(inferenceRequest.context)
 
 		const specification = inferenceRequest.model.specification
@@ -30,7 +32,22 @@ export class OpenAIResponses implements ModelRuntime {
 
 		const response = await this.client.responses.create(request)
 
-		return this.extractContextItems(response)
+		const contextItems = this.extractContextItems(response)
+		const tokenUsage = this.extractTokenUsage(response)
+		return new InferenceResponse(contextItems, tokenUsage)
+	}
+
+	extractTokenUsage(response: OpenAI.Responses.Response): TokenUsage | undefined {
+		if (!response.usage) {
+			return undefined
+		}
+		return new TokenUsage(
+			response.usage.input_tokens,
+			response.usage.output_tokens,
+			response.usage.total_tokens,
+			new InputTokenDetails(response.usage.input_tokens_details.cached_tokens),
+			new OutputTokenDetails(response.usage.output_tokens_details.reasoning_tokens),
+		)
 	}
 
 	mapContextToRequest(context: Context): any[] {

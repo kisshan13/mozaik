@@ -1,6 +1,6 @@
-import { ContextItem } from "@core/context-runtime/context-item"
 import { InferenceRequest } from "../inference-request"
+import { InferenceResponse } from "../inference-response"
 
 export interface ModelRuntime {
-	infer(request: InferenceRequest): Promise<ContextItem[]>
+	infer(request: InferenceRequest): Promise<InferenceResponse>
 }
