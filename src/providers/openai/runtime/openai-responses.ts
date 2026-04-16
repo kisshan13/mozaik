@@ -19,9 +19,21 @@ export class OpenAIResponses implements ModelRuntime {
 		const input = this.mapContextToRequest(inferenceRequest.context)
 
 		const specification = inferenceRequest.model.specification
+
 		let request: any = {
 			model: specification.name,
 			input: input,
+		}
+
+		if (specification.supportFunctionCalling && inferenceRequest.model.getTools().length > 0) {
+			request.tools = inferenceRequest.model.getTools().map((tool) => {
+				return {
+					type: tool.type,
+					name: tool.name,
+					description: tool.description,
+					parameters: tool.parameters,
+				}
+			})
 		}
 
 		if (specification.supportReasoningEffort) {

@@ -15,6 +15,7 @@ import { Gpt54 } from "@openai/models/gpt-5-4"
 import { Gpt54Mini } from "@openai/models/gpt-5-4-mini"
 import { InferenceResponse } from "@core/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@core/generative-model/token-usage"
+import { Tool } from "@core/generative-model/tool"
 
 export {
 	Context,
@@ -36,4 +37,5 @@ export {
 	TokenUsage,
 	InputTokenDetails,
 	OutputTokenDetails,
+	Tool,
 }

@@ -1,8 +1,10 @@
 import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "@core/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@core/generative-model/generative-model"
+import { Tool } from "@core/generative-model/tool"
 import { OpenAIReasoningEffort, OpenAIReasoningEffortType } from "@openai/reasoning-effort"
 
-export class Gpt54Mini implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType> {
+export class Gpt54Mini implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType>, ToolCallingCapability {
 	readonly specification = {
 		name: "gpt-5.4-mini",
 		supportReasoningEffort: true,
@@ -10,7 +12,10 @@ export class Gpt54Mini implements GenerativeModel, ReasoningEffort<OpenAIReasoni
 		supportStreaming: true,
 		contextWindowSize: 400_000,
 		maxOutputTokens: 128_000,
+		supportFunctionCalling: true,
 	}
+
+	private tools: Tool[] = []
 
 	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(
 		this.specification.defaultReasoningEffort,
@@ -21,5 +26,13 @@ export class Gpt54Mini implements GenerativeModel, ReasoningEffort<OpenAIReasoni
 	}
 	getReasoningEffort(): OpenAIReasoningEffortType {
 		return this.effort.getReasoningEffort()
+	}
+
+	setTools(tools: Tool[]): void {
+		this.tools = tools
+	}
+
+	getTools(): Tool[] {
+		return this.tools
 	}
 }

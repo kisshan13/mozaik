@@ -5,6 +5,7 @@ export type ModelSpecification = {
 	supportStreaming: boolean
 	contextWindowSize: number
 	maxOutputTokens: number
+	supportFunctionCalling: boolean
 }
 
 export interface GenerativeModel {
