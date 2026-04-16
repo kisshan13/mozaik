@@ -12,6 +12,7 @@ import { OpenAIResponses } from "@openai/runtime/openai-responses"
 import { InferenceRequest } from "@core/generative-model/inference-request"
 import { Gpt54Nano } from "@openai/models/gpt-5-4-nano"
 import { Gpt54 } from "@openai/models/gpt-5-4"
+import { Gpt54Mini } from "@openai/models/gpt-5-4-mini"
 
 export {
 	Context,
@@ -26,6 +27,7 @@ export {
 	ContextRepository,
 	OpenAIResponses,
 	Gpt54,
+	Gpt54Mini,
 	Gpt54Nano,
 	InferenceRequest,
 }
