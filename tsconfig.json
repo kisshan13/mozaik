@@ -1,25 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "es2018",
-    "module": "esnext",
-    "lib": ["es2018", "dom"],
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "moduleResolution": "node",
-    "baseUrl": ".", 
-    "paths": {
-      "@core/*": ["src/core/*"],
-      "@providers/*": ["src/providers/*"],
-      "@/*": ["src/*"]              // if you’re using aliases like '@/types/type'
-    },
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src", "src/types"],
-  "exclude": ["node_modules", "dist", "examples"]
-} 
+	"compilerOptions": {
+		"target": "es2018",
+		"module": "esnext",
+		"lib": ["es2018", "dom"],
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"strict": true,
+		"moduleResolution": "node",
+		"baseUrl": ".",
+		"paths": {
+			"@core/*": ["src/core/*"],
+			"@openai/*": ["src/providers/openai/*"]
+		},
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"include": ["src", "src/core/types"],
+	"exclude": ["node_modules", "dist", "examples"]
+}

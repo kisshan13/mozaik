@@ -1,6 +1,18 @@
 # Mozaik
 
-Mozaik is a TypeScript library for orchestrating AI agents, supporting both manually defined and AI-generated workflows.
+**Mozaik** is a TypeScript library for building, managing, and evolving **LLM context**.
+
+Instead of focusing on agents themselves, Mozaik provides a structured way to **model, manipulate, persist, and restore the context** that drives language model behavior. It implements a clean object model aligned with the **OpenResponses specification**, enabling developers to work with LLM inputs and outputs as composable, typed entities.
+
+With Mozaik, you can:
+
+- Structure interactions as ordered **context items** (messages, reasoning steps, function calls, etc.)
+- Append and evolve context across multiple model calls
+- Persist and reload context from storage
+- Manage context size and avoid overflow
+- Build complex workflows through **context composition**, not ad-hoc prompt strings
+
+Mozaik treats context as a **first-class primitive**, making it easier to design scalable, maintainable, and provider-agnostic LLM applications.
 
 ![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
 
@@ -19,252 +31,89 @@ Make sure to set your API keys in a `.env` file at the root of your project:
 ```env
 # For OpenAI
 OPENAI_API_KEY=your-openai-key-here
-
-# For Anthropic Claude
-ANTHROPIC_API_KEY=your-anthropic-key-here
 ```
 
-## Supported Models
+## Context Runtime (Overview)
 
-The system supports OpenAI models (gpt-5, gpt-5-mini, gpt-5-nano, gpt-5.1) and Anthropic Claude models (Claude Sonnet, Haiku, and Opus 4.5) out of the box.
+The **Context Runtime** models the core behavior of a language model:
+
+> Given a structured **context**, produce a **response**.
+
+It abstracts away vendor-specific APIs (e.g. OpenAI) and provides a domain-centric interface for working with LLMs.
 
 ---
 
-## Features
+## Compatibility
 
-### AI MozaikAgents
+This domain model is fully compatible with the **Open Responses** specification for multi-provider LLM interfaces ([openresponses.org](https://www.openresponses.org/)).
 
-This feature lets developers create AI agents through a single unified request definition, making it easy to compose tasks and leverage multiple models. You can mix providers, choose the best model for each task, and build agents that work across different capabilities.
+![OpenResponses overview](public/openresponses-overview.png)
 
-```typescript
-import "dotenv/config"
-import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
+The core idea of OpenResponses is a **unified specification across LLM providers**: while vendors differ in details, most models follow the same interaction architecture and principles. OpenResponses standardizes that shared shape using **typed context items** (and clarifies that any item type can be streamed).
 
-const request: MozaikRequest = {
-	model: "claude-sonnet-4.5",
-}
+- **Input (context)**: client-provided context items such as **user_message**, **developer_message**, and **function_call_output**
+- **Output (response)**: model-produced context items such as **reasoning**, **function_call**, and **model_message**
+- **Streaming (optional)**: items may be delivered incrementally as **semantic events** (meaningful events at the item level, not just raw token streams)
 
-const agent = new MozaikAgent(request)
-const codingResponse = await agent.act("Write a React component for a todo list")
-```
+## Mozaik Core Concepts
 
-### Structured Output
+Mozaik turns the OpenResponses specification into a practical **object model** so developers can manipulate LLM context in different ways (compose it, append model outputs, **persist it**, and **restore it** from a database/repository, etc.). This is a starting point—our main goal is to address core **context engineering** problems like **context bloating**, **context window overflow**, and **sequential agent collaboration**.
 
-Structured output lets you enforce exact response formats—using schemas like Zod—so AI returns predictable, validated data every time.
+### Context
 
-```typescript
-import { z } from "zod"
-import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
+Represents everything the model needs to generate a response.
 
-const mealPlanSchema = z.object({
-	calories: z.number(),
-	meals: z
-		.array(
-			z.object({
-				name: z.string(),
-				description: z.string(),
-				ingredients: z.array(z.string()).min(3),
-			}),
-		)
-		.length(3),
-	shoppingList: z.array(z.string()),
-})
-
-const request: MozaikRequest = {
-	model: "gpt-5-mini",
-	task: "Create a 1-day vegetarian meal plan with breakfast, lunch, and dinner.",
-	structuredOutput: mealPlanSchema,
-}
-
-const agent = new MozaikAgent(request)
-const response = await agent.act()
-```
-
-### Multi-turn Conversation
-
-Multi-turn conversation allows developers to provide chat history so the AI agent can maintain context and generate more relevant, continuous responses.
-
-```typescript
-import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
-
-const request: MozaikRequest = {
-	messages: [
-		{ role: "system", content: "You are a coding assistant" },
-		{ role: "user", content: "How do I sort an array in TypeScript?" },
-		{ role: "assistant", content: "You can use the .sort() method..." },
-	],
-	model: "claude-haiku-4.5",
-}
-
-const agent = new MozaikAgent(request)
-const response = await agent.act("Can you show me an example?")
-```
-
-### Tool Calling
-
-Tool calling allows the agent to invoke real functions in your environment—letting it perform actual actions (like writing files, calling APIs, or modifying state) instead of merely generating text.
-
-```typescript
-import { promises as fs } from "fs"
-import { MozaikAgent, MozaikRequest, Tool } from "@mozaik-ai/core"
-
-const tools: Tool[] = [
-	{
-		name: "write_file",
-		description: "Write text to a file.",
-		schema: {
-			type: "object",
-			properties: {
-				filename: { type: "string" },
-				content: { type: "string" },
-			},
-			required: ["filename", "content"],
-		},
-		async invoke({ filename, content }) {
-			await fs.writeFile(filename, content, "utf8")
-			return { ok: true }
-		},
-	},
-]
-
-const request: MozaikRequest = {
-	model: "gpt-5.1",
-	tools,
-	messages: [
-		{
-			role: "system",
-			content: "Save notes to disk using the tool, then confirm where the file was written.",
-		},
-	],
-	task: "Create a two-bullet trip prep checklist for Belgrade and save it as trip-checklist.txt.",
-}
-
-const agent = new MozaikAgent(request)
-await agent.act()
-```
-
-### Vision
-
-Vision support allows AI agents to interpret images alongside text, enabling richer understanding and multimodal interactions.
-
-```typescript
-import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
-
-const request: MozaikRequest = {
-	messages: [
-		{
-			role: "user",
-			content: [
-				{
-					type: "image_url",
-					url: "data:image/jpeg;base64,/9j/4AAQSkZJRg...",
-				},
-				{
-					type: "text",
-					text: "What is in this image?",
-				},
-			],
-		},
-	],
-	model: "claude-opus-4.5",
-}
-
-const agent = new MozaikAgent(request)
-const response = await agent.act()
-```
-
-### Parallel Task Execution
-
-This example demonstrates how to use standard JavaScript/TypeScript concurrency (Promise.all) to run multiple AI agents in parallel and compare or combine their responses.
-
-```typescript
-import "dotenv/config"
-import { MozaikAgent, MozaikRequest } from "@mozaik-ai/core"
-
-const openaiRequest: MozaikRequest = {
-	model: "gpt-5",
-}
-
-const anthropicRequest: MozaikRequest = {
-	model: "claude-sonnet-4.5",
-}
-
-const openaiAgent = new MozaikAgent(openaiRequest)
-const anthropicAgent = new MozaikAgent(anthropicRequest)
-
-const task = "What are the key differences between TypeScript and JavaScript?"
-
-// Execute both agents in parallel using Promise.all()
-const [openaiResponse, anthropicResponse] = await Promise.all([openaiAgent.act(task), anthropicAgent.act(task)])
-```
-
-### Workflow
-
-A workflow defines how tasks are executed together, either sequentially (one after another) or in parallel. Each task or workflow is a `WorkUnit`, which allows workflows to be composed and nested to build more complex execution pipelines.
-
-```typescript
-const workflow = new Workflow("sequential", [
-	new Task("Analyze requirements", "gpt-5"),
-	new Workflow("parallel", [
-		new Task("Generate API schema", "gpt-5-mini"),
-		new Task("Draft documentation", "gpt-5-nano"),
-	]),
-	new Task("Review and finalize", "gpt-5"),
-])
-
-await workflow.execute()
-```
-
-### AI Autonomy
-
-Developers can create autonomous agents using an AI planner agent. The planner works as a meta-agent: it breaks a high-level goal into smaller tasks, assigns each task to a specialized agent, and coordinates their execution through a workflow.
-
-For example, given the goal `"Implement login functionality"`, the planner can generate the following workflow:
-
-```typescript
-Workflow(sequential, [
-	Task("Design login form UI", "gpt-5"),
-	Task("Implement authentication logic", "claude-sonnet-4.5"),
-	Workflow(parallel, [Task("Add input validation", "gpt-5-mini"), Task("Style the login form", "gpt-5-nano")]),
-	Task("Write unit tests", "gpt-5"),
-])
-```
-
-### Autonomy Slider
-
-By combining manually created workflows with the AI Planner, you can build hybrid workflows and control the level of autonomy, deciding which steps are fixed and which are planned automatically.
+A context is composed of ordered **context items**.
 
 ---
 
-Working examples are available on the [GitHub repo](https://github.com/jigjoy-ai/mosaic-examples).
+### ContextItem
+
+A single unit of context.
+
+Examples:
+
+- Client-specific
+    - User message
+    - Developer message (System instruction)
+    - Function call output (added after a model function call and fed back so the model can continue reasoning or finish the job)
+- Model-specific
+    - Function call
+    - Model message
+    - Reasoning
 
 ---
 
-### Execution Hooks
+## Example (Context + OpenAI Responses)
 
-Execution hooks allow you to attach custom behavior to workflow and task execution without changing the workflow logic itself. Hooks are invoked at key lifecycle moments (before/after task or workflow execution) and are passed into `execute()`.
+This is a minimal end-to-end example that:
 
-A default hook cluster is provided out of the box, but you can extend or replace it to add logging, metrics, tracing, or other instrumentation.
-
-#### Extending the default hooks
-
-You can add your own hooks by creating a new cluster or extending the default one:
+- builds a `Context` from a developer message + user message
+- calls a model (OpenAI Responses API)
+- stores/restores the context using a repository
 
 ```ts
-import { ClusterHook } from "@core/workflow/hooks/cluster"
-import { DEFAULT_CLUSTER_HOOK } from "@core/workflow/hooks"
-import { MetricsHook } from "./metrics-hook"
+const message = UserMessage.create("Tell me a joke about birds")
+const developerMessage = DeveloperMessage.create(
+	"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
+)
 
-const extendedHook = new ClusterHook([DEFAULT_CLUSTER_HOOK, new MetricsHook()])
+const projectId = `pr-${crypto.randomUUID()}`
+const contextRepository = new InMemoryContextRepository()
+const context = Context.create(projectId).addItem(developerMessage).addItem(message)
 
-await workflow.execute(extendedHook)
+await contextRepository.save(context)
+
+const openresponses = new OpenAIResponses()
+const newContextItems = await openresponses.infer(gpt54, context)
+context.applyModelOutput(newContextItems)
+
+await contextRepository.save(context)
+const restoredContexts = await contextRepository.getByProjectId(projectId)
+console.log(restoredContexts)
 ```
-
-If you’re building agentic systems and want to learn or connect with like-minded developers, join [our Discord](https://discord.gg/33uMhcerDU) where we share ideas and knowledge.
-
----
 
 ## Author & License
 
-Created by [JigJoy](https://jigjoy.io) team  
+Created by [JigJoy](https://jigjoy.io) team
 Licensed under the MIT License.
