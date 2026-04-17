@@ -10,7 +10,13 @@ export interface Rule<T> {
 	apply(candidate: T): T
 }
 
-export class If<T> implements Rule<T> {
+export interface AsyncRule<T> {
+	condition: Condition<T>
+	action: Action<T>
+	apply(candidate: T): Promise<T>
+}
+
+export class If<T> implements AsyncRule<T> {
 	condition: Condition<T>
 	action: Action<T>
 
@@ -19,26 +25,26 @@ export class If<T> implements Rule<T> {
 		this.action = action
 	}
 
-	apply(candidate: T): T {
+	async apply(candidate: T): Promise<T> {
 		if (this.condition.isSatisfiedBy(candidate)) {
-			return this.action.apply(candidate)
+			return await this.action.apply(candidate)
 		}
 		return candidate
 	}
 }
 
-export class Loop<T> {
-	private condition: Condition<T>
-	private action: Action<T>
+export class Loop<T> implements AsyncRule<T> {
+	condition: Condition<T>
+	action: Action<T>
 
 	constructor({ condition, action }: { condition: Condition<T>; action: Action<T> }) {
 		this.condition = condition
 		this.action = action
 	}
 
-	apply(candidate: T): T {
+	async apply(candidate: T): Promise<T> {
 		while (this.condition.isSatisfiedBy(candidate)) {
-			candidate = this.action.apply(candidate)
+			candidate = await this.action.apply(candidate)
 		}
 		return candidate
 	}
