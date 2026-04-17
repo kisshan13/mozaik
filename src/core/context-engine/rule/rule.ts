@@ -4,23 +4,27 @@ export interface Action<T> {
 	apply(candidate: T): T
 }
 
+export interface AsyncAction<T> {
+	apply(candidate: T): Promise<T>
+}
+
 export interface Rule<T> {
 	condition: Condition<T>
-	action: Action<T>
+	action: AsyncAction<T>
 	apply(candidate: T): T
 }
 
 export interface AsyncRule<T> {
 	condition: Condition<T>
-	action: Action<T>
+	action: AsyncAction<T>
 	apply(candidate: T): Promise<T>
 }
 
 export class If<T> implements AsyncRule<T> {
 	condition: Condition<T>
-	action: Action<T>
+	action: AsyncAction<T>
 
-	constructor({ condition, action }: { condition: Condition<T>; action: Action<T> }) {
+	constructor({ condition, action }: { condition: Condition<T>; action: AsyncAction<T> }) {
 		this.condition = condition
 		this.action = action
 	}
@@ -35,9 +39,9 @@ export class If<T> implements AsyncRule<T> {
 
 export class Loop<T> implements AsyncRule<T> {
 	condition: Condition<T>
-	action: Action<T>
+	action: AsyncAction<T>
 
-	constructor({ condition, action }: { condition: Condition<T>; action: Action<T> }) {
+	constructor({ condition, action }: { condition: Condition<T>; action: AsyncAction<T> }) {
 		this.condition = condition
 		this.action = action
 	}
