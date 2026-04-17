@@ -20,7 +20,7 @@ export class FunctionCall extends ContextItem {
 	toJSON(): any {
 		return {
 			type: this.type,
-			callId: this.callId,
+			call_id: this.callId,
 			name: this.name,
 			arguments: this.args,
 		}
