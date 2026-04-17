@@ -16,8 +16,8 @@ import { Gpt54Mini } from "@openai/models/gpt-5-4-mini"
 import { InferenceResponse } from "@core/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@core/generative-model/token-usage"
 import { Tool } from "@core/generative-model/tool"
-import { BaseCondition, Condition } from "@core/context-engine/condition/condition"
-import { Action, Rule } from "@core/context-engine/rule/rule"
+import { BaseCondition } from "@core/context-engine/condition/condition"
+import { Action, Rule, If, Loop } from "@core/context-engine/rule/rule"
 import { InMemoryContextRepository } from "./memory/in-memory-context-repository"
 
 export {
@@ -45,4 +45,6 @@ export {
 	BaseCondition,
 	Action,
 	Rule,
+	If,
+	Loop,
 }

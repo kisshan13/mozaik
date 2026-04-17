@@ -4,18 +4,41 @@ export interface Action<T> {
 	apply(candidate: T): T
 }
 
-export class Rule<T> {
-	private condition: Condition<T>
-	private action: Action<T>
+export interface Rule<T> {
+	condition: Condition<T>
+	action: Action<T>
+	apply(candidate: T): T
+}
 
-	constructor({ when, then }: { when: Condition<T>; then: Action<T> }) {
-		this.condition = when	
-		this.action = then
+export class If<T> implements Rule<T> {
+	condition: Condition<T>
+	action: Action<T>
+
+	constructor({ condition, action }: { condition: Condition<T>; action: Action<T> }) {
+		this.condition = condition
+		this.action = action
 	}
 
 	apply(candidate: T): T {
 		if (this.condition.isSatisfiedBy(candidate)) {
 			return this.action.apply(candidate)
+		}
+		return candidate
+	}
+}
+
+export class Loop<T> {
+	private condition: Condition<T>
+	private action: Action<T>
+
+	constructor({ condition, action }: { condition: Condition<T>; action: Action<T> }) {
+		this.condition = condition
+		this.action = action
+	}
+
+	apply(candidate: T): T {
+		while (this.condition.isSatisfiedBy(candidate)) {
+			candidate = this.action.apply(candidate)
 		}
 		return candidate
 	}
