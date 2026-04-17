@@ -68,11 +68,15 @@ export class OpenAIResponses implements ModelRuntime {
 
 	extractContextItems(response: any): ContextItem[] {
 		return response.output.map((item: any) => {
-			if (item.type === "message" && item.status === "completed") {
+			if (item.type === "message" && item.role === "assistant") {
 				return ModelMessage.rehydrate(item.content[0] as { text: string })
 			}
-			if (item.type === "function_call" && item.status === "completed") {
-				return FunctionCall.rehydrate(item)
+			if (item.type === "function_call") {
+				return FunctionCall.rehydrate({
+					callId: item.call_id,
+					name: item.name,
+					args: item.arguments,
+				})
 			}
 			if (item.type === "reasoning") {
 				return Reasoning.rehydrate(item)
