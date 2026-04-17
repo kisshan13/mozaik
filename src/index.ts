@@ -18,6 +18,7 @@ import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@core/generat
 import { Tool } from "@core/generative-model/tool"
 import { BaseCondition, Condition } from "@core/context-engine/condition/condition"
 import { Action, Rule } from "@core/context-engine/rule/rule"
+import { InMemoryContextRepository } from "./memory/in-memory-context-repository"
 
 export {
 	Context,
@@ -30,6 +31,7 @@ export {
 	Reasoning,
 	GenerativeModel,
 	ContextRepository,
+	InMemoryContextRepository,
 	OpenAIResponses,
 	Gpt54,
 	Gpt54Mini,
