@@ -1,4 +1,4 @@
-import { ContextItem } from "@core/context-runtime/context-item"
+import { ContextItem } from "@core/context/context-item"
 
 export class Context {
 	readonly id: string

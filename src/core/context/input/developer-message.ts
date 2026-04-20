@@ -1,5 +1,5 @@
-import { InputText } from "@core/context-runtime/content/input-text"
-import { ContextItem } from "@core/context-runtime/context-item"
+import { InputText } from "@core/context/content/input-text"
+import { ContextItem } from "@core/context/context-item"
 
 export class DeveloperMessage extends ContextItem {
 	readonly type = "message"

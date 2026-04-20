@@ -1,4 +1,4 @@
-import { Context } from "@core/context-runtime/context"
+import { Context } from "@core/context/context"
 
 export interface ContextRepository {
 	save(context: Context): Promise<void>

@@ -1,4 +1,4 @@
-import { ContextItem } from "@core/context-runtime/context-item"
+import { ContextItem } from "@core/context/context-item"
 
 export class FunctionCall extends ContextItem {
 	readonly type = "function_call"

@@ -1,5 +1,5 @@
-import { ContextItem } from "@core/context-runtime/context-item"
-import { OutputText } from "@core/context-runtime/content/output-text"
+import { ContextItem } from "@core/context/context-item"
+import { OutputText } from "@core/context/content/output-text"
 
 export class ModelMessage extends ContextItem {
 	readonly type = "message"

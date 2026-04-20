@@ -1,5 +1,5 @@
-import { ContextItem } from "@core/context-runtime/context-item"
-import { InputText } from "@core/context-runtime/content/input-text"
+import { ContextItem } from "@core/context/context-item"
+import { InputText } from "@core/context/content/input-text"
 
 export class FunctionCallOutput extends ContextItem {
 	readonly type = "function_call_output"

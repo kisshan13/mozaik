@@ -1,4 +1,4 @@
-import { Content } from "@core/context-runtime/content"
+import { Content } from "@core/context/content"
 
 export class InputText extends Content {
 	readonly type = "input_text"

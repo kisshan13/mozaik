@@ -1,5 +1,5 @@
-import { FunctionCallOutput } from "@core/context-runtime/input/function-call-output"
-import { FunctionCall } from "@core/context-runtime/output/function-call"
+import { FunctionCallOutput } from "@core/context/input/function-call-output"
+import { FunctionCall } from "@core/context/output/function-call"
 import { Tool } from "@core/generative-model/tool"
 import { Effect, Interaction, Motion } from "./interaction"
 

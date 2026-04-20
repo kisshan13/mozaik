@@ -1,5 +1,5 @@
-import { Context } from "@core/context-runtime/context"
-import { ContextRepository } from "@core/context-runtime/context-repository"
+import { Context } from "@core/context/context"
+import { ContextRepository } from "@core/context/context-repository"
 
 export class InMemoryContextRepository implements ContextRepository {
 	private readonly store = new Map<string, Context>()

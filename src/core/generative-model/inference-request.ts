@@ -1,4 +1,4 @@
-import { Context } from "@core/context-runtime/context"
+import { Context } from "@core/context/context"
 import { GenerativeModel } from "./generative-model"
 import { ReasoningEffort } from "./capabilities/reasoning-effort"
 import { ToolCallingCapability } from "./capabilities/tool-calling"

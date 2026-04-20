@@ -1,6 +1,6 @@
-import { InputText } from "@core/context-runtime/content/input-text"
-import { SummaryText } from "@core/context-runtime/content/summary-text"
-import { ContextItem } from "@core/context-runtime/context-item"
+import { InputText } from "@core/context/content/input-text"
+import { SummaryText } from "@core/context/content/summary-text"
+import { ContextItem } from "@core/context/context-item"
 
 export class Reasoning extends ContextItem {
 	readonly type = "reasoning"
