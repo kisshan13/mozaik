@@ -1,4 +1,5 @@
-import { MotionChannel, EffectChannel, MotionHandler } from "./handler"
+import { MotionHandler } from "./handler"
+import { MotionChannel, EffectChannel } from "./channel"
 import { UserMessage } from "@core/context/input/user-message"
 import { Motion } from "./interaction"
 import { FunctionCall } from "@core/context/output/function-call"
