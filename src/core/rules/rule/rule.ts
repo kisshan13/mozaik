@@ -1,4 +1,4 @@
-import { Condition } from "@core/context-engine/condition/condition"
+import { Condition } from "@core/rules/condition/condition"
 
 export interface Action<T> {
 	apply(candidate: T): T
