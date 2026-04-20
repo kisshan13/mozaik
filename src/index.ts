@@ -17,7 +17,7 @@ import { InferenceResponse } from "@core/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@core/generative-model/token-usage"
 import { Tool } from "@core/generative-model/tool"
 import { BaseCondition, Condition } from "@core/context-engine/condition/condition"
-import { Action, InferenceRule, If, Loop, AsyncAction, AsyncRule } from "@core/context-engine/rule/rule"
+import { Action, If, Loop, AsyncAction, AsyncRule } from "@core/context-engine/rule/rule"
 import { InMemoryContextRepository } from "./memory/in-memory-context-repository"
 
 export {
@@ -46,7 +46,6 @@ export {
 	BaseCondition,
 	Action,
 	AsyncAction,
-	InferenceRule,
 	AsyncRule,
 	If,
 	Loop,

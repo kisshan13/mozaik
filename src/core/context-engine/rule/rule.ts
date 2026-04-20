@@ -8,12 +8,6 @@ export interface AsyncAction<T> {
 	apply(candidate: T): Promise<T>
 }
 
-export interface InferenceRule<T> {
-	condition: Condition<T>
-	action: AsyncAction<T>
-	apply(candidate: T): T
-}
-
 export interface AsyncRule<T> {
 	condition: Condition<T>
 	action: AsyncAction<T>
