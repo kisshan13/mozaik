@@ -1,4 +1,5 @@
-import { ExecutionStatus, RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../runtime"
+import { ExecutionStatus } from "../execution"
 import { Transition } from "./transition"
 
 export class Complete implements Transition {

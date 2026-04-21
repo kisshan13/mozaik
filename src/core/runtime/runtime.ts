@@ -1,5 +1,4 @@
 import { UserMessage } from "@core/context/input/user-message"
-import { FunctionCallHandler, InferenceRequestHandler, ModelMessageHandler, UserMessageHandler } from "./handler"
 import { StateId } from "./state/state"
 import { Context } from "@core/context/context"
 import { GenerativeModel } from "@core/generative-model/generative-model"
@@ -12,37 +11,7 @@ import { ModelMessageState } from "./state/model-message"
 import { InferenceRequestState } from "./state/inference-request"
 import { UserMessageState } from "./state/user-message"
 import { State } from "./state/state"
-import { TransitionRecord } from "./transition/transition"
-
-export enum ExecutionStatus {
-	RUNNING,
-	COMPLETED,
-	FAILED,
-}
-
-export class Execution {
-	executionId: string
-	currentState: StateId
-	previousState: StateId | null
-	status: ExecutionStatus
-	stepCount: number
-	retryCounts: Map<StateId, number>
-	history: TransitionRecord[]
-
-	constructor(executionId: string) {
-		this.executionId = executionId
-		this.currentState = StateId.USER_MESSAGE_HANDLER
-		this.previousState = null
-		this.status = ExecutionStatus.RUNNING
-		this.stepCount = 0
-		this.retryCounts = new Map<StateId, number>()
-		this.history = []
-	}
-
-	isTerminal(): boolean {
-		return this.status == ExecutionStatus.COMPLETED || this.status == ExecutionStatus.FAILED
-	}
-}
+import { Execution } from "./execution"
 
 export interface RuntimeContext {
 	execution: Execution
@@ -57,15 +26,15 @@ export class AgentRuntime {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor(
-		userMessageHandler: UserMessageHandler,
-		inferenceRequestHandler: InferenceRequestHandler,
-		functionCallHandler: FunctionCallHandler,
-		modelMessageHandler: ModelMessageHandler,
+		userMessageState: UserMessageState,
+		inferenceRequestState: InferenceRequestState,
+		functionCallState: FunctionCallState,
+		modelMessageState: ModelMessageState,
 	) {
-		this.states.set(StateId.USER_MESSAGE_HANDLER, new UserMessageState(userMessageHandler))
-		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, new InferenceRequestState(inferenceRequestHandler))
-		this.states.set(StateId.FUNCTION_CALL_HANDLER, new FunctionCallState(functionCallHandler))
-		this.states.set(StateId.MODEL_MESSAGE_HANDLER, new ModelMessageState(modelMessageHandler))
+		this.states.set(StateId.USER_MESSAGE_HANDLER, userMessageState)
+		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, inferenceRequestState)
+		this.states.set(StateId.FUNCTION_CALL_HANDLER, functionCallState)
+		this.states.set(StateId.MODEL_MESSAGE_HANDLER, modelMessageState)
 	}
 
 	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
