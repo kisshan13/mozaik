@@ -1,0 +1,54 @@
+import { UserMessage } from "src/domain/context/input/user-message"
+import { FunctionCallHandler, InferenceRequestHandler, ModelMessageHandler, UserMessageHandler } from "./handler"
+import { StateId } from "./state/state"
+import { Context } from "src/domain/context/context"
+import { GenerativeModel } from "src/domain/generative-model/generative-model"
+import { ReasoningEffort } from "src/domain/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "src/domain/generative-model/capabilities/tool-calling"
+import { InferenceResponse } from "src/domain/generative-model/inference-response"
+import { ModelMessage } from "src/domain/context/output/model-message"
+import { FunctionCallState } from "./state/function-call"
+import { ModelMessageState } from "./state/model-message"
+import { InferenceRequestState } from "./state/inference-request"
+import { UserMessageState } from "./state/user-message"
+import { State } from "./state/state"
+import { Execution } from "./execution"
+
+export interface RuntimeContext {
+	execution: Execution
+	userMessage: UserMessage
+	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
+	context: Context
+	inferenceResponse?: InferenceResponse
+	modelMessage?: ModelMessage
+}
+
+export class AgentLoop {
+	private states: Map<StateId, State> = new Map<StateId, State>()
+
+	constructor(
+		userMessageState: UserMessageState,
+		inferenceRequestState: InferenceRequestState,
+		functionCallState: FunctionCallState,
+		modelMessageState: ModelMessageState,
+	) {
+		this.states.set(StateId.USER_MESSAGE_HANDLER, userMessageState)
+		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, inferenceRequestState)
+		this.states.set(StateId.FUNCTION_CALL_HANDLER, functionCallState)
+		this.states.set(StateId.MODEL_MESSAGE_HANDLER, modelMessageState)
+	}
+
+	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
+		while (!execution.isTerminal()) {
+			const state = this.states.get(execution.currentState)
+
+			if (!state) {
+				throw new Error(`State ${execution.currentState} not found`)
+			}
+
+			const transition = await state.run(context)
+
+			transition.apply(context)
+		}
+	}
+}

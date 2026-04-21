@@ -12,13 +12,13 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
-			"@core/*": ["src/core/*"],
-			"@openai/*": ["src/providers/openai/*"]
+			"@domain/*": ["src/domain/*"],
+			"@openai/*": ["src/infrastructure/providers/openai/*"]
 		},
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["src", "src/core/types"],
+	"include": ["src", "src/domain/types"],
 	"exclude": ["node_modules", "dist", "examples"]
 }
