@@ -9,13 +9,13 @@ export interface UserMessageHandler {
 }
 
 export interface InferenceRequestHandler {
-	handle(sssionId: string, inferenceRequest: InferenceRequest): Promise<FunctionCall | ModelMessage>
+	handle(executionId: string, inferenceRequest: InferenceRequest): Promise<FunctionCall | ModelMessage>
 }
 
 export interface FunctionCallHandler {
-	handle(sessionId: string, functionCall: FunctionCall): Promise<FunctionCallOutput>
+	handle(executionId: string, functionCall: FunctionCall): Promise<FunctionCallOutput>
 }
 
 export interface ModelMessageHandler {
-	handle(sessionId: string, modelMessage: ModelMessage): Promise<void>
+	handle(executionId: string, modelMessage: ModelMessage): Promise<void>
 }
