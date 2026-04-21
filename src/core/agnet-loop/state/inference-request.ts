@@ -1,5 +1,5 @@
 import { InferenceRequest } from "@core/generative-model/inference-request"
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { ModelMessage } from "@core/context/output/model-message"
 import { FunctionCall } from "@core/context/output/function-call"
 import { InferenceRequestHandler } from "../handler"

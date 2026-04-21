@@ -1,4 +1,4 @@
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { StateId } from "../state/state"
 import { Transition } from "./transition"
 

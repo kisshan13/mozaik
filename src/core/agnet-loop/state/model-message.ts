@@ -1,5 +1,5 @@
 import { ModelMessage } from "@core/context/output/model-message"
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { State, StateId } from "./state"
 import { ModelMessageHandler } from "../handler"
 import { Complete } from "../transition/complete"

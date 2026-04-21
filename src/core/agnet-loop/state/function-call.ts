@@ -1,6 +1,6 @@
 import { FunctionCall } from "@core/context/output/function-call"
 import { FunctionCallHandler } from "../handler"
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { State, StateId } from "./state"
 import { GoTo } from "../transition/go-to"
 import { Fail } from "../transition/fail"

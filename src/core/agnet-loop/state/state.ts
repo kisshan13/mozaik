@@ -1,4 +1,4 @@
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { Transition } from "../transition/transition"
 
 export enum StateId {

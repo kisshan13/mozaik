@@ -1,4 +1,4 @@
-import { RuntimeContext } from "../runtime"
+import { RuntimeContext } from "../loop"
 import { ExecutionStatus } from "../execution"
 import { Transition } from "./transition"
 
