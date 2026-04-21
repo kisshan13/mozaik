@@ -1,8 +1,6 @@
-import { InferenceRequest } from "src/domain/generative-model/inference-request"
 import { RuntimeContext } from "../loop"
 import { ModelMessage } from "src/domain/context/output/model-message"
 import { FunctionCall } from "src/domain/context/output/function-call"
-import { InferenceRequestHandler } from "../handler"
 import { State, StateId } from "./state"
 import { GoTo } from "../transition/go-to"
 import { Fail } from "../transition/fail"
@@ -10,11 +8,6 @@ import { Transition } from "../transition/transition"
 
 export class InferencePendingState implements State {
 	id: StateId = StateId.INFERENCE_PENDING
-	handler: InferenceRequestHandler
-
-	constructor(handler: InferenceRequestHandler) {
-		this.handler = handler
-	}
 
 	next(runtime: RuntimeContext): Transition {
 		const inferenceResponse = runtime.inferenceResponse

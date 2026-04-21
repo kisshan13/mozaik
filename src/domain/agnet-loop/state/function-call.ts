@@ -8,11 +8,7 @@ import { Fail } from "../transition/fail"
 
 export class FunctionCallState implements State {
 	id: StateId = StateId.FUNCTION_CALL_PENDING
-	handler: FunctionCallHandler
 
-	constructor(handler: FunctionCallHandler) {
-		this.handler = handler
-	}
 	next(runtime: RuntimeContext): Transition {
 		const functionCall = runtime.inferenceResponse?.contextItems.find((item) => item.getType() === "function_call")
 		if (!functionCall || !(functionCall instanceof FunctionCall)) {

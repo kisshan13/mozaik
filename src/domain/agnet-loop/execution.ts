@@ -9,8 +9,8 @@ export enum ExecutionStatus {
 
 export class Execution {
 	executionId: string
-	currentState: StateId
-	previousState: StateId | null
+	currentStateId: StateId
+	previousStateId: StateId | null
 	status: ExecutionStatus
 	stepCount: number
 	retryCounts: Map<StateId, number>
@@ -18,16 +18,16 @@ export class Execution {
 
 	constructor(
 		executionId: string,
-		currentState: StateId,
-		previousState: StateId | null,
+		currentStateId: StateId,
+		previousStateId: StateId | null,
 		status: ExecutionStatus,
 		stepCount: number,
 		retryCounts: Map<StateId, number>,
 		history: TransitionRecord[],
 	) {
 		this.executionId = executionId
-		this.currentState = currentState
-		this.previousState = previousState
+		this.currentStateId = currentStateId
+		this.previousStateId = previousStateId
 		this.status = status
 		this.stepCount = stepCount
 		this.retryCounts = retryCounts
@@ -38,14 +38,14 @@ export class Execution {
 		return this.status == ExecutionStatus.COMPLETED || this.status == ExecutionStatus.FAILED
 	}
 
-	create(): Execution {
+	static create(): Execution {
 		const executionId = crypto.randomUUID()
-		const currentState = StateId.USER_MESSAGE_RECEIVED
-		const previousState = null
+		const currentStateId = StateId.USER_MESSAGE_RECEIVED
+		const previousStateId = null
 		const status = ExecutionStatus.RUNNING
 		const stepCount = 0
 		const retryCounts = new Map<StateId, number>()
 		const history: TransitionRecord[] = []
-		return new Execution(executionId, currentState, previousState, status, stepCount, retryCounts, history)
+		return new Execution(executionId, currentStateId, previousStateId, status, stepCount, retryCounts, history)
 	}
 }

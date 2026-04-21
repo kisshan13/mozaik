@@ -10,5 +10,5 @@ export interface TransitionRecord {
 }
 
 export interface Transition {
-	apply(context: RuntimeContext): Promise<void>
+	apply(runtime: RuntimeContext): void
 }

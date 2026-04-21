@@ -28,22 +28,17 @@ export interface RuntimeContext {
 export class AgentLoop {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
-	constructor(
-		userMessageState: UserMessageState,
-		inferencePendingState: InferencePendingState,
-		functionCallState: FunctionCallState,
-		modelMessageState: ModelMessageState,
-	) {
-		this.states.set(StateId.USER_MESSAGE_RECEIVED, userMessageState)
-		this.states.set(StateId.INFERENCE_PENDING, inferencePendingState)
-		this.states.set(StateId.FUNCTION_CALL_PENDING, functionCallState)
-		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, modelMessageState)
+	constructor() {
+		this.states.set(StateId.USER_MESSAGE_RECEIVED, new UserMessageState())
+		this.states.set(StateId.INFERENCE_PENDING, new InferencePendingState())
+		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallState())
+		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelMessageState())
 	}
 
 	next(runtime: RuntimeContext): Transition {
-		const state = this.states.get(runtime.execution.currentState)
+		const state = this.states.get(runtime.execution.currentStateId)
 		if (!state) {
-			throw new Error(`State ${runtime.execution.currentState} not found`)
+			throw new Error(`State ${runtime.execution.currentStateId} not found`)
 		}
 		return state.next(runtime)
 	}
