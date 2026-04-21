@@ -1,18 +1,19 @@
-import { UserMessage } from "src/domain/context/input/user-message"
-import { FunctionCallHandler, InferenceRequestHandler, ModelMessageHandler, UserMessageHandler } from "./handler"
+import { UserMessage } from "@domain/context/input/user-message"
 import { StateId } from "./state/state"
-import { Context } from "src/domain/context/context"
-import { GenerativeModel } from "src/domain/generative-model/generative-model"
-import { ReasoningEffort } from "src/domain/generative-model/capabilities/reasoning-effort"
-import { ToolCallingCapability } from "src/domain/generative-model/capabilities/tool-calling"
-import { InferenceResponse } from "src/domain/generative-model/inference-response"
-import { ModelMessage } from "src/domain/context/output/model-message"
 import { FunctionCallState } from "./state/function-call"
 import { ModelMessageState } from "./state/model-message"
-import { InferenceRequestState } from "./state/inference-request"
+import { InferencePendingState } from "./state/inference-request"
 import { UserMessageState } from "./state/user-message"
 import { State } from "./state/state"
 import { Execution } from "./execution"
+import { GenerativeModel } from "@domain/generative-model/generative-model"
+import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
+import { Context } from "@domain/context/context"
+import { InferenceResponse } from "@domain/generative-model/inference-response"
+import { ModelMessage } from "@domain/context/output/model-message"
+import { FunctionCallOutput } from "@domain/context/input/function-call-output"
+import { Transition } from "./transition/transition"
 
 export interface RuntimeContext {
 	execution: Execution
@@ -20,6 +21,7 @@ export interface RuntimeContext {
 	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
 	context: Context
 	inferenceResponse?: InferenceResponse
+	functionCallOutput?: FunctionCallOutput
 	modelMessage?: ModelMessage
 }
 
@@ -28,27 +30,21 @@ export class AgentLoop {
 
 	constructor(
 		userMessageState: UserMessageState,
-		inferenceRequestState: InferenceRequestState,
+		inferencePendingState: InferencePendingState,
 		functionCallState: FunctionCallState,
 		modelMessageState: ModelMessageState,
 	) {
-		this.states.set(StateId.USER_MESSAGE_HANDLER, userMessageState)
-		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, inferenceRequestState)
-		this.states.set(StateId.FUNCTION_CALL_HANDLER, functionCallState)
-		this.states.set(StateId.MODEL_MESSAGE_HANDLER, modelMessageState)
+		this.states.set(StateId.USER_MESSAGE_RECEIVED, userMessageState)
+		this.states.set(StateId.INFERENCE_PENDING, inferencePendingState)
+		this.states.set(StateId.FUNCTION_CALL_PENDING, functionCallState)
+		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, modelMessageState)
 	}
 
-	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
-		while (!execution.isTerminal()) {
-			const state = this.states.get(execution.currentState)
-
-			if (!state) {
-				throw new Error(`State ${execution.currentState} not found`)
-			}
-
-			const transition = await state.run(context)
-
-			transition.apply(context)
+	next(runtime: RuntimeContext): Transition {
+		const state = this.states.get(runtime.execution.currentState)
+		if (!state) {
+			throw new Error(`State ${runtime.execution.currentState} not found`)
 		}
+		return state.next(runtime)
 	}
 }

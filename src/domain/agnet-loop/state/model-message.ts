@@ -1,28 +1,16 @@
-import { ModelMessage } from "src/domain/context/output/model-message"
 import { RuntimeContext } from "../loop"
 import { State, StateId } from "./state"
-import { ModelMessageHandler } from "../handler"
 import { Complete } from "../transition/complete"
 import { Fail } from "../transition/fail"
 import { Transition } from "../transition/transition"
 
 export class ModelMessageState implements State {
-	id: StateId = StateId.MODEL_MESSAGE_HANDLER
-	handler: ModelMessageHandler
+	id: StateId = StateId.MODEL_MESSAGE_RECEIVED
 
-	constructor(handler: ModelMessageHandler) {
-		this.handler = handler
-	}
-
-	async run(runtime: RuntimeContext): Promise<Transition> {
-		try {
-			if (!runtime.modelMessage) {
-				throw new Error("Model message not found")
-			}
-			await this.handler.handle(runtime.execution.executionId, runtime.modelMessage as ModelMessage)
-			return new Complete(runtime.modelMessage.content.text)
-		} catch (error) {
-			return new Fail((error as Error).message)
+	next(runtime: RuntimeContext): Transition {
+		if (!runtime.modelMessage) {
+			return new Fail("Model message not found")
 		}
+		return new Complete(runtime.modelMessage.content.text)
 	}
 }

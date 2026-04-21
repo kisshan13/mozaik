@@ -5,7 +5,7 @@ import { InferenceRequest } from "src/domain/generative-model/inference-request"
 import { ModelMessage } from "src/domain/context/output/model-message"
 
 export interface UserMessageHandler {
-	handle(sessionId: string, userMessage: UserMessage): Promise<void>
+	handle(executionId: string, userMessage: UserMessage): Promise<void>
 }
 
 export interface InferenceRequestHandler {

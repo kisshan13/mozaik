@@ -16,17 +16,36 @@ export class Execution {
 	retryCounts: Map<StateId, number>
 	history: TransitionRecord[]
 
-	constructor(executionId: string) {
+	constructor(
+		executionId: string,
+		currentState: StateId,
+		previousState: StateId | null,
+		status: ExecutionStatus,
+		stepCount: number,
+		retryCounts: Map<StateId, number>,
+		history: TransitionRecord[],
+	) {
 		this.executionId = executionId
-		this.currentState = StateId.USER_MESSAGE_HANDLER
-		this.previousState = null
-		this.status = ExecutionStatus.RUNNING
-		this.stepCount = 0
-		this.retryCounts = new Map<StateId, number>()
-		this.history = []
+		this.currentState = currentState
+		this.previousState = previousState
+		this.status = status
+		this.stepCount = stepCount
+		this.retryCounts = retryCounts
+		this.history = history
 	}
 
 	isTerminal(): boolean {
 		return this.status == ExecutionStatus.COMPLETED || this.status == ExecutionStatus.FAILED
+	}
+
+	create(): Execution {
+		const executionId = crypto.randomUUID()
+		const currentState = StateId.USER_MESSAGE_RECEIVED
+		const previousState = null
+		const status = ExecutionStatus.RUNNING
+		const stepCount = 0
+		const retryCounts = new Map<StateId, number>()
+		const history: TransitionRecord[] = []
+		return new Execution(executionId, currentState, previousState, status, stepCount, retryCounts, history)
 	}
 }
