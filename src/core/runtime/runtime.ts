@@ -6,10 +6,6 @@ import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-e
 import { ToolCallingCapability } from "@core/generative-model/capabilities/tool-calling"
 import { InferenceResponse } from "@core/generative-model/inference-response"
 import { ModelMessage } from "@core/context/output/model-message"
-import { FunctionCallState } from "./state/function-call"
-import { ModelMessageState } from "./state/model-message"
-import { InferenceRequestState } from "./state/inference-request"
-import { UserMessageState } from "./state/user-message"
 import { State } from "./state/state"
 import { Execution } from "./execution"
 
@@ -26,10 +22,10 @@ export class AgentRuntime {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor(
-		userMessageState: UserMessageState,
-		inferenceRequestState: InferenceRequestState,
-		functionCallState: FunctionCallState,
-		modelMessageState: ModelMessageState,
+		userMessageState: State,
+		inferenceRequestState: State,
+		functionCallState: State,
+		modelMessageState: State,
 	) {
 		this.states.set(StateId.USER_MESSAGE_HANDLER, userMessageState)
 		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, inferenceRequestState)
