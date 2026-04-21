@@ -1,13 +1,13 @@
 import { UserMessage } from "@core/context/input/user-message"
-import {
-	FunctionCallHandler,
-	FunctionCallOutputHandler,
-	InferenceRequestHandler,
-	InferenceResponseHandler,
-	ModelMessageHandler,
-	UserMessageHandler,
-} from "./handler"
-import { Motion } from "./interaction"
+import { FunctionCallHandler, InferenceRequestHandler, ModelMessageHandler, UserMessageHandler } from "./handler"
+import { InferenceRequest } from "@core/generative-model/inference-request"
+import { Context } from "@core/context/context"
+import { GenerativeModel } from "@core/generative-model/generative-model"
+import { ReasoningEffort } from "@core/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "@core/generative-model/capabilities/tool-calling"
+import { InferenceResponse } from "@core/generative-model/inference-response"
+import { FunctionCall } from "@core/context/output/function-call"
+import { ModelMessage } from "@core/context/output/model-message"
 
 export enum StateId {
 	USER_MESSAGE_HANDLER,
@@ -59,6 +59,10 @@ export class Execution {
 export interface RuntimeContext {
 	execution: Execution
 	userMessage: UserMessage
+	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
+	context: Context
+	inferenceResponse?: InferenceResponse
+	modelMessage?: ModelMessage
 }
 
 export interface Transition {
@@ -126,8 +130,85 @@ export class UserMessageState implements State {
 
 	async run(runtime: RuntimeContext): Promise<Transition> {
 		try {
-			await this.handler.handle(runtime.execution.executionId, new Motion<UserMessage>(runtime.userMessage))
+			await this.handler.handle(runtime.execution.executionId, runtime.userMessage)
 			return new GoTo(StateId.INFERENCE_REQUEST_HANDLER)
+		} catch (error) {
+			return new Fail((error as Error).message)
+		}
+	}
+}
+
+export class InferenceRequestState implements State {
+	id: StateId = StateId.INFERENCE_REQUEST_HANDLER
+	handler: InferenceRequestHandler
+
+	constructor(handler: InferenceRequestHandler) {
+		this.handler = handler
+	}
+
+	async run(runtime: RuntimeContext): Promise<Transition> {
+		try {
+			const inferenceRequest = new InferenceRequest(runtime.model, runtime.context)
+			const inferenceResponse = await this.handler.handle(runtime.execution.executionId, inferenceRequest)
+
+			if (inferenceResponse instanceof FunctionCall) {
+				return new GoTo(StateId.FUNCTION_CALL_HANDLER)
+			}
+			if (inferenceResponse instanceof ModelMessage) {
+				return new GoTo(StateId.MODEL_MESSAGE_HANDLER)
+			}
+			return new Fail("Invalid response type")
+		} catch (error) {
+			return new Fail((error as Error).message)
+		}
+	}
+}
+
+export class FunctionCallState implements State {
+	id: StateId = StateId.FUNCTION_CALL_HANDLER
+	handler: FunctionCallHandler
+
+	constructor(handler: FunctionCallHandler) {
+		this.handler = handler
+	}
+	async run(runtime: RuntimeContext): Promise<Transition> {
+		try {
+			const functionCall = runtime.inferenceResponse?.contextItems.find(
+				(item) => item.getType() === "function_call",
+			)
+			if (!functionCall) {
+				throw new Error("Function call not found")
+			}
+			const functionCallOutput = await this.handler.handle(
+				runtime.execution.executionId,
+				functionCall as FunctionCall,
+			)
+			if (!functionCallOutput) {
+				throw new Error("Function call output not found")
+			}
+			runtime.context.addItem(functionCallOutput)
+			return new GoTo(StateId.INFERENCE_REQUEST_HANDLER)
+		} catch (error) {
+			return new Fail((error as Error).message)
+		}
+	}
+}
+
+export class ModelMessageState implements State {
+	id: StateId = StateId.MODEL_MESSAGE_HANDLER
+	handler: ModelMessageHandler
+
+	constructor(handler: ModelMessageHandler) {
+		this.handler = handler
+	}
+
+	async run(runtime: RuntimeContext): Promise<Transition> {
+		try {
+			if (!runtime.modelMessage) {
+				throw new Error("Model message not found")
+			}
+			await this.handler.handle(runtime.execution.executionId, runtime.modelMessage as ModelMessage)
+			return new Complete(runtime.modelMessage.content.text)
 		} catch (error) {
 			return new Fail((error as Error).message)
 		}
@@ -140,17 +221,13 @@ export class RuntimeEngine {
 	constructor(
 		userMessageHandler: UserMessageHandler,
 		inferenceRequestHandler: InferenceRequestHandler,
-		inferenceResponseHandler: InferenceResponseHandler,
 		functionCallHandler: FunctionCallHandler,
-		functionCallOutputHandler: FunctionCallOutputHandler,
 		modelMessageHandler: ModelMessageHandler,
 	) {
 		this.states.set(StateId.USER_MESSAGE_HANDLER, new UserMessageState(userMessageHandler))
-		// this.states.set(StateId.INFERENCE_REQUEST_HANDLER, new InferenceRequestState(inferenceRequestHandler))
-		// this.states.set(StateId.INFERENCE_RESPONSE_HANDLER, new InferenceResponseState(inferenceResponseHandler))
-		// this.states.set(StateId.FUNCTION_CALL_HANDLER, new FunctionCallState(functionCallHandler))
-		// this.states.set(StateId.FUNCTION_CALL_OUTPUT_HANDLER, new FunctionCallOutputState(functionCallOutputHandler))
-		// this.states.set(StateId.MODEL_MESSAGE_HANDLER, new ModelMessageState(modelMessageHandler))
+		this.states.set(StateId.INFERENCE_REQUEST_HANDLER, new InferenceRequestState(inferenceRequestHandler))
+		this.states.set(StateId.FUNCTION_CALL_HANDLER, new FunctionCallState(functionCallHandler))
+		this.states.set(StateId.MODEL_MESSAGE_HANDLER, new ModelMessageState(modelMessageHandler))
 	}
 
 	public async run(execution: Execution, context: RuntimeContext): Promise<void> {
