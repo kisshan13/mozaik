@@ -1,6 +1,10 @@
 import { FunctionCall } from "@core/context/output/function-call"
 import { FunctionCallHandler } from "../handler"
-import { Fail, GoTo, RuntimeContext, State, StateId, Transition } from "../runtime"
+import { RuntimeContext } from "../runtime"
+import { State, StateId } from "./state"
+import { GoTo } from "../transition/go-to"
+import { Fail } from "../transition/fail"
+import { Transition } from "../transition/transition"
 
 export class FunctionCallState implements State {
 	id: StateId = StateId.FUNCTION_CALL_HANDLER

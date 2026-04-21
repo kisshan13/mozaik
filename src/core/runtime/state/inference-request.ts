@@ -1,8 +1,12 @@
 import { InferenceRequest } from "@core/generative-model/inference-request"
-import { Fail, GoTo, RuntimeContext, State, StateId, Transition } from "../runtime"
+import { RuntimeContext } from "../runtime"
 import { ModelMessage } from "@core/context/output/model-message"
 import { FunctionCall } from "@core/context/output/function-call"
 import { InferenceRequestHandler } from "../handler"
+import { State, StateId } from "./state"
+import { GoTo } from "../transition/go-to"
+import { Fail } from "../transition/fail"
+import { Transition } from "../transition/transition"
 
 export class InferenceRequestState implements State {
 	id: StateId = StateId.INFERENCE_REQUEST_HANDLER

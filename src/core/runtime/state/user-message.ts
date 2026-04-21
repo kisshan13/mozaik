@@ -1,5 +1,9 @@
 import { UserMessageHandler } from "../handler"
-import { Fail, GoTo, RuntimeContext, State, StateId, Transition } from "../runtime"
+import { RuntimeContext } from "../runtime"
+import { State, StateId } from "./state"
+import { GoTo } from "../transition/go-to"
+import { Fail } from "../transition/fail"
+import { Transition } from "../transition/transition"
 
 export class UserMessageState implements State {
 	id: StateId = StateId.USER_MESSAGE_HANDLER

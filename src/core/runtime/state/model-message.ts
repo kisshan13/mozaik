@@ -1,6 +1,10 @@
 import { ModelMessage } from "@core/context/output/model-message"
-import { Complete, Fail, RuntimeContext, State, StateId, Transition } from "../runtime"
+import { RuntimeContext } from "../runtime"
+import { State, StateId } from "./state"
 import { ModelMessageHandler } from "../handler"
+import { Complete } from "../transition/complete"
+import { Fail } from "../transition/fail"
+import { Transition } from "../transition/transition"
 
 export class ModelMessageState implements State {
 	id: StateId = StateId.MODEL_MESSAGE_HANDLER
