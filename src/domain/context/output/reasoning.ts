@@ -1,6 +1,6 @@
-import { InputText } from "src/domain/context/content/input-text"
-import { SummaryText } from "src/domain/context/content/summary-text"
-import { ContextItem } from "src/domain/context/context-item"
+import { InputText } from "@domain/context/content/input-text"
+import { SummaryText } from "@domain/context/content/summary-text"
+import { ContextItem } from "@domain/context/context-item"
 
 export class Reasoning extends ContextItem {
 	readonly type = "reasoning"

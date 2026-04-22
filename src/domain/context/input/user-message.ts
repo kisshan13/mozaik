@@ -1,5 +1,5 @@
-import { ContextItem } from "src/domain/context/context-item"
-import { InputText } from "src/domain/context/content/input-text"
+import { ContextItem } from "@domain/context/context-item"
+import { InputText } from "@domain/context/content/input-text"
 
 export class UserMessage extends ContextItem {
 	readonly type = "message"

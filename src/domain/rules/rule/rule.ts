@@ -1,4 +1,4 @@
-import { Condition } from "src/domain/rules/condition/condition"
+import { Condition } from "@domain/rules/condition/condition"
 
 export interface Action<T> {
 	apply(candidate: T): T

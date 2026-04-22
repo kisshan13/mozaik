@@ -1,5 +1,5 @@
-import { ContextItem } from "src"
-import { TokenUsage } from "./token-usage"
+import { ContextItem } from "@domain/context/context-item"
+import { TokenUsage } from "@domain/generative-model/token-usage"
 
 export class InferenceResponse {
 	readonly contextItems: ContextItem[]

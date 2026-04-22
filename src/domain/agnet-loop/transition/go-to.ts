@@ -1,6 +1,6 @@
-import { RuntimeContext } from "../loop"
-import { StateId } from "../state/state"
-import { Transition } from "./transition"
+import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { StateId } from "@domain/agnet-loop/state/state"
+import { Transition } from "@domain/agnet-loop/transition/transition"
 
 export class GoTo implements Transition {
 	next: StateId
@@ -11,12 +11,12 @@ export class GoTo implements Transition {
 
 	async apply(context: RuntimeContext): Promise<void> {
 		const execution = context.execution
-		execution.previousState = execution.currentState
-		execution.currentState = this.next
+		execution.previousStateId = execution.currentStateId
+		execution.currentStateId = this.next
 		execution.stepCount++
 		execution.history.push({
-			fromState: execution.previousState,
-			toState: execution.currentState,
+			fromState: execution.previousStateId,
+			toState: execution.currentStateId,
 			timestamp: new Date(),
 			duration: 0,
 			error: null,

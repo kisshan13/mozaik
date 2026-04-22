@@ -12,8 +12,9 @@
 		"moduleResolution": "node",
 		"baseUrl": ".",
 		"paths": {
+			"@app/*": ["src/application/*"],
 			"@domain/*": ["src/domain/*"],
-			"@openai/*": ["src/infrastructure/providers/openai/*"]
+			"@infra/*": ["src/infrastructure/*"],
 		},
 		"esModuleInterop": true,
 		"skipLibCheck": true,

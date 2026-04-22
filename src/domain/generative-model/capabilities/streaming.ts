@@ -1,4 +1,4 @@
-import { GenerativeModel } from "src/domain/generative-model/generative-model"
+import { GenerativeModel } from "@domain/generative-model/generative-model"
 
 export interface StreamingCapability {
 	streaming: true

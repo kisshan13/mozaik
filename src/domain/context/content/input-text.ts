@@ -1,4 +1,4 @@
-import { Content } from "src/domain/context/content"
+import { Content } from "@domain/context/content"
 
 export class InputText extends Content {
 	readonly type = "input_text"

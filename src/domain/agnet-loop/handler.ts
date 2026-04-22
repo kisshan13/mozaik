@@ -1,8 +1,8 @@
-import { FunctionCallOutput } from "src/domain/context/input/function-call-output"
-import { FunctionCall } from "src/domain/context/output/function-call"
-import { UserMessage } from "src/domain/context/input/user-message"
-import { InferenceRequest } from "src/domain/generative-model/inference-request"
-import { ModelMessage } from "src/domain/context/output/model-message"
+import { FunctionCallOutput } from "@domain/context/input/function-call-output"
+import { FunctionCall } from "@domain/context/output/function-call"
+import { UserMessage } from "@domain/context/input/user-message"
+import { InferenceRequest } from "@domain/generative-model/inference-request"
+import { ModelMessage } from "@domain/context/output/model-message"
 
 export interface UserMessageHandler {
 	handle(executionId: string, userMessage: UserMessage): Promise<void>

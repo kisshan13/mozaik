@@ -1,10 +1,9 @@
-import { FunctionCall } from "src/domain/context/output/function-call"
-import { FunctionCallHandler } from "../handler"
-import { RuntimeContext } from "../loop"
-import { State, StateId } from "./state"
-import { GoTo } from "../transition/go-to"
-import { Transition } from "../transition/transition"
-import { Fail } from "../transition/fail"
+import { FunctionCall } from "@domain/context/output/function-call"
+import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { State, StateId } from "@domain/agnet-loop/state/state"
+import { GoTo } from "@domain/agnet-loop/transition/go-to"
+import { Transition } from "@domain/agnet-loop/transition/transition"
+import { Fail } from "@domain/agnet-loop/transition/fail"
 
 export class FunctionCallState implements State {
 	id: StateId = StateId.FUNCTION_CALL_PENDING

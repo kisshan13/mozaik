@@ -1,5 +1,5 @@
-import { RuntimeContext } from "../loop"
-import { Transition } from "../transition/transition"
+import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { Transition } from "@domain/agnet-loop/transition/transition"
 
 export enum StateId {
 	USER_MESSAGE_RECEIVED = "USER_MESSAGE_RECEIVED",

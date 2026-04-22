@@ -1,4 +1,4 @@
-import { Context } from "src/domain/context/context"
+import { Context } from "@domain/context/context"
 
 export interface ContextRepository {
 	save(context: Context): Promise<void>

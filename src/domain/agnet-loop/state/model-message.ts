@@ -1,8 +1,8 @@
-import { RuntimeContext } from "../loop"
-import { State, StateId } from "./state"
-import { Complete } from "../transition/complete"
-import { Fail } from "../transition/fail"
-import { Transition } from "../transition/transition"
+import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { State, StateId } from "@domain/agnet-loop/state/state"
+import { Complete } from "@domain/agnet-loop/transition/complete"
+import { Fail } from "@domain/agnet-loop/transition/fail"
+import { Transition } from "@domain/agnet-loop/transition/transition"
 
 export class ModelMessageState implements State {
 	id: StateId = StateId.MODEL_MESSAGE_RECEIVED

@@ -1,5 +1,5 @@
-import { Context } from "src/domain/context/context"
-import { ContextRepository } from "src/domain/context/context-repository"
+import { Context } from "@domain/context/context"
+import { ContextRepository } from "@domain/context/context-repository"
 
 export class InMemoryContextRepository implements ContextRepository {
 	private readonly store = new Map<string, Context>()

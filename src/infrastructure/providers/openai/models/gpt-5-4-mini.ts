@@ -1,8 +1,8 @@
-import { ReasoningEffort } from "src/domain/generative-model/capabilities/reasoning-effort"
-import { ToolCallingCapability } from "src/domain/generative-model/capabilities/tool-calling"
-import { GenerativeModel } from "src/domain/generative-model/generative-model"
-import { Tool } from "src/domain/generative-model/tool"
-import { OpenAIReasoningEffort, OpenAIReasoningEffortType } from "src/infrastructure/providers/openai/reasoning-effort"
+import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
+import { GenerativeModel } from "@domain/generative-model/generative-model"
+import { Tool } from "@domain/generative-model/tool"
+import { OpenAIReasoningEffort, OpenAIReasoningEffortType } from "@infra/providers/openai/reasoning-effort"
 
 export class Gpt54Mini implements GenerativeModel, ReasoningEffort<OpenAIReasoningEffortType>, ToolCallingCapability {
 	readonly specification = {

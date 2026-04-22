@@ -1,7 +1,7 @@
-import { Context } from "src/domain/context/context"
-import { GenerativeModel } from "./generative-model"
-import { ReasoningEffort } from "./capabilities/reasoning-effort"
-import { ToolCallingCapability } from "./capabilities/tool-calling"
+import { Context } from "@domain/context/context"
+import { GenerativeModel } from "@domain/generative-model/generative-model"
+import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
+import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 
 export class InferenceRequest {
 	readonly model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
