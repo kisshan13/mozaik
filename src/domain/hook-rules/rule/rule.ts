@@ -1,4 +1,4 @@
-import { Condition } from "@domain/rules/condition/condition"
+import { Condition } from "@domain/hook-rules/condition/condition"
 
 export interface Action<T> {
 	apply(candidate: T): T
