@@ -1,6 +1,6 @@
-import { Content } from "@domain/model-context/content"
+import { ItemContent } from "@domain/model-context/context-item/item-content/item-content"
 
-export class SummaryText extends Content {
+export class SummaryText extends ItemContent {
 	readonly type = "summary_text"
 
 	private constructor(public readonly text: string) {

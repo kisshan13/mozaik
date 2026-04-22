@@ -1,4 +1,4 @@
-import { UserMessage } from "@domain/model-context/input/user-message"
+import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { StateId } from "@domain/agnet-loop/state/state"
 import { FunctionCallState } from "@domain/agnet-loop/state/function-call"
 import { ModelMessageState } from "@domain/agnet-loop/state/model-message"
@@ -11,8 +11,8 @@ import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { Context } from "@domain/model-context/context"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
-import { ModelMessage } from "@domain/model-context/output/model-message"
-import { FunctionCallOutput } from "@domain/model-context/input/function-call-output"
+import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
+import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
 import { Transition } from "@domain/agnet-loop/transition/transition"
 
 export interface RuntimeContext {
