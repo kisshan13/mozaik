@@ -1,6 +1,6 @@
 import { StateId } from "@domain/agnet-loop/state/state"
-import { StateHandler } from "@app/state-handler"
-import { UserMessageHandler } from "@app/user-message-handler"
+import { StateHandler } from "@app/agent-runtime/state-handler"
+import { UserMessageHandler } from "@app/agent-runtime/user-message-handler"
 
 export class StateHandlerRepository {
 	private static handlers: Map<StateId, StateHandler> = new Map<StateId, StateHandler>()

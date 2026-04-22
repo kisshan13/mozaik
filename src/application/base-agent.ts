@@ -1,5 +1,5 @@
 import { StateId } from "@domain/agnet-loop/state/state"
-import { AgentRuntime } from "@app/agent-runtime"
+import { AgentRuntime } from "@app/agent-runtime/agent-runtime"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
 import { Context } from "@domain/model-context/context"

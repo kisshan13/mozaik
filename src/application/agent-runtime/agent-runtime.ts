@@ -6,7 +6,7 @@ import { UserMessage } from "@domain/model-context/context-item/client-item/user
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { StateHandlerRepository } from "@app/state-handler-repository"
+import { StateHandlerRepository } from "@app/agent-runtime/state-handler-repository"
 
 export class AgentRuntime {
 	on(event: string, callback: (data: any) => Promise<void>): void {
