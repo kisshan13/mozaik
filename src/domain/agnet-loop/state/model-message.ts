@@ -1,3 +1,4 @@
+import { HookId } from "@app/agent-runtime/hooks-registry"
 import { RuntimeContext } from "@domain/agnet-loop/loop"
 import { State, StateId } from "@domain/agnet-loop/state/state"
 import { Complete } from "@domain/agnet-loop/transition/complete"
@@ -6,6 +7,10 @@ import { Transition } from "@domain/agnet-loop/transition/transition"
 
 export class ModelMessageState implements State {
 	id: StateId = StateId.MODEL_MESSAGE_RECEIVED
+
+	entry(runtime: RuntimeContext): HookId | undefined {
+		return HookId.BEFORE_MODEL_MESSAGE
+	}
 
 	next(runtime: RuntimeContext): Transition {
 		if (!runtime.modelMessage) {

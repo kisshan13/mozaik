@@ -14,10 +14,13 @@ import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
 import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
 import { Transition } from "@domain/agnet-loop/transition/transition"
+import { InferenceRequest } from "@domain/generative-model/inference-request"
+import { HookId } from "@app/agent-runtime/hooks-registry"
 
 export interface RuntimeContext {
 	execution: Execution
 	userMessage: UserMessage
+	inferenceRequest?: InferenceRequest
 	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
 	context: Context
 	inferenceResponse?: InferenceResponse
@@ -33,6 +36,14 @@ export class AgentLoop {
 		this.states.set(StateId.INFERENCE_PENDING, new InferencePendingState())
 		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallState())
 		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelMessageState())
+	}
+
+	entry(runtime: RuntimeContext): HookId | undefined {
+		const state = this.states.get(runtime.execution.currentStateId)
+		if (!state) {
+			throw new Error(`State ${runtime.execution.currentStateId} not found`)
+		}
+		return state.entry(runtime)
 	}
 
 	next(runtime: RuntimeContext): Transition {

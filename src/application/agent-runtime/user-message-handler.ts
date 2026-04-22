@@ -1,8 +1,8 @@
 import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { StateHandler } from "@app/agent-runtime/state-handler"
+import { HookHandler } from "@app/agent-runtime/hook-handler"
 import { EventEmitter } from "@app/agent-runtime/event-emitter"
 
-export class UserMessageHandler implements StateHandler, EventEmitter {
+export class UserMessageHandler implements HookHandler, EventEmitter {
 	private subscribers: Map<string, (data: any) => void> = new Map<string, (data: any) => void>()
 
 	subscribe(event: string, callback: (data: any) => void): void {

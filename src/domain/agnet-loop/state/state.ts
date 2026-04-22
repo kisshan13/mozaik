@@ -1,3 +1,4 @@
+import { HookId } from "@app/agent-runtime/hooks-registry"
 import { RuntimeContext } from "@domain/agnet-loop/loop"
 import { Transition } from "@domain/agnet-loop/transition/transition"
 
@@ -9,5 +10,6 @@ export enum StateId {
 }
 
 export interface State {
+	entry(context: RuntimeContext): HookId | undefined
 	next(context: RuntimeContext): Transition
 }

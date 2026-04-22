@@ -1,16 +1,15 @@
 import { Execution, ExecutionStatus } from "@domain/agnet-loop/execution"
 import { AgentLoop, RuntimeContext } from "@domain/agnet-loop/loop"
-import { StateId } from "@domain/agnet-loop/state/state"
 import { Context } from "@domain/model-context/context"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { StateHandlerRepository } from "@app/agent-runtime/state-handler-repository"
+import { HookId, HooksRegistry } from "@app/agent-runtime/hooks-registry"
 
 export class AgentRuntime {
 	on(event: string, callback: (data: any) => Promise<void>): void {
-		const handler = StateHandlerRepository.getHandler(StateId.USER_MESSAGE_RECEIVED)
+		const handler = HooksRegistry.getHandler(HookId.ON_USER_MESSAGE_RECEIVED)
 		handler.subscribe(event, callback)
 	}
 	async start(
@@ -28,10 +27,12 @@ export class AgentRuntime {
 			context,
 		}
 		while (!execution.isTerminal()) {
-			const currentStateId = execution.currentStateId
-
 			try {
-				const handler = StateHandlerRepository.getHandler(currentStateId)
+				const hookId = loop.entry(runtimeContext)
+				if (!hookId) {
+					throw new Error("Hook ID not found")
+				}
+				const handler = HooksRegistry.getHandler(hookId)
 				await handler.handle(runtimeContext)
 			} catch (error) {
 				execution.status = ExecutionStatus.FAILED

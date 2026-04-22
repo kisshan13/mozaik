@@ -5,9 +5,18 @@ import { State, StateId } from "@domain/agnet-loop/state/state"
 import { GoTo } from "@domain/agnet-loop/transition/go-to"
 import { Fail } from "@domain/agnet-loop/transition/fail"
 import { Transition } from "@domain/agnet-loop/transition/transition"
+import { HookId } from "@app/agent-runtime/hooks-registry"
 
 export class InferencePendingState implements State {
 	id: StateId = StateId.INFERENCE_PENDING
+
+	entry(runtime: RuntimeContext): HookId | undefined {
+		const inferenceRequest = runtime.inferenceRequest
+		if (!inferenceRequest) {
+			throw new Error("Inference request not found")
+		}
+		return HookId.BEFORE_INFERENCE
+	}
 
 	next(runtime: RuntimeContext): Transition {
 		const inferenceResponse = runtime.inferenceResponse
