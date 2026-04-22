@@ -1,6 +1,6 @@
 import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { StateHandler } from "./state-handler"
-import { EventEmitter } from "./event-emitter"
+import { StateHandler } from "@app/state-handler"
+import { EventEmitter } from "@app/event-emitter"
 
 export class UserMessageHandler implements StateHandler, EventEmitter {
 	private subscribers: Map<string, (data: any) => void> = new Map<string, (data: any) => void>()

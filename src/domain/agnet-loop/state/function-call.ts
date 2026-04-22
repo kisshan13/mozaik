@@ -1,4 +1,4 @@
-import { FunctionCall } from "@domain/model-context/context-item/output/function-calll
+import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
 import { RuntimeContext } from "@domain/agnet-loop/loop"
 import { State, StateId } from "@domain/agnet-loop/state/state"
 import { GoTo } from "@domain/agnet-loop/transition/go-to"

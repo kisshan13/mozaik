@@ -1,6 +1,6 @@
 import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { ModelMessage } from "@domain/model-context/context-item/output/model-messagee
-import { FunctionCall } from "@domain/model-context/context-item/output/function-calll
+import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
+import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
 import { State, StateId } from "@domain/agnet-loop/state/state"
 import { GoTo } from "@domain/agnet-loop/transition/go-to"
 import { Fail } from "@domain/agnet-loop/transition/fail"
