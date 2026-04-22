@@ -1,4 +1,4 @@
-import { Content } from "@domain/context/content"
+import { Content } from "@domain/model-context/content"
 
 export class SummaryText extends Content {
 	readonly type = "summary_text"

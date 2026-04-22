@@ -1,4 +1,4 @@
-import { ContextItem } from "@domain/context/context-item"
+import { ContextItem } from "@domain/model-context/context-item"
 
 export class FunctionCall extends ContextItem {
 	readonly type = "function_call"

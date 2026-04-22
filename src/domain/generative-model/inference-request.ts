@@ -1,4 +1,4 @@
-import { Context } from "@domain/context/context"
+import { Context } from "@domain/model-context/context
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"

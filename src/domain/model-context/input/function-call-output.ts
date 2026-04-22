@@ -1,5 +1,5 @@
-import { ContextItem } from "@domain/context/context-item"
-import { InputText } from "@domain/context/content/input-text"
+import { ContextItem } from "@domain/model-context/context-item"
+import { InputText } from "@domain/model-context/content/input-text"
 
 export class FunctionCallOutput extends ContextItem {
 	readonly type = "function_call_output"

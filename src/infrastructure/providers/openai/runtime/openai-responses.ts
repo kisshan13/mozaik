@@ -1,8 +1,8 @@
-import { Context } from "src/domain/context/context"
-import { ContextItem } from "@domain/context/context-item"
-import { FunctionCall } from "@domain/context/output/function-call"
-import { ModelMessage } from "@domain/context/output/model-message"
-import { Reasoning } from "@domain/context/output/reasoning"
+import { Context } from "@domain/model-context/context"
+import { ContextItem } from "@domain/model-context/context-item
+import { FunctionCall } from "@domain/model-context/output/function-call
+import { ModelMessage } from "@domain/model-context/output/model-message
+import { Reasoning } from "@domain/model-context/output/reasoning
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelRuntime } from "@domain/generative-model/runtime/model-runtime"
