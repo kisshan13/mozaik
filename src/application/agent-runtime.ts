@@ -6,6 +6,7 @@ import { UserMessage } from "@domain/model-context/context-item/client-item/user
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
+import { StateHandlerRepository } from "./state-handler-repository"
 
 export class AgentRuntime {
 	on(event: string, callback: (data: any) => Promise<void>): void {
@@ -40,54 +41,5 @@ export class AgentRuntime {
 			const transition = loop.next(runtimeContext)
 			await transition.apply(runtimeContext)
 		}
-	}
-}
-
-export interface EventEmitter {
-	emit(event: string, data: any): void
-}
-
-export interface StateHandler {
-	subscribe(event: string, callback: (data: any) => void): void
-	unsubscribe(event: string, callback: (data: any) => void): void
-	emit(event: string, data: any): void
-	handle(runtimeContext: RuntimeContext): Promise<void>
-}
-
-export class UserMessageHandler implements StateHandler, EventEmitter {
-	private subscribers: Map<string, (data: any) => void> = new Map<string, (data: any) => void>()
-
-	subscribe(event: string, callback: (data: any) => void): void {
-		console.log(`Event subscribed: ${event} with callback: ${callback}`)
-		this.subscribers.set(event, callback)
-	}
-	unsubscribe(event: string, callback: (data: any) => void): void {
-		console.log(`Event unsubscribed: ${event} with callback: ${callback}`)
-	}
-	emit(event: string, data: any): void {
-		console.log(`Event emitted: ${event} with data: ${data}`)
-		const callback = this.subscribers.get(event)
-		if (callback) {
-			callback(data)
-		}
-	}
-	async handle(runtimeContext: RuntimeContext): Promise<void> {
-		this.emit("userMessageReceived", runtimeContext.userMessage)
-	}
-}
-
-export class StateHandlerRepository {
-	private static handlers: Map<StateId, StateHandler> = new Map<StateId, StateHandler>()
-
-	constructor() {
-		StateHandlerRepository.handlers.set(StateId.USER_MESSAGE_RECEIVED, new UserMessageHandler())
-	}
-
-	static getHandler(stateId: StateId): StateHandler {
-		const handler = this.handlers.get(stateId)
-		if (!handler) {
-			throw new Error(`Handler for state ${stateId} not found`)
-		}
-		return handler
 	}
 }
