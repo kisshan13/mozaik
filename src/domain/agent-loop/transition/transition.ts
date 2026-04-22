@@ -1,5 +1,5 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { StateId } from "@domain/agnet-loop/state/state"
+import { RuntimeContext } from "@domain/agent-loop/loop"
+import { StateId } from "@domain/agent-loop/state/state"
 
 export interface TransitionRecord {
 	fromState: StateId

@@ -1,5 +1,5 @@
-import { Execution, ExecutionStatus } from "@domain/agnet-loop/execution"
-import { AgentLoop, RuntimeContext } from "@domain/agnet-loop/loop"
+import { Execution, ExecutionStatus } from "@domain/agent-loop/execution"
+import { AgentLoop, RuntimeContext } from "@domain/agent-loop/loop"
 import { Context } from "@domain/model-context/context"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"

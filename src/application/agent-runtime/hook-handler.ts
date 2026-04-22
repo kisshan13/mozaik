@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/loop"
 
 export interface HookHandler {
 	subscribe(event: string, callback: (data: any) => void): void

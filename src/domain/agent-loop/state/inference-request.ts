@@ -1,10 +1,10 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/loop"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
 import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
-import { State, StateId } from "@domain/agnet-loop/state/state"
-import { GoTo } from "@domain/agnet-loop/transition/go-to"
-import { Fail } from "@domain/agnet-loop/transition/fail"
-import { Transition } from "@domain/agnet-loop/transition/transition"
+import { State, StateId } from "@domain/agent-loop/state/state"
+import { GoTo } from "@domain/agent-loop/transition/go-to"
+import { Fail } from "@domain/agent-loop/transition/fail"
+import { Transition } from "@domain/agent-loop/transition/transition"
 import { HookId } from "@app/agent-runtime/hooks-registry"
 
 export class InferencePendingState implements State {

@@ -1,4 +1,4 @@
-import { Condition } from "@domain/agnet-loop/hook-rules/condition/condition"
+import { Condition } from "@domain/agent-loop/hook-rules/condition/condition"
 
 export interface Action<T> {
 	apply(candidate: T): T

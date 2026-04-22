@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/loop"
 import { HookHandler } from "@app/agent-runtime/hook-handler"
 import { EventEmitter } from "@app/agent-runtime/event-emitter"
 

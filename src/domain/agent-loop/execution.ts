@@ -1,5 +1,5 @@
-import { StateId } from "@domain/agnet-loop/state/state"
-import { TransitionRecord } from "@domain/agnet-loop/transition/transition"
+import { StateId } from "@domain/agent-loop/state/state"
+import { TransitionRecord } from "@domain/agent-loop/transition/transition"
 
 export enum ExecutionStatus {
 	RUNNING,

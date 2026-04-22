@@ -1,6 +1,6 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { StateId } from "@domain/agnet-loop/state/state"
-import { Transition } from "@domain/agnet-loop/transition/transition"
+import { RuntimeContext } from "@domain/agent-loop/loop"
+import { StateId } from "@domain/agent-loop/state/state"
+import { Transition } from "@domain/agent-loop/transition/transition"
 
 export class GoTo implements Transition {
 	next: StateId

@@ -1,6 +1,6 @@
-import { RuntimeContext } from "@domain/agnet-loop/loop"
-import { ExecutionStatus } from "@domain/agnet-loop/execution"
-import { Transition } from "@domain/agnet-loop/transition/transition"
+import { RuntimeContext } from "@domain/agent-loop/loop"
+import { ExecutionStatus } from "@domain/agent-loop/execution"
+import { Transition } from "@domain/agent-loop/transition/transition"
 
 export class Complete implements Transition {
 	result: string
