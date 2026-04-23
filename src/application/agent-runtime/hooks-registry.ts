@@ -1,5 +1,6 @@
 import { HookHandler } from "@app/agent-runtime/hook-handler"
 import { UserMessageHandler } from "@app/agent-runtime/user-message-handler"
+import { AgentRuntime } from "./agent-runtime"
 
 export enum HookId {
 	ON_USER_MESSAGE_RECEIVED = "ON_USER_MESSAGE_RECEIVED",
@@ -12,17 +13,21 @@ export enum HookId {
 }
 
 export class HooksRegistry {
-	private static handlers: Map<HookId, HookHandler> = new Map<HookId, HookHandler>()
+	private handlers: Map<HookId, (data: any) => Promise<void>> = new Map<HookId, (data: any) => Promise<void>>()
 
-	constructor() {
-		HooksRegistry.handlers.set(HookId.ON_USER_MESSAGE_RECEIVED, new UserMessageHandler())
-	}
-
-	static getHandler(hookId: HookId): HookHandler {
+	getHandler(hookId: HookId): (data: any) => Promise<void> {
 		const handler = this.handlers.get(hookId)
 		if (!handler) {
 			throw new Error(`Hook handler for hook ${hookId} not found`)
 		}
 		return handler
+	}
+
+	registerHandler(hookId: HookId, handler: (data: any) => Promise<void>): void {
+		this.handlers.set(hookId, handler)
+	}
+
+	unregisterHandler(hookId: HookId): void {
+		this.handlers.delete(hookId)
 	}
 }

@@ -8,10 +8,12 @@ import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { HookId, HooksRegistry } from "@app/agent-runtime/hooks-registry"
 
 export class AgentRuntime {
-	on(event: string, callback: (data: any) => Promise<void>): void {
-		const handler = HooksRegistry.getHandler(HookId.ON_USER_MESSAGE_RECEIVED)
-		handler.subscribe(event, callback)
+	private hooksRegistry: HooksRegistry = new HooksRegistry()
+
+	async on(hookId: HookId, callback: (data: any) => Promise<void>): Promise<void> {
+		this.hooksRegistry.registerHandler(hookId, callback)
 	}
+
 	async start(
 		userMessage: UserMessage,
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
@@ -32,8 +34,9 @@ export class AgentRuntime {
 				if (!hookId) {
 					throw new Error("Hook ID not found")
 				}
-				const handler = HooksRegistry.getHandler(hookId)
-				await handler.handle(runtimeContext)
+				const handler = this.hooksRegistry.getHandler(hookId)
+
+				await handler(runtimeContext)
 			} catch (error) {
 				execution.status = ExecutionStatus.FAILED
 				break
