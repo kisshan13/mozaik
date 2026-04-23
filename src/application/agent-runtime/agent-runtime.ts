@@ -9,6 +9,10 @@ import { HooksRegistry } from "@domain/agent-loop/hooks/hooks-registry"
 import { HookId } from "@domain/agent-loop/hooks/hook"
 import { StateHandlerRegistry } from "@domain/agent-loop/state/state-registry"
 import { StateId } from "@domain/agent-loop/state/state"
+import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
+import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
+import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
+import { InferenceRequest } from "@domain/generative-model/inference-request"
 
 export class AgentRuntime {
 	private hooksRegistry: HooksRegistry = new HooksRegistry()
@@ -21,10 +25,26 @@ export class AgentRuntime {
 	}
 
 	async onInferencePending(context: RuntimeContext): Promise<void> {
+		const openaiResponses = new OpenAIResponses()
+		const inferenceRequest = new InferenceRequest(context.model, context.context)
+		const inferenceResponse = await openaiResponses.infer(inferenceRequest)
+		context.inferenceResponse = inferenceResponse
 		return Promise.resolve()
 	}
 
 	async onFunctionCallPending(context: RuntimeContext): Promise<void> {
+		const functionCall = context.inferenceResponse?.contextItems.find((item) => item.getType() === "function_call")
+		if (!functionCall || !(functionCall instanceof FunctionCall)) {
+			throw new Error("Function call not found")
+		}
+
+		const tool = context.model.getTools().find((tool) => tool.name === functionCall.name)
+		if (!tool) {
+			throw new Error("Function not found")
+		}
+
+		const functionCallOutput = await tool.invoke(functionCall.args)
+		context.functionCallOutput = FunctionCallOutput.create(functionCall.callId, functionCallOutput)
 		return Promise.resolve()
 	}
 
