@@ -7,9 +7,30 @@ import { ToolCallingCapability } from "@domain/generative-model/capabilities/too
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { HooksRegistry } from "@domain/agent-loop/hooks/hooks-registry"
 import { HookId } from "@domain/agent-loop/hooks/hook"
+import { StateHandlerRegistry } from "@domain/agent-loop/state/state-registry"
+import { StateId } from "@domain/agent-loop/state/state"
 
 export class AgentRuntime {
 	private hooksRegistry: HooksRegistry = new HooksRegistry()
+	private stateHandlerRegistry: StateHandlerRegistry = new StateHandlerRegistry()
+
+	constructor() {
+		this.stateHandlerRegistry.registerHandler(StateId.INFERENCE_PENDING, this.onInferencePending)
+		this.stateHandlerRegistry.registerHandler(StateId.FUNCTION_CALL_PENDING, this.onFunctionCallPending)
+		this.stateHandlerRegistry.registerHandler(StateId.MODEL_MESSAGE_RECEIVED, this.onModelMessageReceived)
+	}
+
+	async onInferencePending(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async onFunctionCallPending(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async onModelMessageReceived(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
+	}
 
 	async on(hookId: HookId, callback: (data: any) => Promise<void>): Promise<void> {
 		this.hooksRegistry.registerHandler(hookId, callback)
@@ -30,28 +51,24 @@ export class AgentRuntime {
 			context,
 		}
 		while (!execution.isTerminal()) {
-
 			const transition = loop.next(runtimeContext)
 			await transition.apply(runtimeContext)
-			
+
 			try {
-				const hooks = loop.entry(runtimeContext)
-				if (hooks.before) {
-					const handler = this.hooksRegistry.getHandler(hooks.before)
+				const stateDetails = loop.getStateDetails(runtimeContext)
+				if (stateDetails.before) {
+					const handler = this.hooksRegistry.getHandler(stateDetails.before)
 					await handler(runtimeContext)
 				}
 
-
-				if (hooks.after) {
-					const handler = this.hooksRegistry.getHandler(hooks.after)
+				if (stateDetails.after) {
+					const handler = this.hooksRegistry.getHandler(stateDetails.after)
 					await handler(runtimeContext)
 				}
 			} catch (error) {
 				execution.status = ExecutionStatus.FAILED
 				break
 			}
-
-
 		}
 	}
 }

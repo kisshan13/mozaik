@@ -1,5 +1,5 @@
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
-import { StateHooks, StateId } from "@domain/agent-loop/state/state"
+import { StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { FunctionCallState } from "@domain/agent-loop/state/function-call"
 import { ModelMessageState } from "@domain/agent-loop/state/model-message"
 import { InferencePendingState } from "@domain/agent-loop/state/inference-pending"
@@ -35,12 +35,20 @@ export class AgentLoop {
 		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelMessageState())
 	}
 
-	entry(runtime: RuntimeContext): StateHooks {
+	validateEntry(runtime: RuntimeContext): void {
 		const state = this.states.get(runtime.execution.currentStateId)
 		if (!state) {
 			throw new Error(`State ${runtime.execution.currentStateId} not found`)
 		}
-		return state.entry(runtime)
+		state.validateEntry(runtime)
+	}
+
+	getStateDetails(runtime: RuntimeContext): StateDetails {
+		const state = this.states.get(runtime.execution.currentStateId)
+		if (!state) {
+			throw new Error(`State ${runtime.execution.currentStateId} not found`)
+		}
+		return state.getDetails()
 	}
 
 	next(runtime: RuntimeContext): Transition {

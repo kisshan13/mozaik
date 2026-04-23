@@ -13,26 +13,15 @@ import { FunctionCallOutput } from "@domain/model-context/context-item/client-it
 
 export class BaseAgent {
 	constructor(private readonly runtime: AgentRuntime) {
-		this.runtime.on(HookId.BEFORE_INFERENCE, this.onBeforeInference)
-		this.runtime.on(HookId.AFTER_INFERENCE, this.onAfterInference)
-		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.onBeforeFunctionCall)
-		this.runtime.on(HookId.AFTER_FUNCTION_CALL, this.onAfterFunctionCall)
-		this.runtime.on(HookId.BEFORE_MODEL_MESSAGE, this.onBeforeModelMessage)
-		this.runtime.on(HookId.ON_MODEL_MESSAGE, this.onModelMessageReceived)
+		this.runtime.on(HookId.BEFORE_INFERENCE, this.beforeInference)
+		this.runtime.on(HookId.AFTER_INFERENCE, this.afterInference)
+		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.beforeFunctionCall)
+		this.runtime.on(HookId.AFTER_FUNCTION_CALL, this.afterFunctionCall)
+		this.runtime.on(HookId.BEFORE_MODEL_MESSAGE, this.beforeModelMessage)
+		this.runtime.on(HookId.AFTER_MODEL_MESSAGE, this.afterModelMessage)
 	}
 
-
-	async onModelMessageReceived({
-		modelMessage,
-		context,
-	}: {
-		modelMessage: ModelMessage
-		context: Context
-	}): Promise<void> {
-		return Promise.resolve()
-	}
-
-	async onBeforeInference({
+	async beforeInference({
 		inferenceRequest,
 		context,
 	}: {
@@ -42,7 +31,7 @@ export class BaseAgent {
 		return Promise.resolve()
 	}
 
-	async onAfterInference({
+	async afterInference({
 		inferenceResponse,
 		context,
 	}: {
@@ -52,7 +41,7 @@ export class BaseAgent {
 		return Promise.resolve()
 	}
 
-	async onBeforeFunctionCall({
+	async beforeFunctionCall({
 		functionCall,
 		context,
 	}: {
@@ -62,7 +51,7 @@ export class BaseAgent {
 		return Promise.resolve()
 	}
 
-	async onAfterFunctionCall({
+	async afterFunctionCall({
 		functionCallOutput,
 		context,
 	}: {
@@ -72,7 +61,17 @@ export class BaseAgent {
 		return Promise.resolve()
 	}
 
-	async onBeforeModelMessage({
+	async beforeModelMessage({
+		modelMessage,
+		context,
+	}: {
+		modelMessage: ModelMessage
+		context: Context
+	}): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async afterModelMessage({
 		modelMessage,
 		context,
 	}: {
