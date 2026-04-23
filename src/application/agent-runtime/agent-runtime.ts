@@ -31,12 +31,10 @@ export class AgentRuntime {
 		while (!execution.isTerminal()) {
 			try {
 				const hookId = loop.entry(runtimeContext)
-				if (!hookId) {
-					throw new Error("Hook ID not found")
+				if (hookId) {
+					const handler = this.hooksRegistry.getHandler(hookId)
+					await handler(runtimeContext)
 				}
-				const handler = this.hooksRegistry.getHandler(hookId)
-
-				await handler(runtimeContext)
 			} catch (error) {
 				execution.status = ExecutionStatus.FAILED
 				break
