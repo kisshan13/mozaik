@@ -16,8 +16,8 @@ import { Gpt54Mini } from "@infra/providers/openai/models/gpt-5-4-mini"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import { Tool } from "@domain/generative-model/tool"
-import { BaseCondition, Condition } from "@domain/agent-loop/hook-rules/condition/condition"
-import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/agent-loop/hook-rules/rule/rule"
+import { BaseCondition, Condition } from "@domain/agent-loop/rules/condition/condition"
+import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/agent-loop/rules/rule/rule"
 import { InMemoryContextRepository } from "@infra/repository/in-memory-context-repository"
 
 export {

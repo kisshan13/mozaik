@@ -1,4 +1,4 @@
-import { HookId } from "@app/agent-runtime/hooks-registry"
+import { HookId } from "@domain/agent-loop/hooks/hook"
 import { RuntimeContext } from "@domain/agent-loop/loop"
 import { Transition } from "@domain/agent-loop/transition/transition"
 
@@ -9,7 +9,12 @@ export enum StateId {
 	MODEL_MESSAGE_RECEIVED = "MODEL_MESSAGE_RECEIVED",
 }
 
+export type StateHooks = {
+	before: HookId
+	after: HookId
+}
+
 export interface State {
-	entry(context: RuntimeContext): HookId | undefined
+	entry(context: RuntimeContext): StateHooks
 	next(context: RuntimeContext): Transition
 }

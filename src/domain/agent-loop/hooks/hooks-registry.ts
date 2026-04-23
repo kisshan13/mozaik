@@ -1,12 +1,4 @@
-export enum HookId {
-	ON_USER_MESSAGE_RECEIVED = "ON_USER_MESSAGE_RECEIVED",
-	BEFORE_INFERENCE = "BEFORE_INFERENCE",
-	AFTER_INFERENCE = "AFTER_INFERENCE",
-	BEFORE_FUNCTION_CALL = "BEFORE_FUNCTION_CALL",
-	AFTER_FUNCTION_CALL = "AFTER_FUNCTION_CALL",
-	BEFORE_MODEL_MESSAGE = "BEFORE_MODEL_MESSAGE",
-	ON_MODEL_MESSAGE = "ON_MODEL_MESSAGE",
-}
+import { HookId } from "./hook"
 
 export class HooksRegistry {
 	private handlers: Map<HookId, (data: any) => Promise<void>> = new Map<HookId, (data: any) => Promise<void>>()

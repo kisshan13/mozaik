@@ -5,7 +5,8 @@ import { UserMessage } from "@domain/model-context/context-item/client-item/user
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { HookId, HooksRegistry } from "@app/agent-runtime/hooks-registry"
+import { HooksRegistry } from "@domain/agent-loop/hooks/hooks-registry"
+import { HookId } from "@domain/agent-loop/hooks/hook"
 
 export class AgentRuntime {
 	private hooksRegistry: HooksRegistry = new HooksRegistry()
@@ -29,10 +30,20 @@ export class AgentRuntime {
 			context,
 		}
 		while (!execution.isTerminal()) {
+
+			const transition = loop.next(runtimeContext)
+			await transition.apply(runtimeContext)
+			
 			try {
-				const hookId = loop.entry(runtimeContext)
-				if (hookId) {
-					const handler = this.hooksRegistry.getHandler(hookId)
+				const hooks = loop.entry(runtimeContext)
+				if (hooks.before) {
+					const handler = this.hooksRegistry.getHandler(hooks.before)
+					await handler(runtimeContext)
+				}
+
+
+				if (hooks.after) {
+					const handler = this.hooksRegistry.getHandler(hooks.after)
 					await handler(runtimeContext)
 				}
 			} catch (error) {
@@ -40,8 +51,7 @@ export class AgentRuntime {
 				break
 			}
 
-			const transition = loop.next(runtimeContext)
-			await transition.apply(runtimeContext)
+
 		}
 	}
 }

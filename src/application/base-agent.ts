@@ -5,7 +5,7 @@ import { Context } from "@domain/model-context/context"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
-import { HookId } from "./agent-runtime/hooks-registry"
+import { HookId } from "@domain/agent-loop/hooks/hook"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
@@ -13,7 +13,6 @@ import { FunctionCallOutput } from "@domain/model-context/context-item/client-it
 
 export class BaseAgent {
 	constructor(private readonly runtime: AgentRuntime) {
-		this.runtime.on(HookId.ON_USER_MESSAGE_RECEIVED, this.onUserMessageReceived)
 		this.runtime.on(HookId.BEFORE_INFERENCE, this.onBeforeInference)
 		this.runtime.on(HookId.AFTER_INFERENCE, this.onAfterInference)
 		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.onBeforeFunctionCall)
@@ -22,15 +21,7 @@ export class BaseAgent {
 		this.runtime.on(HookId.ON_MODEL_MESSAGE, this.onModelMessageReceived)
 	}
 
-	async onUserMessageReceived({
-		userMessage,
-		context,
-	}: {
-		userMessage: UserMessage
-		context: Context
-	}): Promise<void> {
-		const updatedContext = await this.onUserMessage(userMessage, context)
-	}
+
 	async onModelMessageReceived({
 		modelMessage,
 		context,
@@ -89,10 +80,6 @@ export class BaseAgent {
 		context: Context
 	}): Promise<void> {
 		return Promise.resolve()
-	}
-
-	async onUserMessage(userMessage: UserMessage, context: Context): Promise<Context> {
-		return Promise.resolve(context)
 	}
 
 	async message(
