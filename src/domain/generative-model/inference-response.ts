@@ -1,4 +1,4 @@
-import { ContextItem } from "@domain/context/context-item"
+import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { TokenUsage } from "@domain/generative-model/token-usage"
 
 export class InferenceResponse {
