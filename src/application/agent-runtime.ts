@@ -30,6 +30,7 @@ export class AgentRuntime {
 		const inferenceRequest = new InferenceRequest(context.model, context.context)
 		const inferenceResponse = await openaiResponses.infer(inferenceRequest)
 		context.inferenceResponse = inferenceResponse
+		context.context.applyModelOutput(inferenceResponse.contextItems)
 		return Promise.resolve()
 	}
 
@@ -45,7 +46,8 @@ export class AgentRuntime {
 		}
 
 		const functionCallOutput = await tool.invoke(functionCall.args)
-		context.functionCallOutput = FunctionCallOutput.create(functionCall.callId, functionCallOutput)
+		context.functionCallOutput = functionCallOutput
+		context.context.addItem(FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)))
 		return Promise.resolve()
 	}
 
@@ -84,8 +86,6 @@ export class AgentRuntime {
 		}
 		while (!execution.isTerminal()) {
 			console.log("Executing state", execution.currentStateId)
-			const transition = loop.next(runtimeContext)
-			await transition.apply(runtimeContext)
 
 			try {
 				const stateDetails = loop.getStateDetails(runtimeContext)
@@ -108,6 +108,9 @@ export class AgentRuntime {
 				runtimeContext.error = error as Error
 				await handler(runtimeContext)
 			}
+
+			const transition = loop.next(runtimeContext)
+			await transition.apply(runtimeContext)
 		}
 	}
 }

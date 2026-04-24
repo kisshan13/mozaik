@@ -31,7 +31,6 @@ export class FunctionCallState implements State {
 		if (!functionCallOutput) {
 			return new Fail("Function call output not found")
 		}
-		runtime.context.addItem(functionCallOutput)
 		return new GoTo(StateId.INFERENCE_PENDING)
 	}
 }
