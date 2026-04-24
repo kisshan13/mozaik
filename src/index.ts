@@ -22,6 +22,7 @@ import { InMemoryContextRepository } from "@infra/repository/in-memory-context-r
 import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
 import { InferenceVisitor } from "@app/inference-visitor"
+import { AgentSociety } from "@app/agent-society"
 
 export {
 	Context,
@@ -55,4 +56,5 @@ export {
 	Agent,
 	AgentRuntime,
 	InferenceVisitor,
+	AgentSociety,
 }
