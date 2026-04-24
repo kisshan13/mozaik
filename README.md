@@ -1,24 +1,14 @@
 # Mozaik
 
-**Mozaik** is a TypeScript framework for building controllable multi-step AI agents.
+**Mozaik** is a TypeScript framework for building non-blocking AI agents.
 
-Instead of focusing on agents themselves, Mozaik provides a structured way to **model, manipulate, persist, and restore the context** that drives language model behavior. It implements a clean object model aligned with the **OpenResponses specification**, enabling developers to work with LLM inputs and outputs as composable, typed entities.
-
-With Mozaik, you can:
-
-- Structure interactions as ordered **context items** (messages, reasoning steps, function calls, etc.)
-- Append and evolve context across multiple model calls
-- Persist and reload context from storage
-- Manage context size and avoid overflow
-- Build complex workflows through **context composition**, not ad-hoc prompt strings
-
-Mozaik treats context as a **first-class primitive**, making it easier to design scalable, maintainable, and provider-agnostic LLM applications.
+It provides a structured agent loop, a lifecycle hook system, a typed context model, and an experimental multi-agent runtime — giving you full control over how agents think, act, and collaborate.
 
 ![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 yarn add @mozaik-ai/core
@@ -26,94 +16,293 @@ yarn add @mozaik-ai/core
 
 ## API Key Configuration
 
-Make sure to set your API keys in a `.env` file at the root of your project:
-
 ```env
-# For OpenAI
+# .env
 OPENAI_API_KEY=your-openai-key-here
 ```
 
-## Context Runtime (Overview)
+---
 
-The **Context Runtime** models the core behavior of a language model:
+## Architecture
 
-> Given a structured **context**, produce a **response**.
+Mozaik is organized into four layers:
 
-It abstracts away vendor-specific APIs (e.g. OpenAI) and provides a domain-centric interface for working with LLMs.
+```mermaid
+graph TD
+    AgentSociety["AgentSociety (experimental)"] --> Agent
+    Agent --> AgentRuntime
+    AgentRuntime --> AgentLoop["AgentLoop (FSM + hooks)"]
+    AgentLoop --> OpenAIResponses["OpenAIResponses (OpenResponses adapter)"]
+    AgentLoop --> Context["Context + ContextItems"]
+```
+
+| Layer                   | Responsibility                                         |
+| ----------------------- | ------------------------------------------------------ |
+| **AgentSociety**        | Runs multiple agents concurrently (experimental)       |
+| **Agent**               | Lifecycle callbacks, visitor hooks, high-level `run()` |
+| **AgentRuntime**        | Drives the loop, dispatches hooks, manages errors      |
+| **AgentLoop + Context** | FSM transitions and typed context model                |
 
 ---
 
-## Compatibility
+## Core Concepts
 
-This domain model is fully compatible with the **Open Responses** specification for multi-provider LLM interfaces ([openresponses.org](https://www.openresponses.org/)).
+### Agent Loop
 
-![OpenResponses overview](public/openresponses-overview.png)
+The agent loop is a **finite state machine** that drives a multi-step inference cycle. Each execution moves through states until it reaches a terminal condition.
 
-The core idea of OpenResponses is a **unified specification across LLM providers**: while vendors differ in details, most models follow the same interaction architecture and principles. OpenResponses standardizes that shared shape using **typed context items** (and clarifies that any item type can be streamed).
+```mermaid
+stateDiagram-v2
+    [*] --> INFERENCE_PENDING
+    INFERENCE_PENDING --> FUNCTION_CALL_PENDING: model returned a function call
+    INFERENCE_PENDING --> MODEL_MESSAGE_RECEIVED: model returned a message
+    FUNCTION_CALL_PENDING --> INFERENCE_PENDING: tool executed, feeding output back
+    MODEL_MESSAGE_RECEIVED --> [*]: execution complete
+```
 
-- **Input (context)**: client-provided context items such as **user_message**, **developer_message**, and **function_call_output**
-- **Output (response)**: model-produced context items such as **reasoning**, **function_call**, and **model_message**
-- **Streaming (optional)**: items may be delivered incrementally as **semantic events** (meaningful events at the item level, not just raw token streams)
-
-## Mozaik Core Concepts
-
-Mozaik turns the OpenResponses specification into a practical **object model** so developers can manipulate LLM context in different ways (compose it, append model outputs, **persist it**, and **restore it** from a database/repository, etc.). This is a starting point—our main goal is to address core **context engineering** problems like **context bloating**, **context window overflow**, and **sequential agent collaboration**.
-
-### Context
-
-Represents everything the model needs to generate a response.
-
-A context is composed of ordered **context items**.
+An `Execution` object tracks the current state, step count, transition history, and terminal status (`RUNNING`, `COMPLETED`, `FAILED`).
 
 ---
 
-### ContextItem
+### Hooks (Events)
 
-A single unit of context.
-
-Examples:
-
-- Client-specific
-    - User message
-    - Developer message (System instruction)
-    - Function call output (added after a model function call and fed back so the model can continue reasoning or finish the job)
-- Model-specific
-    - Function call
-    - Model message
-    - Reasoning
-
----
-
-## Example (Context + OpenAI Responses)
-
-This is a minimal end-to-end example that:
-
-- builds a `Context` from a developer message + user message
-- calls a model (OpenAI Responses API)
-- stores/restores the context using a repository
+Every state transition exposes **before** and **after** hooks. You register callbacks on an `AgentRuntime` using `.on(hookId, callback)`:
 
 ```ts
-const message = UserMessage.create("Tell me a joke about birds")
-const developerMessage = DeveloperMessage.create(
-	"You are a joke teller. You will be given a joke and you will need to tell it to the user.",
-)
+import { AgentRuntime, HookId } from "@mozaik-ai/core"
 
-const projectId = `pr-${crypto.randomUUID()}`
-const contextRepository = new InMemoryContextRepository()
-const context = Context.create(projectId).addItem(developerMessage).addItem(message)
+const runtime = new AgentRuntime()
 
-await contextRepository.save(context)
+runtime.on(HookId.BEFORE_INFERENCE, async (context) => {
+	console.log("About to call the model...")
+})
 
-const openresponses = new OpenAIResponses()
-const newContextItems = await openresponses.infer(gpt54, context)
-context.applyModelOutput(newContextItems)
+runtime.on(HookId.AFTER_INFERENCE, async (context) => {
+	console.log("Model responded:", context.inferenceResponse)
+})
 
-await contextRepository.save(context)
-const restoredContexts = await contextRepository.getByProjectId(projectId)
-console.log(restoredContexts)
+runtime.on(HookId.AFTER_FUNCTION_CALL, async (context) => {
+	console.log("Tool executed:", context.functionCallOutput)
+})
+
+runtime.on(HookId.ON_ERROR, async (context) => {
+	console.error("Agent failed:", context.error)
+})
 ```
+
+Available hooks:
+
+| Hook                   | Fires                                |
+| ---------------------- | ------------------------------------ |
+| `BEFORE_INFERENCE`     | Before the model is called           |
+| `AFTER_INFERENCE`      | After the model responds             |
+| `BEFORE_FUNCTION_CALL` | Before a tool is invoked             |
+| `AFTER_FUNCTION_CALL`  | After a tool returns                 |
+| `BEFORE_MODEL_MESSAGE` | Before the final message is received |
+| `AFTER_MODEL_MESSAGE`  | After the final message is received  |
+| `ON_ERROR`             | When any state handler throws        |
+
+---
+
+### Agent
+
+`Agent` wraps an `AgentRuntime` and pre-wires all hooks as overridable methods. Subclass it to customize behavior at any point in the lifecycle:
+
+```ts
+import { Agent, AgentRuntime, RuntimeContext } from "@mozaik-ai/core"
+
+class MyAgent extends Agent {
+	constructor() {
+		super(new AgentRuntime())
+	}
+
+	async afterInference(context: RuntimeContext): Promise<void> {
+		console.log("Tokens used:", context.inferenceResponse?.tokenUsage)
+	}
+
+	async onError(context: RuntimeContext): Promise<void> {
+		console.error("Something went wrong:", context.error?.message)
+	}
+}
+
+const agent = new MyAgent()
+await agent.run("Summarize the latest news", model, context)
+```
+
+---
+
+### InferenceVisitor
+
+`InferenceVisitor` is a **visitor interface** that lets you observe the inference lifecycle without modifying the agent itself. Attach it to any `Agent` instance via `setInferenceVisitor`.
+
+```ts
+import { InferenceVisitor, InferenceResponse, RuntimeContext } from "@mozaik-ai/core"
+
+class TelemetryVisitor implements InferenceVisitor {
+	async onStart(context: RuntimeContext): Promise<void> {
+		console.log("Agent started, execution:", context.execution.executionId)
+	}
+
+	async afterInference(response: InferenceResponse): Promise<void> {
+		console.log("Inference complete, tokens:", response.tokenUsage)
+	}
+}
+
+const agent = new MyAgent()
+agent.setInferenceVisitor(new TelemetryVisitor())
+```
+
+Use `InferenceVisitor` for concerns that should stay separate from agent logic: logging, telemetry, streaming responses to a UI, or recording usage metrics.
+
+---
+
+### Context Model
+
+`Context` is the structured input passed to the model. It is composed of ordered **`ContextItem`** objects — each representing a single unit of context.
+
+**Client-provided items** (you add these):
+
+- `UserMessage` — the user's turn
+- `DeveloperMessage` — system instructions
+- `FunctionCallOutput` — tool result fed back to the model
+
+**Model-produced items** (appended by the loop):
+
+- `ModelMessage` — the model's final text response
+- `FunctionCall` — a tool invocation requested by the model
+- `Reasoning` — the model's internal reasoning trace
+
+```ts
+import { Context, DeveloperMessage, UserMessage, InMemoryContextRepository } from "@mozaik-ai/core"
+
+const context = Context.create("project-id")
+	.addItem(DeveloperMessage.create("You are a helpful assistant."))
+	.addItem(UserMessage.create("What is the capital of France?"))
+
+const repo = new InMemoryContextRepository()
+await repo.save(context)
+
+// later...
+const restored = await repo.getByProjectId("project-id")
+```
+
+Context can be persisted and restored via `ContextRepository`. The built-in `InMemoryContextRepository` is suitable for development; implement `ContextRepository` to connect any storage backend.
+
+---
+
+### OpenResponses
+
+`OpenAIResponses` is the framework's inference provider. It implements the **OpenResponses** specification ([openresponses.org](https://www.openresponses.org/)), mapping Mozaik's typed `Context` to the OpenAI Responses API and back.
+
+It is the default provider used by `AgentRuntime` and handles:
+
+- Serializing `ContextItem` objects to API-compatible input
+- Deserializing model output into `ModelMessage`, `FunctionCall`, and `Reasoning` items
+- Extracting token usage from the response
+
+You can use it directly for single-shot inference outside the agent loop:
+
+```ts
+import { OpenAIResponses, InferenceRequest, Gpt54 } from "@mozaik-ai/core"
+
+const openaiResponses = new OpenAIResponses()
+const request = new InferenceRequest(new Gpt54(), context)
+const response = await openaiResponses.infer(request)
+
+context.applyModelOutput(response.contextItems)
+```
+
+Available models: `Gpt54`, `Gpt54Mini`, `Gpt54Nano`.
+
+---
+
+### AgentSociety _(experimental)_
+
+`AgentSociety` is the framework's answer to one of the core limitations in today's agent systems: **agents that block on each other**. Most multi-agent frameworks run agents sequentially, which creates bottlenecks and prevents true parallelism.
+
+`AgentSociety` runs agents **concurrently and non-blocking**. When `enter()` is called, every agent in the society starts its execution independently — none waits for another to finish.
+
+```ts
+import { AgentSociety, AgentRuntime } from "@mozaik-ai/core"
+
+const society = new AgentSociety("research-team")
+
+society.join(new ResearchAgent())
+society.join(new SummaryAgent())
+society.join(new FactCheckAgent())
+
+// Start the society's event loop
+society.start()
+
+// All three agents run in parallel on the same context
+society.enter("Analyze the impact of AI on software development", model, context)
+
+// Shut down when done
+society.stop()
+```
+
+All agents receive the same `Context`, enabling **collaborative context building** — each agent's output is visible to others through the shared context as the execution progresses.
+
+> **Experimental:** `AgentSociety` is in active development. The API is stable enough to build on, but expect refinements — particularly around context isolation, coordination primitives, and agent-to-agent messaging. Feedback and contributions are welcome.
+
+---
+
+## Full Example
+
+End-to-end example with a tool-calling agent and hook observability:
+
+```ts
+import {
+	Agent,
+	AgentRuntime,
+	HookId,
+	Context,
+	DeveloperMessage,
+	Gpt54Mini,
+	InMemoryContextRepository,
+	Tool,
+} from "@mozaik-ai/core"
+
+// Define a tool
+const weatherTool = new Tool({
+	name: "get_weather",
+	description: "Get the current weather for a city",
+	parameters: {
+		type: "object",
+		properties: { city: { type: "string" } },
+		required: ["city"],
+	},
+	invoke: async ({ city }) => ({ temperature: "22°C", condition: "sunny" }),
+})
+
+// Create runtime and wire hooks
+const runtime = new AgentRuntime()
+
+runtime.on(HookId.BEFORE_INFERENCE, async (ctx) => {
+	console.log(`[step ${ctx.execution.stepCount}] calling model...`)
+})
+
+runtime.on(HookId.AFTER_FUNCTION_CALL, async (ctx) => {
+	console.log("tool result:", ctx.functionCallOutput)
+})
+
+// Create agent
+const agent = new Agent(runtime)
+
+// Set up model and context
+const model = new Gpt54Mini([weatherTool])
+const context = Context.create("demo").addItem(DeveloperMessage.create("You are a weather assistant."))
+
+const repo = new InMemoryContextRepository()
+await repo.save(context)
+
+// Run
+await agent.run("What's the weather like in Tokyo?", model, context)
+```
+
+---
 
 ## Author & License
 
-Created by [JigJoy](https://jigjoy.io) team
+Created by the [JigJoy](https://jigjoy.io) team.  
 Licensed under the MIT License.
