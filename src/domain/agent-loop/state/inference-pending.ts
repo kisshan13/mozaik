@@ -32,10 +32,18 @@ export class InferencePendingState implements State {
 		if (!inferenceResponse) {
 			return new Fail("Inference response not found")
 		}
-		if (inferenceResponse instanceof FunctionCall) {
+
+		const contextItems = inferenceResponse.contextItems
+
+		if (contextItems.length === 0) {
+			return new Fail("No context items found")
+		}
+
+		const lastItem = contextItems[contextItems.length - 1]
+		if (lastItem instanceof FunctionCall) {
 			return new GoTo(StateId.FUNCTION_CALL_PENDING)
 		}
-		if (inferenceResponse instanceof ModelMessage) {
+		if (lastItem instanceof ModelMessage) {
 			return new GoTo(StateId.MODEL_MESSAGE_RECEIVED)
 		}
 		return new Fail("Invalid response type")

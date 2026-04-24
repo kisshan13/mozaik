@@ -27,7 +27,7 @@ export class Agent {
 
 	async afterInference(context: RuntimeContext): Promise<void> {
 		const inferenceResponse = context.inferenceResponse
-		if (inferenceResponse && this.visitor) {
+		if (inferenceResponse && this.visitor !== undefined) {
 			await this.visitor.afterInference(inferenceResponse)
 		}
 		return Promise.resolve()
@@ -55,7 +55,9 @@ export class Agent {
 	}
 
 	async onStart(context: RuntimeContext): Promise<void> {
-		await this.visitor?.onStart(context)
+		if (this.visitor !== undefined) {
+			await this.visitor.onStart(context)
+		}
 		return Promise.resolve()
 	}
 
