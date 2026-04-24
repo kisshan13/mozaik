@@ -1,7 +1,7 @@
 {
 	"name": "@mozaik-ai/core",
-	"version": "2.13.8",
-	"description": "A TypeScript library for building AI agents",
+	"version": "3.0.0",
+	"description": "A TypeScript framework for building AI agents",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
 	"types": "dist/index.d.ts",
