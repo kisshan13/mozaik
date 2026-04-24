@@ -1,4 +1,4 @@
-import { AgentRuntime } from "@app/agent-runtime/agent-runtime"
+import { AgentRuntime } from "@app/agent-runtime"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { Context } from "@domain/model-context/context"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
@@ -18,6 +18,7 @@ export class Agent {
 		this.runtime.on(HookId.AFTER_FUNCTION_CALL, this.afterFunctionCall)
 		this.runtime.on(HookId.BEFORE_MODEL_MESSAGE, this.beforeModelMessage)
 		this.runtime.on(HookId.AFTER_MODEL_MESSAGE, this.afterModelMessage)
+		this.runtime.on(HookId.ON_ERROR, this.onError)
 	}
 
 	async beforeInference(context: RuntimeContext): Promise<void> {
@@ -45,6 +46,11 @@ export class Agent {
 	}
 
 	async afterModelMessage(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async onError(context: RuntimeContext): Promise<void> {
+		console.log("Error occurred", context.error)
 		return Promise.resolve()
 	}
 

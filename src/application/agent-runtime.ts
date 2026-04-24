@@ -22,6 +22,7 @@ export class AgentRuntime {
 		this.stateHandlerRegistry.registerHandler(StateId.INFERENCE_PENDING, this.onInferencePending)
 		this.stateHandlerRegistry.registerHandler(StateId.FUNCTION_CALL_PENDING, this.onFunctionCallPending)
 		this.stateHandlerRegistry.registerHandler(StateId.MODEL_MESSAGE_RECEIVED, this.onModelMessageReceived)
+		this.hooksRegistry.registerHandler(HookId.ON_ERROR, this.onError)
 	}
 
 	async onInferencePending(context: RuntimeContext): Promise<void> {
@@ -48,6 +49,15 @@ export class AgentRuntime {
 		return Promise.resolve()
 	}
 
+	async onError(context: RuntimeContext): Promise<void> {
+		const error = context.error
+		if (!error) {
+			throw new Error("Error not found")
+		}
+		console.error(error)
+		return Promise.resolve()
+	}
+
 	async onModelMessageReceived(context: RuntimeContext): Promise<void> {
 		return Promise.resolve()
 	}
@@ -61,6 +71,8 @@ export class AgentRuntime {
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
 		context: Context,
 	): Promise<void> {
+		console.log("Starting agent runtime")
+
 		const execution = Execution.create()
 
 		const loop = new AgentLoop()
@@ -71,6 +83,7 @@ export class AgentRuntime {
 			context,
 		}
 		while (!execution.isTerminal()) {
+			console.log("Executing state", execution.currentStateId)
 			const transition = loop.next(runtimeContext)
 			await transition.apply(runtimeContext)
 
@@ -81,13 +94,19 @@ export class AgentRuntime {
 					await handler(runtimeContext)
 				}
 
+				const stateHandler = this.stateHandlerRegistry.getHandler(execution.currentStateId)
+				await stateHandler(runtimeContext)
+
 				if (stateDetails.after) {
 					const handler = this.hooksRegistry.getHandler(stateDetails.after)
 					await handler(runtimeContext)
 				}
 			} catch (error) {
+				console.log("Error occurred", error)
 				execution.status = ExecutionStatus.FAILED
-				break
+				const handler = this.hooksRegistry.getHandler(HookId.ON_ERROR)
+				runtimeContext.error = error as Error
+				await handler(runtimeContext)
 			}
 		}
 	}

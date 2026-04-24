@@ -19,6 +19,9 @@ import { Tool } from "@domain/generative-model/tool"
 import { BaseCondition, Condition } from "@domain/agent-loop/rules/condition/condition"
 import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/agent-loop/rules/rule/rule"
 import { InMemoryContextRepository } from "@infra/repository/in-memory-context-repository"
+import { AgentRuntime } from "@app/agent-runtime"
+import { Agent } from "@app/agent"
+import { InferenceVisitor } from "@app/inference-visitor"
 
 export {
 	Context,
@@ -49,4 +52,7 @@ export {
 	AsyncRule,
 	If,
 	Loop,
+	Agent,
+	AgentRuntime,
+	InferenceVisitor,
 }

@@ -40,7 +40,7 @@ export class Execution {
 
 	static create(): Execution {
 		const executionId = crypto.randomUUID()
-		const currentStateId = StateId.USER_MESSAGE_RECEIVED
+		const currentStateId = StateId.INFERENCE_PENDING
 		const previousStateId = null
 		const status = ExecutionStatus.RUNNING
 		const stepCount = 0

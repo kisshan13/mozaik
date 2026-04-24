@@ -24,6 +24,7 @@ export interface RuntimeContext {
 	inferenceResponse?: InferenceResponse
 	functionCallOutput?: FunctionCallOutput
 	modelMessage?: ModelMessage
+	error?: Error
 }
 
 export class AgentLoop {
