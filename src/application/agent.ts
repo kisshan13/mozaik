@@ -1,6 +1,6 @@
 import { AgentRuntime } from "@app/agent-runtime"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
-import { Context } from "@domain/model-context/context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
@@ -79,7 +79,7 @@ export class Agent {
 	async run(
 		userMessage: string,
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
-		context: Context,
+		context: ModelContext,
 	): Promise<void> {
 		const userMessageItem = UserMessage.create(userMessage)
 		return this.runtime.start(userMessageItem, model, context)

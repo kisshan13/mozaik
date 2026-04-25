@@ -1,7 +1,7 @@
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { Context } from "@domain/model-context/context"
+import { Context } from "@domain/model-context/model-context"
 import { Agent } from "./agent"
 
 export class AgentSociety {

@@ -1,4 +1,4 @@
-import { Context } from "@domain/model-context/context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { DeveloperMessage } from "@domain/model-context/context-item/client-item/developer-message"
@@ -7,7 +7,7 @@ import { FunctionCall } from "@domain/model-context/context-item/model-item/func
 import { Reasoning } from "@domain/model-context/context-item/model-item/reasoning"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
-import { ContextRepository } from "@domain/model-context/context-repository"
+import { ModelContextRepository } from "@domain/model-context/model-context-repository"
 import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { Gpt54Nano } from "@infra/providers/openai/models/gpt-5-4-nano"
@@ -16,8 +16,8 @@ import { Gpt54Mini } from "@infra/providers/openai/models/gpt-5-4-mini"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import { Tool } from "@domain/generative-model/tool"
-import { BaseCondition, Condition } from "@domain/agent-loop/rules/condition/condition"
-import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/agent-loop/rules/rule/rule"
+import { BaseSpecification, Specification } from "@domain/specification/specification/specification"
+import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/specification/rule/rule"
 import { InMemoryContextRepository } from "@infra/repository/in-memory-context-repository"
 import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
@@ -25,7 +25,8 @@ import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
 
 export {
-	Context,
+	ModelContext,
+	ModelContextRepository,
 	ContextItem,
 	UserMessage,
 	DeveloperMessage,
@@ -34,7 +35,6 @@ export {
 	FunctionCallOutput,
 	Reasoning,
 	GenerativeModel,
-	ContextRepository,
 	InMemoryContextRepository,
 	OpenAIResponses,
 	Gpt54,
@@ -46,8 +46,8 @@ export {
 	InputTokenDetails,
 	OutputTokenDetails,
 	Tool,
-	Condition,
-	BaseCondition,
+	Specification,
+	BaseSpecification,
 	Action,
 	AsyncAction,
 	AsyncRule,

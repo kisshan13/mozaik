@@ -1,6 +1,6 @@
 import { Execution, ExecutionStatus } from "@domain/agent-loop/execution"
 import { AgentLoop, RuntimeContext } from "@domain/agent-loop/loop"
-import { Context } from "@domain/model-context/context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
@@ -46,7 +46,6 @@ export class AgentRuntime {
 		}
 
 		const functionCallOutput = await tool.invoke(functionCall.args)
-		context.functionCallOutput = functionCallOutput
 		context.context.addItem(FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)))
 		return Promise.resolve()
 	}
@@ -71,7 +70,7 @@ export class AgentRuntime {
 	async start(
 		userMessage: UserMessage,
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
-		context: Context,
+		context: ModelContext,
 	): Promise<void> {
 		console.log("Starting agent runtime")
 

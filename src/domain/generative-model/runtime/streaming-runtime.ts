@@ -1,4 +1,4 @@
-import { Context } from "@domain/model-context/context"
+import { Context } from "@domain/model-context/model-context"
 import { StreamingModel } from "@domain/generative-model/capabilities/streaming"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 

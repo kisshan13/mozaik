@@ -8,10 +8,9 @@ import { Execution } from "@domain/agent-loop/execution"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
-import { Context } from "@domain/model-context/context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
-import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
 import { Transition } from "@domain/agent-loop/transition/transition"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 
@@ -20,9 +19,8 @@ export interface RuntimeContext {
 	userMessage: UserMessage
 	inferenceRequest?: InferenceRequest
 	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
-	context: Context
+	context: ModelContext
 	inferenceResponse?: InferenceResponse
-	functionCallOutput?: FunctionCallOutput
 	modelMessage?: ModelMessage
 	error?: Error
 }

@@ -1,6 +1,6 @@
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 
-export class Context {
+export class ModelContext {
 	readonly id: string
 	readonly projectId: string
 	readonly items: ContextItem[]
@@ -11,12 +11,12 @@ export class Context {
 		this.items = items
 	}
 
-	addItem(item: ContextItem): Context {
+	addItem(item: ContextItem): ModelContext {
 		this.items.push(item)
 		return this
 	}
 
-	applyModelOutput(items: ContextItem[]): Context {
+	applyModelOutput(items: ContextItem[]): ModelContext {
 		for (const item of items) {
 			const itemType = item.getType()
 			if (itemType !== "function_call" && itemType !== "message" && itemType !== "reasoning") {
@@ -31,13 +31,13 @@ export class Context {
 		return this.items
 	}
 
-	static create(projectId: string): Context {
+	static create(projectId: string): ModelContext {
 		const id = crypto.randomUUID()
-		return new Context(id, projectId, [])
+		return new ModelContext(id, projectId, [])
 	}
 
-	static rehydrate(data: { id: string; projectId: string; items: ContextItem[] }): Context {
-		return new Context(data.id, data.projectId, data.items)
+	static rehydrate(data: { id: string; projectId: string; items: ContextItem[] }): ModelContext {
+		return new ModelContext(data.id, data.projectId, data.items)
 	}
 
 	toJSON(): any {
