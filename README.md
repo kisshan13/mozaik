@@ -4,8 +4,6 @@
 
 It provides a structured agent loop, a lifecycle hook system, a typed context model, and an experimental multi-agent runtime — giving you full control over how agents think, act, and collaborate.
 
-![mozaik](https://github.com/user-attachments/assets/0fdc15a8-3778-4d0e-bd13-143d04090b9e)
-
 ---
 
 ## Installation
