@@ -1,16 +1,20 @@
 import { RuntimeContext } from "@domain/agent-loop/loop"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
-import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
 import { State, StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { GoTo } from "@domain/agent-loop/transition/go-to"
 import { Fail } from "@domain/agent-loop/transition/fail"
 import { Transition } from "@domain/agent-loop/transition/transition"
 import { HookId } from "@domain/agent-loop/hooks/hook"
+import { FunctionCallRequestedSpecification } from "@domain/model-context/specifications/function-call-requested"
+import { ModelRespondedSpecification } from "@domain/model-context/specifications/model-responded"
 
 export class InferencePendingState implements State {
 	id: StateId = StateId.INFERENCE_PENDING
 	beforeHookId: HookId = HookId.BEFORE_INFERENCE
 	afterHookId: HookId = HookId.AFTER_INFERENCE
+
+	private functionCallRequested = new FunctionCallRequestedSpecification()
+	private modelResponded = new ModelRespondedSpecification()
 
 	getDetails(): StateDetails {
 		return {
@@ -20,30 +24,12 @@ export class InferencePendingState implements State {
 		}
 	}
 
-	validateEntry(runtime: RuntimeContext): void {
-		const inferenceRequest = runtime.inferenceRequest
-		if (!inferenceRequest) {
-			throw new Error("Inference request not found")
-		}
-	}
+	validateEntry(runtime: RuntimeContext): void {}
 
 	next(runtime: RuntimeContext): Transition {
-		const inferenceResponse = runtime.inferenceResponse
-		if (!inferenceResponse) {
-			return new Fail("Inference response not found")
-		}
-
-		const contextItems = inferenceResponse.contextItems
-
-		if (contextItems.length === 0) {
-			return new Fail("No context items found")
-		}
-
-		const lastItem = contextItems[contextItems.length - 1]
-		if (lastItem instanceof FunctionCall) {
+		if (this.functionCallRequested.isSatisfiedBy(runtime.context)) {
 			return new GoTo(StateId.FUNCTION_CALL_PENDING)
-		}
-		if (lastItem instanceof ModelMessage) {
+		} else if (this.modelResponded.isSatisfiedBy(runtime.context)) {
 			return new GoTo(StateId.MODEL_MESSAGE_RECEIVED)
 		}
 		return new Fail("Invalid response type")

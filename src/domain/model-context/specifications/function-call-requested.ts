@@ -1,0 +1,13 @@
+import { BaseSpecification } from "@domain/specification/specification/specification"
+import { ModelContext } from "../model-context"
+import { FunctionCall } from "../context-item/model-item/function-call"
+
+export class FunctionCallRequestedSpecification extends BaseSpecification<ModelContext> {
+	isSatisfiedBy(context: ModelContext): boolean {
+		if (context.getItems().length === 0) {
+			return false
+		}
+		const lastItem = context.getItems()[context.getItems().length - 1]
+		return lastItem instanceof FunctionCall
+	}
+}

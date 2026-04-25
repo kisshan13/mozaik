@@ -5,11 +5,16 @@ import { GoTo } from "@domain/agent-loop/transition/go-to"
 import { Transition } from "@domain/agent-loop/transition/transition"
 import { Fail } from "@domain/agent-loop/transition/fail"
 import { HookId } from "@domain/agent-loop/hooks/hook"
+import { FunctionCallRequestedSpecification } from "@domain/model-context/specifications/function-call-requested"
+import { FunctionCallOutputPresentSpecification } from "@domain/model-context/specifications/function-call-output-present"
 
 export class FunctionCallState implements State {
 	id: StateId = StateId.FUNCTION_CALL_PENDING
 	beforeHookId: HookId = HookId.BEFORE_FUNCTION_CALL
 	afterHookId: HookId = HookId.AFTER_FUNCTION_CALL
+
+	private functionCallRequestedSpec = new FunctionCallRequestedSpecification()
+	private functionCallOutputPresentSpec = new FunctionCallOutputPresentSpecification()
 
 	getDetails(): StateDetails {
 		return {
@@ -20,15 +25,13 @@ export class FunctionCallState implements State {
 	}
 
 	validateEntry(runtime: RuntimeContext): void {
-		const functionCall = runtime.inferenceResponse?.contextItems.find((item) => item.getType() === "function_call")
-		if (!functionCall || !(functionCall instanceof FunctionCall)) {
-			throw new Error("Function call not found")
+		if (!this.functionCallRequestedSpec.isSatisfiedBy(runtime.context)) {
+			throw new Error("Function call requested not found")
 		}
 	}
 
 	next(runtime: RuntimeContext): Transition {
-		const functionCallOutput = runtime.functionCallOutput
-		if (!functionCallOutput) {
+		if (!this.functionCallOutputPresentSpec.isSatisfiedBy(runtime.context)) {
 			return new Fail("Function call output not found")
 		}
 		return new GoTo(StateId.INFERENCE_PENDING)

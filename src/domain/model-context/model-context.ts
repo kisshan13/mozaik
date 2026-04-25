@@ -31,6 +31,13 @@ export class ModelContext {
 		return this.items
 	}
 
+	getLastItem(): ContextItem {
+		if (this.items.length === 0) {
+			throw new Error("No items in context")
+		}
+		return this.items[this.items.length - 1]
+	}
+
 	static create(projectId: string): ModelContext {
 		const id = crypto.randomUUID()
 		return new ModelContext(id, projectId, [])

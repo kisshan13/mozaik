@@ -25,28 +25,26 @@ export class AgentRuntime {
 		this.hooksRegistry.registerHandler(HookId.ON_ERROR, this.onError)
 	}
 
-	async onInferencePending(context: RuntimeContext): Promise<void> {
+	async onInferencePending(runtimeContext: RuntimeContext): Promise<void> {
 		const openaiResponses = new OpenAIResponses()
-		const inferenceRequest = new InferenceRequest(context.model, context.context)
+		const inferenceRequest = new InferenceRequest(runtimeContext.model, runtimeContext.context)
 		const inferenceResponse = await openaiResponses.infer(inferenceRequest)
-		context.inferenceResponse = inferenceResponse
-		context.context.applyModelOutput(inferenceResponse.contextItems)
+		runtimeContext.inferenceResponse = inferenceResponse
+		runtimeContext.context.applyModelOutput(inferenceResponse.contextItems)
 		return Promise.resolve()
 	}
 
-	async onFunctionCallPending(context: RuntimeContext): Promise<void> {
-		const functionCall = context.inferenceResponse?.contextItems.find((item) => item.getType() === "function_call")
-		if (!functionCall || !(functionCall instanceof FunctionCall)) {
-			throw new Error("Function call not found")
-		}
+	async onFunctionCallPending(runtimeContext: RuntimeContext): Promise<void> {
+		const functionCall = runtimeContext.context.getLastItem() as FunctionCall
 
-		const tool = context.model.getTools().find((tool) => tool.name === functionCall.name)
+		const tool = runtimeContext.model.getTools().find((tool) => tool.name === functionCall.name)
 		if (!tool) {
 			throw new Error("Function not found")
 		}
-
 		const functionCallOutput = await tool.invoke(functionCall.args)
-		context.context.addItem(FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)))
+		runtimeContext.context.addItem(
+			FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)),
+		)
 		return Promise.resolve()
 	}
 
