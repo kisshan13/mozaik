@@ -18,7 +18,7 @@ import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/gener
 import { Tool } from "@domain/generative-model/tool"
 import { BaseSpecification, Specification } from "@domain/specification/specification/specification"
 import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/specification/rule/rule"
-import { InMemoryContextRepository } from "@infra/repository/in-memory-context-repository"
+import { InMemoryModelContextRepository } from "@infra/repository/in-memory-model-context-repository"
 import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
 import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
@@ -27,6 +27,7 @@ import { AgentSociety } from "@app/agent-society"
 export {
 	ModelContext,
 	ModelContextRepository,
+	InMemoryModelContextRepository,
 	ContextItem,
 	UserMessage,
 	DeveloperMessage,
@@ -35,7 +36,6 @@ export {
 	FunctionCallOutput,
 	Reasoning,
 	GenerativeModel,
-	InMemoryContextRepository,
 	OpenAIResponses,
 	Gpt54,
 	Gpt54Mini,

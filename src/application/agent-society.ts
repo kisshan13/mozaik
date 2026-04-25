@@ -1,7 +1,7 @@
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { Context } from "@domain/model-context/model-context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { Agent } from "./agent"
 
 export class AgentSociety {
@@ -17,7 +17,7 @@ export class AgentSociety {
 	enter(
 		messageText: string,
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
-		context: Context,
+		context: ModelContext,
 	) {
 		for (const agent of this.agents) {
 			agent.run(messageText, model, context)

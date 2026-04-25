@@ -1,4 +1,4 @@
-import { Context } from "@domain/model-context/model-context"
+import { ModelContext } from "@domain/model-context/model-context"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
@@ -62,7 +62,7 @@ export class OpenAIResponses implements ModelRuntime {
 		)
 	}
 
-	mapContextToRequest(context: Context): any[] {
+	mapContextToRequest(context: ModelContext): any[] {
 		return context.getItems().map((item) => item.toJSON())
 	}
 
