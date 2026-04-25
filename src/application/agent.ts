@@ -7,10 +7,11 @@ import { ToolCallingCapability } from "@domain/generative-model/capabilities/too
 import { HookId } from "@domain/agent-loop/hooks/hook"
 import { RuntimeContext } from "@domain/agent-loop/loop"
 import { InferenceVisitor } from "./inference-visitor"
+import { FunctionCallVisitor } from "./function-call-visitor"
 
 export class Agent {
 	private visitor: InferenceVisitor | undefined
-
+	private functionCallVisitor: FunctionCallVisitor | undefined
 	constructor(private readonly runtime: AgentRuntime) {
 		this.runtime.on(HookId.BEFORE_INFERENCE, this.beforeInference)
 		this.runtime.on(HookId.AFTER_INFERENCE, this.afterInference)
@@ -34,10 +35,16 @@ export class Agent {
 	}
 
 	async beforeFunctionCall(context: RuntimeContext): Promise<void> {
+		if (this.functionCallVisitor !== undefined) {
+			await this.functionCallVisitor.beforeFunctionCall(context)
+		}
 		return Promise.resolve()
 	}
 
 	async afterFunctionCall(context: RuntimeContext): Promise<void> {
+		if (this.functionCallVisitor !== undefined) {
+			await this.functionCallVisitor.afterFunctionCall(context)
+		}
 		return Promise.resolve()
 	}
 
@@ -63,6 +70,10 @@ export class Agent {
 
 	setInferenceVisitor(visitor: InferenceVisitor): void {
 		this.visitor = visitor
+	}
+
+	setFunctionCallVisitor(visitor: FunctionCallVisitor): void {
+		this.functionCallVisitor = visitor
 	}
 
 	async run(
