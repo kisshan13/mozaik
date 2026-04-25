@@ -154,9 +154,9 @@ Use `InferenceVisitor` for concerns that should stay separate from agent logic: 
 
 ---
 
-### Context Model
+### Model Context
 
-`Context` is the structured input passed to the model. It is composed of ordered **`ContextItem`** objects — each representing a single unit of context.
+`ModelContext` is the structured input passed to the model. It is composed of ordered **`ContextItem`** objects — each representing a single unit of context.
 
 **Client-provided items** (you add these):
 
@@ -171,26 +171,26 @@ Use `InferenceVisitor` for concerns that should stay separate from agent logic: 
 - `Reasoning` — the model's internal reasoning trace
 
 ```ts
-import { Context, DeveloperMessage, UserMessage, InMemoryContextRepository } from "@mozaik-ai/core"
+import { ModelContext, DeveloperMessage, UserMessage, InMemoryContextRepository } from "@mozaik-ai/core"
 
-const context = Context.create("project-id")
+const context = ModelContext.create("project-id")
 	.addItem(DeveloperMessage.create("You are a helpful assistant."))
 	.addItem(UserMessage.create("What is the capital of France?"))
 
-const repo = new InMemoryContextRepository()
+const repo = new InMemoryModelContextRepository()
 await repo.save(context)
 
 // later...
 const restored = await repo.getByProjectId("project-id")
 ```
 
-Context can be persisted and restored via `ContextRepository`. The built-in `InMemoryContextRepository` is suitable for development; implement `ContextRepository` to connect any storage backend.
+ModelContext can be persisted and restored via `ModelContextRepository`. The built-in `InMemoryModelContextRepository` is suitable for development; implement `ModelContextRepository` to connect any storage backend.
 
 ---
 
 ### OpenResponses
 
-`OpenAIResponses` is the framework's inference provider. It implements the **OpenResponses** specification ([openresponses.org](https://www.openresponses.org/)), mapping Mozaik's typed `Context` to the OpenAI Responses API and back.
+`OpenAIResponses` is the framework's inference provider. It implements the **OpenResponses** specification ([openresponses.org](https://www.openresponses.org/)), mapping Mozaik's typed `ModelContext` to the OpenAI Responses API and back.
 
 It is the default provider used by `AgentRuntime` and handles:
 
@@ -239,7 +239,7 @@ society.enter("Analyze the impact of AI on software development", model, context
 society.stop()
 ```
 
-All agents receive the same `Context`, enabling **collaborative context building** — each agent's output is visible to others through the shared context as the execution progresses.
+All agents receive the same `ModelContext`, enabling **collaborative context building** — each agent's output is visible to others through the shared context as the execution progresses.
 
 > **Experimental:** `AgentSociety` is in active development. The API is stable enough to build on, but expect refinements — particularly around context isolation, coordination primitives, and agent-to-agent messaging. Feedback and contributions are welcome.
 
@@ -254,10 +254,10 @@ import {
 	Agent,
 	AgentRuntime,
 	HookId,
-	Context,
+	ModelContext,
 	DeveloperMessage,
 	Gpt54Mini,
-	InMemoryContextRepository,
+	InMemoryModelContextRepository,
 	Tool,
 } from "@mozaik-ai/core"
 
@@ -289,9 +289,9 @@ const agent = new Agent(runtime)
 
 // Set up model and context
 const model = new Gpt54Mini([weatherTool])
-const context = Context.create("demo").addItem(DeveloperMessage.create("You are a weather assistant."))
+const context = ModelContext.create("demo").addItem(DeveloperMessage.create("You are a weather assistant."))
 
-const repo = new InMemoryContextRepository()
+const repo = new InMemoryModelContextRepository()
 await repo.save(context)
 
 // Run
