@@ -6,8 +6,8 @@ import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { HookId } from "@domain/agent-loop/hooks/hook"
 import { RuntimeContext } from "@domain/agent-loop/loop"
-import { InferenceVisitor } from "./inference-visitor"
-import { FunctionCallVisitor } from "./function-call-visitor"
+import { InferenceVisitor } from "../domain/agent-loop/visitors/inference-visitor"
+import { FunctionCallVisitor } from "../domain/agent-loop/visitors/function-call-visitor"
 
 export class Agent {
 	private visitor: InferenceVisitor | undefined

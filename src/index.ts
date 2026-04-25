@@ -21,7 +21,7 @@ import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/agent-loop/rul
 import { InMemoryContextRepository } from "@infra/repository/in-memory-context-repository"
 import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
-import { InferenceVisitor } from "@app/inference-visitor"
+import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
 
 export {
