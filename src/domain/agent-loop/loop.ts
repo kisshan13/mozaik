@@ -1,7 +1,7 @@
 import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
 import { StateDetails, StateId } from "@domain/agent-loop/state/state"
-import { FunctionCallState } from "@domain/agent-loop/state/function-call"
-import { ModelMessageState } from "@domain/agent-loop/state/model-message"
+import { FunctionCallPendingState } from "@domain/agent-loop/state/function-call-pending"
+import { ModelRespondedState } from "@domain/agent-loop/state/model-responded"
 import { InferencePendingState } from "@domain/agent-loop/state/inference-pending"
 import { State } from "@domain/agent-loop/state/state"
 import { Execution } from "@domain/agent-loop/execution"
@@ -28,8 +28,8 @@ export class AgentLoop {
 
 	constructor() {
 		this.states.set(StateId.INFERENCE_PENDING, new InferencePendingState())
-		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallState())
-		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelMessageState())
+		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallPendingState())
+		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelRespondedState())
 	}
 
 	validateEntry(runtime: RuntimeContext): void {

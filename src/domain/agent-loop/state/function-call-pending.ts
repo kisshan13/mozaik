@@ -7,7 +7,7 @@ import { HookId } from "@domain/agent-loop/hooks/hook"
 import { FunctionCallRequestedSpec } from "@domain/model-context/specifications/function-call-requested"
 import { FunctionCallOutputPresentSpec } from "@domain/model-context/specifications/function-call-output-present"
 
-export class FunctionCallState implements State {
+export class FunctionCallPendingState implements State {
 	id: StateId = StateId.FUNCTION_CALL_PENDING
 	beforeHookId: HookId = HookId.BEFORE_FUNCTION_CALL
 	afterHookId: HookId = HookId.AFTER_FUNCTION_CALL
