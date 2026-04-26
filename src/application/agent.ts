@@ -15,6 +15,8 @@ export class Agent {
 	private runtime: AgentRuntime
 	constructor() {
 		this.runtime = new AgentRuntime()
+		this.runtime.on(HookId.BEFORE_MESSAGE_RECEIVED, this.beforeMessageReceived)
+		this.runtime.on(HookId.AFTER_MESSAGE_RECEIVED, this.afterMessageReceived)
 		this.runtime.on(HookId.BEFORE_INFERENCE, this.beforeInference)
 		this.runtime.on(HookId.AFTER_INFERENCE, this.afterInference)
 		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.beforeFunctionCall)
@@ -22,6 +24,14 @@ export class Agent {
 		this.runtime.on(HookId.BEFORE_MODEL_RESPONDED, this.beforeModelResponded)
 		this.runtime.on(HookId.AFTER_MODEL_RESPONDED, this.afterModelResponded)
 		this.runtime.on(HookId.ON_ERROR, this.onError)
+	}
+
+	async beforeMessageReceived(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async afterMessageReceived(context: RuntimeContext): Promise<void> {
+		return Promise.resolve()
 	}
 
 	async beforeInference(context: RuntimeContext): Promise<void> {

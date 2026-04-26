@@ -19,10 +19,15 @@ export class AgentRuntime {
 	private stateHandlerRegistry: StateHandlerRegistry = new StateHandlerRegistry()
 
 	constructor() {
+		this.stateHandlerRegistry.registerHandler(StateId.MESSAGE_RECEIVED, this.onMessageReceived)
 		this.stateHandlerRegistry.registerHandler(StateId.INFERENCE_PENDING, this.onInferencePending)
 		this.stateHandlerRegistry.registerHandler(StateId.FUNCTION_CALL_PENDING, this.onFunctionCallPending)
 		this.stateHandlerRegistry.registerHandler(StateId.MODEL_RESPONDED, this.onModelResponded)
 		this.hooksRegistry.registerHandler(HookId.ON_ERROR, this.onError)
+	}
+
+	async onMessageReceived(runtimeContext: RuntimeContext): Promise<void> {
+		return Promise.resolve()
 	}
 
 	async onInferencePending(runtimeContext: RuntimeContext): Promise<void> {
