@@ -174,8 +174,8 @@ Use `InferenceVisitor` for concerns that should stay separate from agent logic: 
 import { ModelContext, DeveloperMessage, UserMessage, InMemoryContextRepository } from "@mozaik-ai/core"
 
 const context = ModelContext.create("project-id")
-	.addItem(DeveloperMessage.create("You are a helpful assistant."))
-	.addItem(UserMessage.create("What is the capital of France?"))
+	.addContextItem(DeveloperMessage.create("You are a helpful assistant."))
+	.addContextItem(UserMessage.create("What is the capital of France?"))
 
 const repo = new InMemoryModelContextRepository()
 await repo.save(context)
@@ -289,7 +289,7 @@ const agent = new Agent(runtime)
 
 // Set up model and context
 const model = new Gpt54Mini([weatherTool])
-const context = ModelContext.create("demo").addItem(DeveloperMessage.create("You are a weather assistant."))
+const context = ModelContext.create("demo").addContextItem(DeveloperMessage.create("You are a weather assistant."))
 
 const repo = new InMemoryModelContextRepository()
 await repo.save(context)

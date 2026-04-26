@@ -11,7 +11,7 @@ export class ModelContext {
 		this.items = items
 	}
 
-	addItem(item: ContextItem): ModelContext {
+	addContextItem(item: ContextItem): ModelContext {
 		this.items.push(item)
 		return this
 	}

@@ -42,7 +42,7 @@ export class AgentRuntime {
 			throw new Error("Function not found")
 		}
 		const functionCallOutput = await tool.invoke(functionCall.args)
-		runtimeContext.context.addItem(
+		runtimeContext.context.addContextItem(
 			FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)),
 		)
 		return Promise.resolve()
