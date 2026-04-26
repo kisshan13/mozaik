@@ -2,7 +2,7 @@ import { BaseSpecification } from "@domain/specification/specification/specifica
 import { FunctionCallOutput } from "../context-item/client-item/function-call-output"
 import { ModelContext } from "../model-context"
 
-export class FunctionCallOutputPresentSpecification extends BaseSpecification<ModelContext> {
+export class FunctionCallOutputPresentSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
 		const lasteItem = context.getItems()[context.getItems().length - 1]
 		return lasteItem instanceof FunctionCallOutput

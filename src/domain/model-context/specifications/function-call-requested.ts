@@ -2,7 +2,7 @@ import { BaseSpecification } from "@domain/specification/specification/specifica
 import { ModelContext } from "../model-context"
 import { FunctionCall } from "../context-item/model-item/function-call"
 
-export class FunctionCallRequestedSpecification extends BaseSpecification<ModelContext> {
+export class FunctionCallRequestedSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
 		if (context.getItems().length === 0) {
 			return false

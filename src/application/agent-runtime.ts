@@ -85,6 +85,7 @@ export class AgentRuntime {
 			console.log("Executing state", execution.currentStateId)
 
 			try {
+				loop.validateEntry(runtimeContext)
 				const stateDetails = loop.getStateDetails(runtimeContext)
 				if (stateDetails.before) {
 					const handler = this.hooksRegistry.getHandler(stateDetails.before)

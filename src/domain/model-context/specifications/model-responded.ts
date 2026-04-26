@@ -2,7 +2,7 @@ import { BaseSpecification } from "@domain/specification/specification/specifica
 import { ModelContext } from "../model-context"
 import { ModelMessage } from "../context-item/model-item/model-message"
 
-export class ModelRespondedSpecification extends BaseSpecification<ModelContext> {
+export class ModelRespondedSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
 		if (context.getItems().length === 0) {
 			return false
