@@ -12,6 +12,7 @@ import { ModelContext } from "@domain/model-context/model-context"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { Transition } from "@domain/agent-loop/transition/transition"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
+import { MessageReceivedState } from "./state/message-received"
 
 export interface RuntimeContext {
 	execution: Execution
@@ -27,32 +28,17 @@ export class AgentLoop {
 	private states: Map<StateId, State> = new Map<StateId, State>()
 
 	constructor() {
+		this.states.set(StateId.MESSAGE_RECEIVED, new MessageReceivedState())
 		this.states.set(StateId.INFERENCE_PENDING, new InferencePendingState())
 		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallPendingState())
 		this.states.set(StateId.MODEL_RESPONDED, new ModelRespondedState())
 	}
 
-	validateEntry(runtime: RuntimeContext): void {
+	getState(runtime: RuntimeContext): State {
 		const state = this.states.get(runtime.execution.currentStateId)
 		if (!state) {
 			throw new Error(`State ${runtime.execution.currentStateId} not found`)
 		}
-		state.validateEntry(runtime)
-	}
-
-	getStateDetails(runtime: RuntimeContext): StateDetails {
-		const state = this.states.get(runtime.execution.currentStateId)
-		if (!state) {
-			throw new Error(`State ${runtime.execution.currentStateId} not found`)
-		}
-		return state.getDetails()
-	}
-
-	next(runtime: RuntimeContext): Transition {
-		const state = this.states.get(runtime.execution.currentStateId)
-		if (!state) {
-			throw new Error(`State ${runtime.execution.currentStateId} not found`)
-		}
-		return state.next(runtime)
+		return state
 	}
 }

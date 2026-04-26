@@ -88,10 +88,11 @@ export class AgentRuntime {
 		}
 		while (!execution.isTerminal()) {
 			console.log("Executing state", execution.currentStateId)
+			const state = loop.getState(runtimeContext)
 
 			try {
-				loop.validateEntry(runtimeContext)
-				const stateDetails = loop.getStateDetails(runtimeContext)
+				state.validateEntry(runtimeContext)
+				const stateDetails = state.getDetails()
 				if (stateDetails.before) {
 					const handler = this.hooksRegistry.getHandler(stateDetails.before)
 					await handler(runtimeContext)
@@ -112,7 +113,7 @@ export class AgentRuntime {
 				await handler(runtimeContext)
 			}
 
-			const transition = loop.next(runtimeContext)
+			const transition = state.next(runtimeContext)
 			await transition.apply(runtimeContext)
 		}
 	}
