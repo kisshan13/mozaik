@@ -7,7 +7,7 @@ export class ModelRespondedSpec extends BaseSpecification<ModelContext> {
 		if (context.getItems().length === 0) {
 			return false
 		}
-		const lastItem = context.getItems()[context.getItems().length - 1]
+		const lastItem = context.getLastItem()
 		return lastItem instanceof ModelMessage && lastItem.role === "assistant"
 	}
 }

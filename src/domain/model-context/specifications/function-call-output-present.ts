@@ -4,7 +4,7 @@ import { ModelContext } from "../model-context"
 
 export class FunctionCallOutputPresentSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
-		const lasteItem = context.getItems()[context.getItems().length - 1]
+		const lasteItem = context.getLastItem()
 		return lasteItem instanceof FunctionCallOutput
 	}
 }
