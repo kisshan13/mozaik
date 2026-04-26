@@ -19,7 +19,6 @@ import { Tool } from "@domain/generative-model/tool"
 import { BaseSpecification, Specification } from "@domain/specification/specification/specification"
 import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/specification/rule/rule"
 import { InMemoryModelContextRepository } from "@infra/repository/in-memory-model-context-repository"
-import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
 import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
@@ -55,7 +54,6 @@ export {
 	If,
 	Loop,
 	Agent,
-	AgentRuntime,
 	RuntimeContext,
 	InferenceVisitor,
 	AgentSociety,
