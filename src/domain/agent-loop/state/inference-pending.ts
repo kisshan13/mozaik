@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { State, StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { GoTo } from "@domain/agent-loop/transition/go-to"
 import { Fail } from "@domain/agent-loop/transition/fail"
@@ -29,7 +29,7 @@ export class InferencePendingState implements State {
 		if (this.functionCallRequested.isSatisfiedBy(runtime.context)) {
 			return new GoTo(StateId.FUNCTION_CALL_PENDING)
 		} else if (this.modelResponded.isSatisfiedBy(runtime.context)) {
-			return new GoTo(StateId.MODEL_MESSAGE_RECEIVED)
+			return new GoTo(StateId.MODEL_RESPONDED)
 		}
 		return new Fail("Invalid response type")
 	}

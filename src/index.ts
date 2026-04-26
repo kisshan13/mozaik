@@ -23,7 +23,7 @@ import { AgentRuntime } from "@app/agent-runtime"
 import { Agent } from "@app/agent"
 import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 
 export {
 	ModelContext,

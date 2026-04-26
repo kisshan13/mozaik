@@ -5,7 +5,7 @@ import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { HookId } from "@domain/agent-loop/hooks/hook"
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { InferenceVisitor } from "../domain/agent-loop/visitors/inference-visitor"
 import { FunctionCallVisitor } from "../domain/agent-loop/visitors/function-call-visitor"
 
@@ -17,8 +17,8 @@ export class Agent {
 		this.runtime.on(HookId.AFTER_INFERENCE, this.afterInference)
 		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.beforeFunctionCall)
 		this.runtime.on(HookId.AFTER_FUNCTION_CALL, this.afterFunctionCall)
-		this.runtime.on(HookId.BEFORE_MODEL_MESSAGE, this.beforeModelMessage)
-		this.runtime.on(HookId.AFTER_MODEL_MESSAGE, this.afterModelMessage)
+		this.runtime.on(HookId.BEFORE_MODEL_RESPONDED, this.beforeModelResponded)
+		this.runtime.on(HookId.AFTER_MODEL_RESPONDED, this.afterModelResponded)
 		this.runtime.on(HookId.ON_ERROR, this.onError)
 	}
 
@@ -48,11 +48,11 @@ export class Agent {
 		return Promise.resolve()
 	}
 
-	async beforeModelMessage(context: RuntimeContext): Promise<void> {
+	async beforeModelResponded(context: RuntimeContext): Promise<void> {
 		return Promise.resolve()
 	}
 
-	async afterModelMessage(context: RuntimeContext): Promise<void> {
+	async afterModelResponded(context: RuntimeContext): Promise<void> {
 		return Promise.resolve()
 	}
 

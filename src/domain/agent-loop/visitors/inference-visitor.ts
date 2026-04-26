@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 
 export interface InferenceVisitor {

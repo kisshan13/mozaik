@@ -1,11 +1,11 @@
 import { HookId } from "@domain/agent-loop/hooks/hook"
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { Transition } from "@domain/agent-loop/transition/transition"
 
 export enum StateId {
 	INFERENCE_PENDING = "INFERENCE_PENDING",
 	FUNCTION_CALL_PENDING = "FUNCTION_CALL_PENDING",
-	MODEL_MESSAGE_RECEIVED = "MODEL_MESSAGE_RECEIVED",
+	MODEL_RESPONDED = "MODEL_RESPONDED",
 }
 
 export type StateDetails = {

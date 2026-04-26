@@ -29,7 +29,7 @@ export class AgentLoop {
 	constructor() {
 		this.states.set(StateId.INFERENCE_PENDING, new InferencePendingState())
 		this.states.set(StateId.FUNCTION_CALL_PENDING, new FunctionCallPendingState())
-		this.states.set(StateId.MODEL_MESSAGE_RECEIVED, new ModelRespondedState())
+		this.states.set(StateId.MODEL_RESPONDED, new ModelRespondedState())
 	}
 
 	validateEntry(runtime: RuntimeContext): void {

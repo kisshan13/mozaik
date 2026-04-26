@@ -1,5 +1,5 @@
 import { Execution, ExecutionStatus } from "@domain/agent-loop/execution"
-import { AgentLoop, RuntimeContext } from "@domain/agent-loop/loop"
+import { AgentLoop, RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { ModelContext } from "@domain/model-context/model-context"
 import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
@@ -21,7 +21,7 @@ export class AgentRuntime {
 	constructor() {
 		this.stateHandlerRegistry.registerHandler(StateId.INFERENCE_PENDING, this.onInferencePending)
 		this.stateHandlerRegistry.registerHandler(StateId.FUNCTION_CALL_PENDING, this.onFunctionCallPending)
-		this.stateHandlerRegistry.registerHandler(StateId.MODEL_MESSAGE_RECEIVED, this.onModelMessageReceived)
+		this.stateHandlerRegistry.registerHandler(StateId.MODEL_RESPONDED, this.onModelResponded)
 		this.hooksRegistry.registerHandler(HookId.ON_ERROR, this.onError)
 	}
 
@@ -57,7 +57,7 @@ export class AgentRuntime {
 		return Promise.resolve()
 	}
 
-	async onModelMessageReceived(context: RuntimeContext): Promise<void> {
+	async onModelResponded(context: RuntimeContext): Promise<void> {
 		return Promise.resolve()
 	}
 

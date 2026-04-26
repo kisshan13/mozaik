@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { State, StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { GoTo } from "@domain/agent-loop/transition/go-to"
 import { Transition } from "@domain/agent-loop/transition/transition"

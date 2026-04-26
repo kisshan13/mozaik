@@ -1,4 +1,4 @@
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { StateId } from "@domain/agent-loop/state/state"
 
 export interface TransitionRecord {

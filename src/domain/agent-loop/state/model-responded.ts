@@ -1,5 +1,5 @@
 import { HookId } from "@domain/agent-loop/hooks/hook"
-import { RuntimeContext } from "@domain/agent-loop/loop"
+import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { State, StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { Complete } from "@domain/agent-loop/transition/complete"
 import { Fail } from "@domain/agent-loop/transition/fail"
@@ -8,9 +8,9 @@ import { ModelMessageItem } from "@domain/model-context/context-item/model-item/
 import { ModelRespondedSpec } from "@domain/model-context/specifications/model-responded"
 
 export class ModelRespondedState implements State {
-	id: StateId = StateId.MODEL_MESSAGE_RECEIVED
-	beforeHookId: HookId = HookId.BEFORE_MODEL_MESSAGE
-	afterHookId: HookId = HookId.AFTER_MODEL_MESSAGE
+	id: StateId = StateId.MODEL_RESPONDED
+	beforeHookId: HookId = HookId.BEFORE_MODEL_RESPONDED
+	afterHookId: HookId = HookId.AFTER_MODEL_RESPONDED
 
 	private modelRespondedSpec = new ModelRespondedSpec()
 

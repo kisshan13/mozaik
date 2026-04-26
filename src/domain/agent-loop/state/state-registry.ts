@@ -1,4 +1,4 @@
-import { RuntimeContext } from "../loop"
+import { RuntimeContext } from "../agent-loop"
 import { StateId } from "./state"
 
 export class StateHandlerRegistry {
