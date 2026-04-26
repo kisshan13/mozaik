@@ -1,12 +1,12 @@
 import { ModelContext } from "@domain/model-context/model-context"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
-import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
-import { DeveloperMessage } from "@domain/model-context/context-item/client-item/developer-message"
-import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
-import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
-import { Reasoning } from "@domain/model-context/context-item/model-item/reasoning"
+import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
+import { DeveloperMessageItem } from "@domain/model-context/context-item/client-item/developer-message"
+import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
+import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { ModelContextRepository } from "@domain/model-context/model-context-repository"
 import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
@@ -30,12 +30,12 @@ export {
 	ModelContextRepository,
 	InMemoryModelContextRepository,
 	ContextItem,
-	UserMessage,
-	DeveloperMessage,
-	ModelMessage,
-	FunctionCall,
-	FunctionCallOutput,
-	Reasoning,
+	UserMessageItem,
+	DeveloperMessageItem,
+	ModelMessageItem,
+	FunctionCallItem,
+	FunctionCallOutputItem,
+	ReasoningItem,
 	GenerativeModel,
 	OpenAIResponses,
 	Gpt54,

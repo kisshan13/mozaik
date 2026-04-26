@@ -1,8 +1,8 @@
 import { ModelContext } from "@domain/model-context/model-context"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
-import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
-import { ModelMessage } from "@domain/model-context/context-item/model-item/model-message"
-import { Reasoning } from "@domain/model-context/context-item/model-item/reasoning"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
+import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelRuntime } from "@domain/generative-model/runtime/model-runtime"
@@ -69,17 +69,17 @@ export class OpenAIResponses implements ModelRuntime {
 	extractContextItems(response: any): ContextItem[] {
 		return response.output.map((item: any) => {
 			if (item.type === "message" && item.role === "assistant") {
-				return ModelMessage.rehydrate(item.content[0] as { text: string })
+				return ModelMessageItem.rehydrate(item.content[0] as { text: string })
 			}
 			if (item.type === "function_call") {
-				return FunctionCall.rehydrate({
+				return FunctionCallItem.rehydrate({
 					callId: item.call_id,
 					name: item.name,
 					args: item.arguments,
 				})
 			}
 			if (item.type === "reasoning") {
-				return Reasoning.rehydrate(item)
+				return ReasoningItem.rehydrate(item)
 			}
 		})
 	}

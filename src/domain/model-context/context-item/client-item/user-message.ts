@@ -1,7 +1,7 @@
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { InputText } from "@domain/model-context/context-item/item-content/input-text"
 
-export class UserMessage extends ContextItem {
+export class UserMessageItem extends ContextItem {
 	readonly type = "message"
 	readonly role = "user"
 	readonly content: InputText
@@ -11,14 +11,14 @@ export class UserMessage extends ContextItem {
 		this.content = content
 	}
 
-	static create(text: string): UserMessage {
+	static create(text: string): UserMessageItem {
 		const content = InputText.create(text)
-		return new UserMessage(content)
+		return new UserMessageItem(content)
 	}
 
-	static rehydrate(data: { text: string }): UserMessage {
+	static rehydrate(data: { text: string }): UserMessageItem {
 		const content = InputText.rehydrate(data)
-		return new UserMessage(content)
+		return new UserMessageItem(content)
 	}
 
 	toJSON(): any {

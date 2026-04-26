@@ -1,6 +1,6 @@
 import { BaseSpecification } from "@domain/specification/specification/specification"
 import { ModelContext } from "../model-context"
-import { ModelMessage } from "../context-item/model-item/model-message"
+import { ModelMessageItem } from "../context-item/model-item/model-message"
 
 export class ModelRespondedSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
@@ -8,6 +8,6 @@ export class ModelRespondedSpec extends BaseSpecification<ModelContext> {
 			return false
 		}
 		const lastItem = context.getLastItem()
-		return lastItem instanceof ModelMessage && lastItem.role === "assistant"
+		return lastItem instanceof ModelMessageItem && lastItem.role === "assistant"
 	}
 }

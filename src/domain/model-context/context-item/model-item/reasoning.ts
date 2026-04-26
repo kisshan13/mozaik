@@ -2,7 +2,7 @@ import { InputText } from "@domain/model-context/context-item/item-content/input
 import { SummaryText } from "@domain/model-context/context-item/item-content/summary-text"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 
-export class Reasoning extends ContextItem {
+export class ReasoningItem extends ContextItem {
 	readonly type = "reasoning"
 	readonly content: InputText | undefined
 	readonly encryptedContent: string | undefined
@@ -23,8 +23,8 @@ export class Reasoning extends ContextItem {
 		content: InputText | undefined
 		encryptedContent: string | undefined
 		summary: SummaryText[]
-	}): Reasoning {
-		return new Reasoning(data.content, data.encryptedContent, data.summary)
+	}): ReasoningItem {
+		return new ReasoningItem(data.content, data.encryptedContent, data.summary)
 	}
 
 	toJSON(): any {

@@ -1,6 +1,6 @@
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 
-export class FunctionCall extends ContextItem {
+export class FunctionCallItem extends ContextItem {
 	readonly type = "function_call"
 	readonly callId: string
 	readonly name: string
@@ -13,8 +13,8 @@ export class FunctionCall extends ContextItem {
 		this.args = args
 	}
 
-	static rehydrate(data: { callId: string; name: string; args: string }): FunctionCall {
-		return new FunctionCall(data.callId, data.name, data.args)
+	static rehydrate(data: { callId: string; name: string; args: string }): FunctionCallItem {
+		return new FunctionCallItem(data.callId, data.name, data.args)
 	}
 
 	toJSON(): any {

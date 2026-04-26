@@ -1,6 +1,6 @@
 import { BaseSpecification } from "@domain/specification/specification/specification"
 import { ModelContext } from "../model-context"
-import { FunctionCall } from "../context-item/model-item/function-call"
+import { FunctionCallItem } from "../context-item/model-item/function-call"
 
 export class FunctionCallRequestedSpec extends BaseSpecification<ModelContext> {
 	isSatisfiedBy(context: ModelContext): boolean {
@@ -8,6 +8,6 @@ export class FunctionCallRequestedSpec extends BaseSpecification<ModelContext> {
 			return false
 		}
 		const lastItem = context.getLastItem()
-		return lastItem instanceof FunctionCall
+		return lastItem instanceof FunctionCallItem
 	}
 }

@@ -1,7 +1,7 @@
 import { Execution, ExecutionStatus } from "@domain/agent-loop/execution"
 import { AgentLoop, RuntimeContext } from "@domain/agent-loop/loop"
 import { ModelContext } from "@domain/model-context/model-context"
-import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
+import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
 import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
 import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
@@ -9,8 +9,8 @@ import { HooksRegistry } from "@domain/agent-loop/hooks/hooks-registry"
 import { HookId } from "@domain/agent-loop/hooks/hook"
 import { StateHandlerRegistry } from "@domain/agent-loop/state/state-registry"
 import { StateId } from "@domain/agent-loop/state/state"
-import { FunctionCall } from "@domain/model-context/context-item/model-item/function-call"
-import { FunctionCallOutput } from "@domain/model-context/context-item/client-item/function-call-output"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 
@@ -35,7 +35,7 @@ export class AgentRuntime {
 	}
 
 	async onFunctionCallPending(runtimeContext: RuntimeContext): Promise<void> {
-		const functionCall = runtimeContext.context.getLastItem() as FunctionCall
+		const functionCall = runtimeContext.context.getLastItem() as FunctionCallItem
 
 		const tool = runtimeContext.model.getTools().find((tool) => tool.name === functionCall.name)
 		if (!tool) {
@@ -43,7 +43,7 @@ export class AgentRuntime {
 		}
 		const functionCallOutput = await tool.invoke(functionCall.args)
 		runtimeContext.context.addContextItem(
-			FunctionCallOutput.create(functionCall.callId, JSON.stringify(functionCallOutput)),
+			FunctionCallOutputItem.create(functionCall.callId, JSON.stringify(functionCallOutput)),
 		)
 		return Promise.resolve()
 	}
@@ -66,7 +66,7 @@ export class AgentRuntime {
 	}
 
 	async start(
-		userMessage: UserMessage,
+		userMessage: UserMessageItem,
 		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
 		context: ModelContext,
 	): Promise<void> {

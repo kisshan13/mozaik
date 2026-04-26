@@ -1,7 +1,7 @@
 import { InputText } from "@domain/model-context/context-item/item-content/input-text"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 
-export class DeveloperMessage extends ContextItem {
+export class DeveloperMessageItem extends ContextItem {
 	readonly type = "message"
 	readonly role = "developer"
 	readonly content: InputText
@@ -19,13 +19,13 @@ export class DeveloperMessage extends ContextItem {
 		}
 	}
 
-	static create(text: string): DeveloperMessage {
+	static create(text: string): DeveloperMessageItem {
 		const content = InputText.create(text)
-		return new DeveloperMessage(content)
+		return new DeveloperMessageItem(content)
 	}
 
-	static rehydrate(data: { text: string }): DeveloperMessage {
+	static rehydrate(data: { text: string }): DeveloperMessageItem {
 		const content = InputText.rehydrate(data)
-		return new DeveloperMessage(content)
+		return new DeveloperMessageItem(content)
 	}
 }

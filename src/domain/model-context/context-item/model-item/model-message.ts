@@ -1,7 +1,7 @@
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { OutputText } from "@domain/model-context/context-item/item-content/output-text"
 
-export class ModelMessage extends ContextItem {
+export class ModelMessageItem extends ContextItem {
 	readonly type = "message"
 	readonly role = "assistant"
 	readonly content: OutputText
@@ -11,9 +11,9 @@ export class ModelMessage extends ContextItem {
 		this.content = content
 	}
 
-	static rehydrate(data: { text: string }): ModelMessage {
+	static rehydrate(data: { text: string }): ModelMessageItem {
 		const content = OutputText.rehydrate(data)
-		return new ModelMessage(content)
+		return new ModelMessageItem(content)
 	}
 
 	toJSON(): any {

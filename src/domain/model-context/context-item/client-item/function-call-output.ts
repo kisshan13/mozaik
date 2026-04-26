@@ -1,7 +1,7 @@
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { InputText } from "@domain/model-context/context-item/item-content/input-text"
 
-export class FunctionCallOutput extends ContextItem {
+export class FunctionCallOutputItem extends ContextItem {
 	readonly type = "function_call_output"
 	readonly callId: string
 	readonly output: InputText
@@ -12,13 +12,13 @@ export class FunctionCallOutput extends ContextItem {
 		this.output = output
 	}
 
-	static create(callId: string, output: string): FunctionCallOutput {
+	static create(callId: string, output: string): FunctionCallOutputItem {
 		const outputText = InputText.create(output)
-		return new FunctionCallOutput(callId, outputText)
+		return new FunctionCallOutputItem(callId, outputText)
 	}
 
-	static rehydrate(data: { callId: string; output: InputText }): FunctionCallOutput {
-		return new FunctionCallOutput(data.callId, data.output)
+	static rehydrate(data: { callId: string; output: InputText }): FunctionCallOutputItem {
+		return new FunctionCallOutputItem(data.callId, data.output)
 	}
 
 	toJSON(): any {

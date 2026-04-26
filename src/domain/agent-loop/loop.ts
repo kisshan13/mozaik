@@ -1,4 +1,4 @@
-import { UserMessage } from "@domain/model-context/context-item/client-item/user-message"
+import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
 import { StateDetails, StateId } from "@domain/agent-loop/state/state"
 import { FunctionCallState } from "@domain/agent-loop/state/function-call"
 import { ModelMessageState } from "@domain/agent-loop/state/model-message"
@@ -15,7 +15,7 @@ import { InferenceRequest } from "@domain/generative-model/inference-request"
 
 export interface RuntimeContext {
 	execution: Execution
-	userMessage: UserMessage
+	userMessage: UserMessageItem
 	inferenceRequest?: InferenceRequest
 	model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability
 	context: ModelContext
