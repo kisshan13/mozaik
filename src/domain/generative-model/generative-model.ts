@@ -1,3 +1,6 @@
+import { ReasoningEffort } from "./capabilities/reasoning-effort"
+import { ToolCallingCapability } from "./capabilities/tool-calling"
+
 export type ModelSpecification = {
 	name: string
 	supportReasoningEffort: boolean
@@ -8,6 +11,6 @@ export type ModelSpecification = {
 	supportFunctionCalling: boolean
 }
 
-export interface GenerativeModel {
+export interface GenerativeModel extends ReasoningEffort<string>, ToolCallingCapability {
 	readonly specification: ModelSpecification
 }
