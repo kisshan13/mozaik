@@ -23,6 +23,7 @@ import { Agent } from "@app/agent"
 import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
 import { RuntimeContext } from "@domain/agent-loop/agent-loop"
+import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
 
 export {
 	ModelContext,
@@ -31,6 +32,7 @@ export {
 	ContextItem,
 	UserMessageItem,
 	DeveloperMessageItem,
+	SystemMessageItem,
 	ModelMessageItem,
 	FunctionCallItem,
 	FunctionCallOutputItem,
