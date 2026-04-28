@@ -12,7 +12,7 @@ import { FunctionCallVisitor } from "../domain/agent-loop/visitors/function-call
 export class Agent {
 	private visitor: InferenceVisitor | undefined
 	private functionCallVisitor: FunctionCallVisitor | undefined
-	private runtime: AgentRuntime
+	protected runtime: AgentRuntime
 	constructor() {
 		this.runtime = new AgentRuntime()
 		this.runtime.on(HookId.BEFORE_MESSAGE_RECEIVED, this.beforeMessageReceived)
