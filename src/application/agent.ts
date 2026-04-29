@@ -1,99 +1,59 @@
-import { AgentRuntime } from "@app/agent-runtime"
-import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
-import { ModelContext } from "@domain/model-context/model-context"
+import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environment"
+import { FunctionCallCapable, InferenceCapable, InputCapable } from "@domain/agentic-environment/capabilities"
+import { Participant } from "@domain/agentic-environment/participant"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { ReasoningEffort } from "@domain/generative-model/capabilities/reasoning-effort"
-import { ToolCallingCapability } from "@domain/generative-model/capabilities/tool-calling"
-import { HookId } from "@domain/agent-loop/hooks/hook"
-import { RuntimeContext } from "@domain/agent-loop/agent-loop"
-import { InferenceVisitor } from "../domain/agent-loop/visitors/inference-visitor"
-import { FunctionCallVisitor } from "../domain/agent-loop/visitors/function-call-visitor"
+import { ContextItem } from "@domain/model-context/context-item/context-item"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { ModelContext } from "@domain/model-context/model-context"
+import { deliverStream } from "./deliver-stream"
+import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
+import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
+import { InputItemSource } from "@domain/agentic-environment/input-source"
 
-export class Agent {
-	private visitor: InferenceVisitor | undefined
-	private functionCallVisitor: FunctionCallVisitor | undefined
-	protected runtime: AgentRuntime
-	constructor() {
-		this.runtime = new AgentRuntime()
-		this.runtime.on(HookId.BEFORE_MESSAGE_RECEIVED, this.beforeMessageReceived)
-		this.runtime.on(HookId.AFTER_MESSAGE_RECEIVED, this.afterMessageReceived)
-		this.runtime.on(HookId.BEFORE_INFERENCE, this.beforeInference)
-		this.runtime.on(HookId.AFTER_INFERENCE, this.afterInference)
-		this.runtime.on(HookId.BEFORE_FUNCTION_CALL, this.beforeFunctionCall)
-		this.runtime.on(HookId.AFTER_FUNCTION_CALL, this.afterFunctionCall)
-		this.runtime.on(HookId.BEFORE_MODEL_RESPONDED, this.beforeModelResponded)
-		this.runtime.on(HookId.AFTER_MODEL_RESPONDED, this.afterModelResponded)
-		this.runtime.on(HookId.ON_ERROR, this.onError)
+export class BaseAgentParticipant extends Participant implements InputCapable, InferenceCapable, FunctionCallCapable {
+
+	private inputSource: InputItemSource
+	private inferenceRunner: InferenceRunner
+	private functionCallRunner: FunctionCallRunner
+
+	constructor(inputSource: InputItemSource, inferenceRunner: InferenceRunner, functionCallRunner: FunctionCallRunner) {
+		super()
+		this.inputSource = inputSource
+		this.inferenceRunner = inferenceRunner
+		this.functionCallRunner = functionCallRunner
 	}
 
-	async beforeMessageReceived(context: RuntimeContext): Promise<void> {
+	onContextItem(source: Participant, item: ContextItem): Promise<void> {
 		return Promise.resolve()
 	}
+	
+	async executeFunctionCall(environment: AgenticEnvironment, functionCallItem: FunctionCallItem, signal?: AbortSignal): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
 
-	async afterMessageReceived(context: RuntimeContext): Promise<void> {
-		return Promise.resolve()
+		await deliverStream(
+			environment,
+			this,
+			this.functionCallRunner.run(functionCallItem, signal),
+		)
 	}
+	
+	async runInference(environment: AgenticEnvironment, context: ModelContext, model: GenerativeModel, signal?: AbortSignal): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
 
-	async beforeInference(context: RuntimeContext): Promise<void> {
-		return Promise.resolve()
+		await deliverStream(
+			environment,
+			this,
+			this.inferenceRunner.run(context, model, signal),
+		)
 	}
+	
+	async streamInput(environment: AgenticEnvironment): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
 
-	async afterInference(context: RuntimeContext): Promise<void> {
-		const inferenceResponse = context.inferenceResponse
-		if (inferenceResponse && this.visitor !== undefined) {
-			await this.visitor.afterInference(inferenceResponse)
-		}
-		return Promise.resolve()
-	}
-
-	async beforeFunctionCall(context: RuntimeContext): Promise<void> {
-		if (this.functionCallVisitor !== undefined) {
-			await this.functionCallVisitor.beforeFunctionCall(context)
-		}
-		return Promise.resolve()
-	}
-
-	async afterFunctionCall(context: RuntimeContext): Promise<void> {
-		if (this.functionCallVisitor !== undefined) {
-			await this.functionCallVisitor.afterFunctionCall(context)
-		}
-		return Promise.resolve()
-	}
-
-	async beforeModelResponded(context: RuntimeContext): Promise<void> {
-		return Promise.resolve()
-	}
-
-	async afterModelResponded(context: RuntimeContext): Promise<void> {
-		return Promise.resolve()
-	}
-
-	async onError(context: RuntimeContext): Promise<void> {
-		console.log("Error occurred", context.error)
-		return Promise.resolve()
-	}
-
-	async onStart(context: RuntimeContext): Promise<void> {
-		if (this.visitor !== undefined) {
-			await this.visitor.onStart(context)
-		}
-		return Promise.resolve()
-	}
-
-	setInferenceVisitor(visitor: InferenceVisitor): void {
-		this.visitor = visitor
-	}
-
-	setFunctionCallVisitor(visitor: FunctionCallVisitor): void {
-		this.functionCallVisitor = visitor
-	}
-
-	async run(
-		userMessage: string,
-		model: GenerativeModel & ReasoningEffort<string> & ToolCallingCapability,
-		context: ModelContext,
-	): Promise<void> {
-		const userMessageItem = UserMessageItem.create(userMessage)
-		return this.runtime.start(userMessageItem, model, context)
+		await deliverStream(
+			environment,
+			this,
+			this.inputSource.stream(),
+		)
 	}
 }

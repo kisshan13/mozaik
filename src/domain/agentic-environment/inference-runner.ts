@@ -4,8 +4,8 @@ import { ReasoningItem } from "@domain/model-context/context-item/model-item/rea
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 
-export interface InferenceHandler {
-	produce(
+export interface InferenceRunner {
+	run(
 		context: ModelContext,
 		model: GenerativeModel,
 		signal?: AbortSignal,

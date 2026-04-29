@@ -16,19 +16,12 @@ import { Gpt54Mini } from "@infra/providers/openai/models/gpt-5-4-mini"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import { Tool } from "@domain/generative-model/tool"
-import { BaseSpecification, Specification } from "@domain/specification/specification/specification"
-import { Action, If, Loop, AsyncAction, AsyncRule } from "@domain/specification/rule/rule"
 import { InMemoryModelContextRepository } from "@infra/repository/in-memory-model-context-repository"
-import { Agent } from "@app/agent"
-import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
-import { AgentSociety } from "@app/agent-society"
-import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
-import { ToolExecutor } from "@domain/agentic-environment/tool-executor"
-import { MessageSender } from "@domain/agentic-environment/message-sender"
-import { InferenceHandler } from "@domain/agentic-environment/inference-handler"
 import { Participant } from "@domain/agentic-environment/participant"
 import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environment"
+import { BaseAgentParticipant } from "@app/agent"
+import { BaseHumanParticipant } from "@app/human"
 
 export {
 	ModelContext,
@@ -53,20 +46,8 @@ export {
 	InputTokenDetails,
 	OutputTokenDetails,
 	Tool,
-	Specification,
-	BaseSpecification,
-	Action,
-	AsyncAction,
-	AsyncRule,
-	If,
-	Loop,
-	Agent,
-	RuntimeContext,
-	InferenceVisitor,
-	AgentSociety,
 	AgenticEnvironment,
-	ToolExecutor,
-	MessageSender,
-	InferenceHandler,
 	Participant,
+	BaseAgentParticipant,
+	BaseHumanParticipant,
 }
