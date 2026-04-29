@@ -1,6 +1,6 @@
 {
 	"name": "@mozaik-ai/core",
-	"version": "3.6.3",
+	"version": "3.6.4",
 	"description": "A TypeScript framework for building AI agents",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
@@ -34,18 +34,16 @@
 		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
-		"ai-agent",
-		"agentic-ai",
-		"agent-framework",
-		"ai-workflow",
-		"ai-orchestration",
-		"ai-agents",
-		"ai-developer-tools",
+		"agentic-environment",
+		"reactive-agents",
+		"non-blocking agents",
+		"event-driven agents",
 		"ai-infrastructure",
-		"autonomous-agent",
-		"multi-agent-system",
+		"ai-developer-tools",
+		"context-management",
+		"llm-framework",
 		"openai",
-		"llm"
+		"typescript framework"
 	],
 	"license": "MIT",
 	"devDependencies": {
