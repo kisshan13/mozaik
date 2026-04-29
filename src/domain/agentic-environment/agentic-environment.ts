@@ -4,7 +4,7 @@ import { FunctionCallItem } from "@domain/model-context/context-item/model-item/
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 
-export abstract class AgenticEnvironment {
+export class AgenticEnvironment {
 	protected subscribers: Participant[] = []
 	private isActive = false
 
