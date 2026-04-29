@@ -24,11 +24,11 @@ import { InferenceVisitor } from "@domain/agent-loop/visitors/inference-visitor"
 import { AgentSociety } from "@app/agent-society"
 import { RuntimeContext } from "@domain/agent-loop/agent-loop"
 import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
-import { Environment } from "@app/environment"
 import { ToolExecutor } from "@domain/agentic-environment/tool-executor"
 import { MessageSender } from "@domain/agentic-environment/message-sender"
 import { InferenceHandler } from "@domain/agentic-environment/inference-handler"
 import { Participant } from "@domain/agentic-environment/participant"
+import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environment"
 
 export {
 	ModelContext,
@@ -64,7 +64,7 @@ export {
 	RuntimeContext,
 	InferenceVisitor,
 	AgentSociety,
-	Environment,
+	AgenticEnvironment,
 	ToolExecutor,
 	MessageSender,
 	InferenceHandler,
