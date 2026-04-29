@@ -10,6 +10,8 @@ import { ReasoningItem } from "@domain/model-context/context-item/model-item/rea
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 
 export class Environment extends AgenticEnvironment {
+	private isActive = false
+
 	constructor(toolExecutor: ToolExecutor, messageSender: MessageSender, inferenceHandler: InferenceHandler) {
 		super(toolExecutor, messageSender, inferenceHandler)
 	}
@@ -41,5 +43,16 @@ export class Environment extends AgenticEnvironment {
 				this.notifyOutputMessage(user, item)
 			}
 		}
+	}
+
+	async start() {
+		this.isActive = true
+		while (this.isActive) {
+			await new Promise((resolve) => setTimeout(resolve, 100))
+		}
+	}
+
+	stop() {
+		this.isActive = false
 	}
 }

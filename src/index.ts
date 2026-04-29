@@ -28,6 +28,7 @@ import { Environment } from "@app/environment"
 import { ToolExecutor } from "@domain/agentic-environment/tool-executor"
 import { MessageSender } from "@domain/agentic-environment/message-sender"
 import { InferenceHandler } from "@domain/agentic-environment/inference-handler"
+import { Participant } from "@domain/agentic-environment/participant"
 
 export {
 	ModelContext,
@@ -67,4 +68,5 @@ export {
 	ToolExecutor,
 	MessageSender,
 	InferenceHandler,
+	Participant,
 }
