@@ -22,6 +22,9 @@ import { Participant } from "@domain/agentic-environment/participant"
 import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environment"
 import { BaseAgentParticipant } from "@app/agent"
 import { BaseHumanParticipant } from "@app/human"
+import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
+import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
+import { InputItemSource } from "@domain/agentic-environment/input-source"
 
 export {
 	ModelContext,
@@ -46,6 +49,9 @@ export {
 	InputTokenDetails,
 	OutputTokenDetails,
 	Tool,
+	FunctionCallRunner,
+	InferenceRunner,
+	InputItemSource,
 	AgenticEnvironment,
 	Participant,
 	BaseAgentParticipant,
