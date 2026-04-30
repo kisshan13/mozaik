@@ -2,7 +2,6 @@ import { AgenticEnvironment } from "./agentic-environment"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 
 export abstract class Participant {
-
 	private environments: AgenticEnvironment[] = []
 
 	join(environment: AgenticEnvironment) {
@@ -23,6 +22,10 @@ export abstract class Participant {
 
 	protected isJoinedTo(environment: AgenticEnvironment): boolean {
 		return this.environments.includes(environment)
+	}
+
+	getEnvironments(): AgenticEnvironment[] {
+		return this.environments
 	}
 
 	abstract onContextItem(source: Participant, item: ContextItem): Promise<void>
