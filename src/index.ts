@@ -25,6 +25,7 @@ import { BaseHumanParticipant } from "@app/human"
 import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
 import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
 import { InputItemSource } from "@domain/agentic-environment/input-source"
+import { OpenAIInferenceRunner } from "@app/openai-inference-runner"
 
 export {
 	ModelContext,
@@ -56,4 +57,5 @@ export {
 	Participant,
 	BaseAgentParticipant,
 	BaseHumanParticipant,
+	OpenAIInferenceRunner,
 }
