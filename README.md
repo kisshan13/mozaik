@@ -1,6 +1,6 @@
 # Mozaik
 
-**Mozaik** is a TypeScript framework for building AI agents that share an **agentic environment** instead of being orchestrated through rigid pipelines.
+**Mozaik** is an open-source TypeScript framework for building AI agents that share an **agentic environment** instead of being orchestrated through rigid pipelines.
 
 In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and streams typed `ContextItem`s into the environment. Every other participant sees those items in real time and can react, intercept, or stay silent — without any central scheduler.
 
