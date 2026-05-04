@@ -26,6 +26,7 @@ import { FunctionCallRunner } from "@domain/agentic-environment/function-call-ru
 import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
 import { InputItemSource } from "@domain/agentic-environment/input-source"
 import { OpenAIInferenceRunner } from "@app/openai-inference-runner"
+import { DefaultFunctionCallRunner } from "@app/function-call-runner"
 
 export {
 	ModelContext,
@@ -52,6 +53,7 @@ export {
 	Tool,
 	FunctionCallRunner,
 	InferenceRunner,
+	DefaultFunctionCallRunner,
 	InputItemSource,
 	AgenticEnvironment,
 	Participant,
