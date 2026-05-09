@@ -11,49 +11,53 @@ import { FunctionCallRunner } from "@domain/agentic-environment/function-call-ru
 import { InputItemSource } from "@domain/agentic-environment/input-source"
 
 export class BaseAgentParticipant extends Participant implements InputCapable, InferenceCapable, FunctionCallCapable {
-
 	private inputSource: InputItemSource
 	private inferenceRunner: InferenceRunner
 	private functionCallRunner: FunctionCallRunner
 
-	constructor(inputSource: InputItemSource, inferenceRunner: InferenceRunner, functionCallRunner: FunctionCallRunner) {
+	constructor(
+		inputSource: InputItemSource,
+		inferenceRunner: InferenceRunner,
+		functionCallRunner: FunctionCallRunner,
+	) {
 		super()
 		this.inputSource = inputSource
 		this.inferenceRunner = inferenceRunner
 		this.functionCallRunner = functionCallRunner
 	}
 
-	onContextItem(source: Participant, item: ContextItem): Promise<void> {
+	onInternalContextItem(item: ContextItem): Promise<void> {
 		return Promise.resolve()
 	}
-	
-	async executeFunctionCall(environment: AgenticEnvironment, functionCallItem: FunctionCallItem, signal?: AbortSignal): Promise<void> {
+
+	onExternalContextItem(source: Participant, item: ContextItem): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async executeFunctionCall(
+		environment: AgenticEnvironment,
+		functionCallItem: FunctionCallItem,
+		signal?: AbortSignal,
+	): Promise<void> {
 		if (!this.isJoinedTo(environment)) return
 
-		await deliverStream(
-			environment,
-			this,
-			this.functionCallRunner.run(functionCallItem, signal),
-		)
+		await deliverStream(environment, this, this.functionCallRunner.run(functionCallItem, signal))
 	}
-	
-	async runInference(environment: AgenticEnvironment, context: ModelContext, model: GenerativeModel, signal?: AbortSignal): Promise<void> {
+
+	async runInference(
+		environment: AgenticEnvironment,
+		context: ModelContext,
+		model: GenerativeModel,
+		signal?: AbortSignal,
+	): Promise<void> {
 		if (!this.isJoinedTo(environment)) return
 
-		await deliverStream(
-			environment,
-			this,
-			this.inferenceRunner.run(context, model, signal),
-		)
+		await deliverStream(environment, this, this.inferenceRunner.run(context, model, signal))
 	}
-	
+
 	async streamInput(environment: AgenticEnvironment): Promise<void> {
 		if (!this.isJoinedTo(environment)) return
 
-		await deliverStream(
-			environment,
-			this,
-			this.inputSource.stream(),
-		)
+		await deliverStream(environment, this, this.inputSource.stream())
 	}
 }

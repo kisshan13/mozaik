@@ -15,7 +15,11 @@ export class AgenticEnvironment {
 
 	deliverContextItem(source: Participant, item: ContextItem): void {
 		for (const subscriber of this.subscribers) {
-			subscriber.onContextItem(source, item)
+			if (subscriber === source) {
+				subscriber.onInternalContextItem(item)
+			} else {
+				subscriber.onExternalContextItem(source, item)
+			}
 		}
 	}
 
@@ -29,5 +33,4 @@ export class AgenticEnvironment {
 	stop() {
 		this.isActive = false
 	}
-
 }

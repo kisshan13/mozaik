@@ -6,25 +6,24 @@ import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { deliverStream } from "./deliver-stream"
 
 export class BaseHumanParticipant extends Participant implements InputCapable {
-    
-    private inputSource: InputItemSource
+	private inputSource: InputItemSource
 
-    constructor(inputSource: InputItemSource) {
-        super()
-        this.inputSource = inputSource
-    }
+	constructor(inputSource: InputItemSource) {
+		super()
+		this.inputSource = inputSource
+	}
 
-    onContextItem(source: Participant, item: ContextItem): Promise<void> {
-        return Promise.resolve()
-    }
-    
-    async streamInput(environment: AgenticEnvironment): Promise<void> {
-        if (!this.isJoinedTo(environment)) return
+	onInternalContextItem(item: ContextItem): Promise<void> {
+		return Promise.resolve()
+	}
 
-        await deliverStream(
-            environment,
-            this,
-            this.inputSource.stream(),
-        )
-    }
+	onExternalContextItem(source: Participant, item: ContextItem): Promise<void> {
+		return Promise.resolve()
+	}
+
+	async streamInput(environment: AgenticEnvironment): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
+
+		await deliverStream(environment, this, this.inputSource.stream())
+	}
 }

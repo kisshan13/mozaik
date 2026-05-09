@@ -28,5 +28,11 @@ export abstract class Participant {
 		return this.environments
 	}
 
-	abstract onContextItem(source: Participant, item: ContextItem): Promise<void>
+	abstract onInternalContextItem(item: ContextItem): Promise<void>
+
+	abstract onExternalContextItem(source: Participant, item: ContextItem): Promise<void>
+
+	// abstract onParticipantJoined(participant: Participant): Promise<void>
+
+	// abstract onParticipantLeft(participant: Participant): Promise<void>
 }
