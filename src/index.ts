@@ -27,6 +27,7 @@ import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
 import { InputItemSource } from "@domain/agentic-environment/input-source"
 import { OpenAIInferenceRunner } from "@app/openai-inference-runner"
 import { DefaultFunctionCallRunner } from "@app/function-call-runner"
+import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
 
 export {
 	ModelContext,
@@ -45,6 +46,7 @@ export {
 	Gpt54,
 	Gpt54Mini,
 	Gpt54Nano,
+	Gpt55,
 	InferenceRequest,
 	InferenceResponse,
 	TokenUsage,
