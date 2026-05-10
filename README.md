@@ -1,6 +1,6 @@
 # Mozaik
 
-**Mozaik** is an open-source TypeScript framework for building reactive AI agents that share an **agentic environment** instead of being orchestrated through rigid pipelines.
+**Mozaik** is an open-source TypeScript framework for building reactive AI agents that share an **agentic environment** instead of being orchestrated through rigid workflows.
 
 ![npm downloads](https://img.shields.io/npm/dt/@mozaik-ai/core) ![npm downloads weekly](https://img.shields.io/npm/dw/@mozaik-ai/core) ![npm version](https://img.shields.io/npm/v/@mozaik-ai/core)
 
