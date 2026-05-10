@@ -1,6 +1,8 @@
 # Mozaik
 
-**Mozaik** is an open-source TypeScript framework for building AI agents that share an **agentic environment** instead of being orchestrated through rigid pipelines.
+**Mozaik** is an open-source TypeScript framework for building reactive AI agents that share an **agentic environment** instead of being orchestrated through rigid pipelines.
+
+![npm downloads](https://img.shields.io/npm/dt/@mozaik-ai/core) ![npm downloads weekly](https://img.shields.io/npm/dw/@mozaik-ai/core) ![npm version](https://img.shields.io/npm/v/@mozaik-ai/core)
 
 In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and streams typed `ContextItem`s into the environment. Every other participant sees those items in real time and can react, intercept, or stay silent — without any central scheduler.
 
@@ -41,9 +43,9 @@ flowchart LR
 
 Mozaik ships two ready-to-use participants:
 
-| Participant | Capabilities | Pulls from |
-| --- | --- | --- |
-| `BaseHumanParticipant` | `InputCapable` | `InputItemSource` |
+| Participant            | Capabilities                                              | Pulls from                                                 |
+| ---------------------- | --------------------------------------------------------- | ---------------------------------------------------------- |
+| `BaseHumanParticipant` | `InputCapable`                                            | `InputItemSource`                                          |
 | `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputItemSource`, `InferenceRunner`, `FunctionCallRunner` |
 
 Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields items they are streamed into the environment one-by-one through the `deliverStream` helper:
@@ -65,11 +67,11 @@ Because each call is a fresh promise that wraps an async iterable, multiple part
 
 ```ts
 import {
-    AgenticEnvironment,
-    BaseAgentParticipant,
-    BaseHumanParticipant,
-    Gpt54Mini,
-    ModelContext,
+	AgenticEnvironment,
+	BaseAgentParticipant,
+	BaseHumanParticipant,
+	Gpt54Mini,
+	ModelContext,
 } from "@mozaik-ai/core"
 
 const environment = new AgenticEnvironment()
@@ -113,58 +115,58 @@ Items are discriminated by the `ContextItem` subclass and, for messages, the `ro
 import { Participant, ContextItem } from "@mozaik-ai/core"
 
 export class TranscriptLogger extends Participant {
-    async onContextItem(source: Participant, item: ContextItem): Promise<void> {
-        console.log(`[${source.constructor.name}]`, item.toJSON())
-    }
+	async onContextItem(source: Participant, item: ContextItem): Promise<void> {
+		console.log(`[${source.constructor.name}]`, item.toJSON())
+	}
 }
 ```
 
 ### Reactive agent
 
-A reactive agent extends `BaseAgentParticipant` and uses incoming items from *other* participants to decide when to run inference or execute a tool call:
+A reactive agent extends `BaseAgentParticipant` and uses incoming items from _other_ participants to decide when to run inference or execute a tool call:
 
 ```ts
 import {
-    BaseAgentParticipant,
-    Participant,
-    ContextItem,
-    UserMessageItem,
-    FunctionCallItem,
-    AgenticEnvironment,
-    ModelContext,
-    GenerativeModel,
-    InputItemSource,
-    InferenceRunner,
-    FunctionCallRunner,
+	BaseAgentParticipant,
+	Participant,
+	ContextItem,
+	UserMessageItem,
+	FunctionCallItem,
+	AgenticEnvironment,
+	ModelContext,
+	GenerativeModel,
+	InputItemSource,
+	InferenceRunner,
+	FunctionCallRunner,
 } from "@mozaik-ai/core"
 
 export class ReactiveAgent extends BaseAgentParticipant {
-    constructor(
-        inputSource: InputItemSource,
-        inferenceRunner: InferenceRunner,
-        functionCallRunner: FunctionCallRunner,
-        private readonly environment: AgenticEnvironment,
-        private readonly context: ModelContext,
-        private readonly model: GenerativeModel,
-    ) {
-        super(inputSource, inferenceRunner, functionCallRunner)
-    }
+	constructor(
+		inputSource: InputItemSource,
+		inferenceRunner: InferenceRunner,
+		functionCallRunner: FunctionCallRunner,
+		private readonly environment: AgenticEnvironment,
+		private readonly context: ModelContext,
+		private readonly model: GenerativeModel,
+	) {
+		super(inputSource, inferenceRunner, functionCallRunner)
+	}
 
-    async onContextItem(source: Participant, item: ContextItem): Promise<void> {
-        if (source === this) return
+	async onContextItem(source: Participant, item: ContextItem): Promise<void> {
+		if (source === this) return
 
-        this.context.addContextItem(item)
+		this.context.addContextItem(item)
 
-        if (item instanceof UserMessageItem) {
-            this.runInference(this.environment, this.context, this.model)
-            return
-        }
+		if (item instanceof UserMessageItem) {
+			this.runInference(this.environment, this.context, this.model)
+			return
+		}
 
-        if (item instanceof FunctionCallItem) {
-            this.executeFunctionCall(this.environment, item)
-            return
-        }
-    }
+		if (item instanceof FunctionCallItem) {
+			this.executeFunctionCall(this.environment, item)
+			return
+		}
+	}
 }
 ```
 
@@ -180,16 +182,11 @@ Two things to note:
 `ModelContext` is the ordered list of `ContextItem`s a `GenerativeModel` is asked to reason over. It is constructed and mutated explicitly — typically inside a participant in response to delivered items.
 
 ```ts
-import {
-    ModelContext,
-    DeveloperMessageItem,
-    UserMessageItem,
-    InMemoryModelContextRepository,
-} from "@mozaik-ai/core"
+import { ModelContext, DeveloperMessageItem, UserMessageItem, InMemoryModelContextRepository } from "@mozaik-ai/core"
 
 const context = ModelContext.create("project-id")
-    .addContextItem(DeveloperMessageItem.create("You are a helpful assistant."))
-    .addContextItem(UserMessageItem.create("What is the capital of France?"))
+	.addContextItem(DeveloperMessageItem.create("You are a helpful assistant."))
+	.addContextItem(UserMessageItem.create("What is the capital of France?"))
 
 const repo = new InMemoryModelContextRepository()
 await repo.save(context)
@@ -210,38 +207,33 @@ const response = await runtime.infer(new InferenceRequest(new Gpt54(), context))
 
 ## Advanced: overriding generators
 
-`BaseAgentParticipant` and `BaseHumanParticipant` are deliberately thin shells around three generator interfaces. Swap any of them to change *how* items are produced without touching the environment, the participants, or any consumers.
+`BaseAgentParticipant` and `BaseHumanParticipant` are deliberately thin shells around three generator interfaces. Swap any of them to change _how_ items are produced without touching the environment, the participants, or any consumers.
 
 ### Custom `InputItemSource`
 
 ```ts
-import {
-    InputItemSource,
-    UserMessageItem,
-    DeveloperMessageItem,
-    SystemMessageItem,
-} from "@mozaik-ai/core"
+import { InputItemSource, UserMessageItem, DeveloperMessageItem, SystemMessageItem } from "@mozaik-ai/core"
 
 type InputItem = UserMessageItem | DeveloperMessageItem | SystemMessageItem
 
 export class QueueInputSource implements InputItemSource {
-    private readonly queue: InputItem[] = []
-    private resolveNext?: () => void
+	private readonly queue: InputItem[] = []
+	private resolveNext?: () => void
 
-    push(item: InputItem) {
-        this.queue.push(item)
-        this.resolveNext?.()
-        this.resolveNext = undefined
-    }
+	push(item: InputItem) {
+		this.queue.push(item)
+		this.resolveNext?.()
+		this.resolveNext = undefined
+	}
 
-    async *stream(signal?: AbortSignal): AsyncIterable<InputItem> {
-        while (!signal?.aborted) {
-            while (this.queue.length > 0) {
-                yield this.queue.shift()!
-            }
-            await new Promise<void>((resolve) => (this.resolveNext = resolve))
-        }
-    }
+	async *stream(signal?: AbortSignal): AsyncIterable<InputItem> {
+		while (!signal?.aborted) {
+			while (this.queue.length > 0) {
+				yield this.queue.shift()!
+			}
+			await new Promise<void>((resolve) => (this.resolveNext = resolve))
+		}
+	}
 }
 ```
 
@@ -253,31 +245,27 @@ Wrap any model runtime — including `OpenAIResponses` — and decide how its ou
 
 ```ts
 import {
-    InferenceRunner,
-    InferenceRequest,
-    ModelContext,
-    GenerativeModel,
-    OpenAIResponses,
-    ReasoningItem,
-    FunctionCallItem,
-    ModelMessageItem,
+	InferenceRunner,
+	InferenceRequest,
+	ModelContext,
+	GenerativeModel,
+	OpenAIResponses,
+	ReasoningItem,
+	FunctionCallItem,
+	ModelMessageItem,
 } from "@mozaik-ai/core"
 
 type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
 
 export class OpenAIInferenceRunner implements InferenceRunner {
-    private readonly runtime = new OpenAIResponses()
+	private readonly runtime = new OpenAIResponses()
 
-    async *run(
-        context: ModelContext,
-        model: GenerativeModel,
-        signal?: AbortSignal,
-    ): AsyncIterable<InferenceItem> {
-        const response = await this.runtime.infer(new InferenceRequest(model, context))
-        for (const item of response.contextItems) {
-            yield item as InferenceItem
-        }
-    }
+	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
+		const response = await this.runtime.infer(new InferenceRequest(model, context))
+		for (const item of response.contextItems) {
+			yield item as InferenceItem
+		}
+	}
 }
 ```
 
@@ -288,26 +276,18 @@ Replace the body with a streaming runtime and items will flow into the environme
 Resolve a `FunctionCallItem` against a tool registry and yield its output:
 
 ```ts
-import {
-    FunctionCallRunner,
-    FunctionCallItem,
-    FunctionCallOutputItem,
-    Tool,
-} from "@mozaik-ai/core"
+import { FunctionCallRunner, FunctionCallItem, FunctionCallOutputItem, Tool } from "@mozaik-ai/core"
 
 export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
-    constructor(private readonly tools: Tool[]) {}
+	constructor(private readonly tools: Tool[]) {}
 
-    async *run(
-        call: FunctionCallItem,
-        signal?: AbortSignal,
-    ): AsyncIterable<FunctionCallOutputItem> {
-        const tool = this.tools.find((t) => t.name === call.name)
-        if (!tool) throw new Error(`Unknown tool: ${call.name}`)
+	async *run(call: FunctionCallItem, signal?: AbortSignal): AsyncIterable<FunctionCallOutputItem> {
+		const tool = this.tools.find((t) => t.name === call.name)
+		if (!tool) throw new Error(`Unknown tool: ${call.name}`)
 
-        const result = await tool.invoke(JSON.parse(call.args))
-        yield FunctionCallOutputItem.create(call.callId, JSON.stringify(result))
-    }
+		const result = await tool.invoke(JSON.parse(call.args))
+		yield FunctionCallOutputItem.create(call.callId, JSON.stringify(result))
+	}
 }
 ```
 
@@ -317,9 +297,9 @@ export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
 import { BaseAgentParticipant, AgenticEnvironment } from "@mozaik-ai/core"
 
 const agent = new BaseAgentParticipant(
-    new QueueInputSource(),
-    new OpenAIInferenceRunner(),
-    new ToolRegistryFunctionCallRunner(tools),
+	new QueueInputSource(),
+	new OpenAIInferenceRunner(),
+	new ToolRegistryFunctionCallRunner(tools),
 )
 
 agent.join(new AgenticEnvironment())
