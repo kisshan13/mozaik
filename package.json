@@ -1,7 +1,7 @@
 {
 	"name": "@mozaik-ai/core",
 	"version": "3.6.5",
-	"description": "A TypeScript framework for building event-driven AI agents",
+	"description": "A TypeScript framework for building reactive agents",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
 	"types": "dist/index.d.ts",
