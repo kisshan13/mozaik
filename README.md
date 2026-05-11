@@ -131,18 +131,7 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ## Intercepting events from other participants
 
-A `Participant` has **one handler per event type**, in two flavors:
-
-- `on*` — handles events the participant emitted itself (e.g. run a `FunctionCallItem` you just produced).
-- `onExternal*` — handles events emitted by other participants (e.g. log, stream to a UI, react to their output).
-- `onMessage` — handles plain-text messages (a `string`) from anyone.
-
-Override only the handlers you care about; the rest default to no-ops.
-
-The event payloads are `ContextItem`s defined in [src/domain/model-context/context-item](src/domain/model-context/context-item):
-
-- From clients: `FunctionCallOutputItem` (plus `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` when building a `ModelContext`)
-- From models: `ModelMessageItem`, `FunctionCallItem`, `ReasoningItem`
+Participants can listen to external events and react by overriding methods like `onMessage`, `onExternalFunctionCall`, `onExternalFunctionCallOutput`, `onExternalReasoning`, and `onExternalModelMessage`.
 
 ### Passive observer
 
