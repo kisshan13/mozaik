@@ -93,83 +93,7 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ---
 
-## Agent Loop Implementation
-
-The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
-
-```ts
-export class CustomAgent extends BaseAgentParticipant {
-	constructor(
-		inputSource: InputStream,
-		inferenceRunner: InferenceRunner,
-		functionCallRunner: FunctionCallRunner,
-		private readonly environment: AgenticEnvironment,
-		private readonly context: ModelContext,
-		private readonly model: GenerativeModel,
-	) {
-		super(inputSource, inferenceRunner, functionCallRunner)
-	}
-
-	async onMessage(message: string): Promise<void> {
-		this.context.addContextItem(UserMessageItem.create(message))
-		this.runInference(this.environment, this.context, this.model)
-	}
-
-	async onFunctionCall(item: FunctionCallItem): Promise<void> {
-		this.context.addContextItem(item)
-		this.executeFunctionCall(this.environment, item)
-	}
-
-	async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
-		this.context.addContextItem(item)
-		this.runInference(this.environment, this.context, this.model)
-	}
-}
-```
-
----
-
-## Reacting to external events
-
-Participants can listen to external events and react by overriding methods like `onMessage`, `onExternalFunctionCall`, `onExternalFunctionCallOutput`, `onExternalReasoning`, and `onExternalModelMessage`.
-
-### Passive observer
-
-You can create observers that don't run inference themselves but watch what's happening in the conversation and take side actions (logging, metrics, persistence, etc.). Subclass `Participant` and override only the handlers you care about:
-
-```ts
-import { Participant, FunctionCallItem, FunctionCallOutputItem, ReasoningItem, ModelMessageItem } from "@mozaik-ai/core"
-
-export class TranscriptLogger extends Participant {
-	async onMessage(message: string): Promise<void> {
-		console.log("[message]", message)
-	}
-
-	async onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> {
-		console.log(`[${source.constructor.name}] function_call`, item.toJSON())
-	}
-
-	async onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> {
-		console.log(`[${source.constructor.name}] function_call_output`, item.toJSON())
-	}
-
-	async onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> {
-		console.log(`[${source.constructor.name}] reasoning`, item.toJSON())
-	}
-
-	async onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> {
-		console.log(`[${source.constructor.name}] model_message`, item.toJSON())
-	}
-
-	// Self-emitted handlers (onFunctionCall, onReasoning, …) can be no-ops for a pure observer.
-	async onFunctionCall(): Promise<void> {}
-	async onFunctionCallOutput(): Promise<void> {}
-	async onReasoning(): Promise<void> {}
-	async onModelMessage(): Promise<void> {}
-}
-```
-
-### Reactive agent
+## Reactive agent
 
 A reactive agent extends `BaseAgentParticipant` and overrides the handlers it wants to react on. Each handler is already a no-op in the base class, so only the relevant ones need bodies:
 
@@ -234,6 +158,47 @@ Three things to note:
 2. The agent never `await`s its own capability calls inside the handlers — those methods are non-blocking, so the environment keeps delivering events while inference and tool execution run in the background.
 3. Behaviors compose by **reaction**, not orchestration. Add a second agent that overrides `onExternalModelMessage` and you get a critique loop. Add a `TranscriptLogger` and you get a UI stream. Neither change touches the existing participants.
 
+---
+
+## Reacting to external events
+
+Participants can listen to external events and react by overriding methods like `onMessage`, `onExternalFunctionCall`, `onExternalFunctionCallOutput`, `onExternalReasoning`, and `onExternalModelMessage`.
+
+## Passive observer
+
+You can create observers that don't run inference themselves but watch what's happening in the conversation and take side actions (logging, metrics, persistence, etc.). Subclass `Participant` and override only the handlers you care about:
+
+```ts
+import { Participant, FunctionCallItem, FunctionCallOutputItem, ReasoningItem, ModelMessageItem } from "@mozaik-ai/core"
+
+export class TranscriptLogger extends Participant {
+	async onMessage(message: string): Promise<void> {
+		console.log("[message]", message)
+	}
+
+	async onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> {
+		console.log(`[${source.constructor.name}] function_call`, item.toJSON())
+	}
+
+	async onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> {
+		console.log(`[${source.constructor.name}] function_call_output`, item.toJSON())
+	}
+
+	async onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> {
+		console.log(`[${source.constructor.name}] reasoning`, item.toJSON())
+	}
+
+	async onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> {
+		console.log(`[${source.constructor.name}] model_message`, item.toJSON())
+	}
+
+	// Self-emitted handlers (onFunctionCall, onReasoning, …) can be no-ops for a pure observer.
+	async onFunctionCall(): Promise<void> {}
+	async onFunctionCallOutput(): Promise<void> {}
+	async onReasoning(): Promise<void> {}
+	async onModelMessage(): Promise<void> {}
+}
+```
 ---
 
 ## Context and models (reference)
