@@ -27,17 +27,17 @@ OPENAI_API_KEY=your-openai-key-here
 
 `AgenticEnvironment` is where everything happens. `Participant`s `join()` it, and from that moment on they can **listen to messages and events** flowing through the environment by overriding any of the handlers below:
 
-| Handler                        | Triggered when…                                        |
-| ------------------------------ | ------------------------------------------------------ |
-| `onMessage`                    | another participant sends a plain-text message         |
-| `onFunctionCall`               | the participant itself produces a function call        |
-| `onExternalFunctionCall`       | another participant produces a function call           |
-| `onFunctionCallOutput`         | the participant itself produces a function call output |
-| `onExternalFunctionCallOutput` | another participant produces a function call output    |
-| `onReasoning`                  | the participant itself produces reasoning              |
-| `onExternalReasoning`          | another participant produces reasoning                 |
-| `onModelMessage`               | the participant itself produces a model message        |
-| `onExternalModelMessage`       | another participant produces a model message           |
+| Handler                        | Triggered when…                                              |
+| ------------------------------ | ------------------------------------------------------------ |
+| `onMessage`                    | any participant sends a message                              |
+| `onFunctionCall`               | its own inference returns a function call                    |
+| `onExternalFunctionCall`       | another agent's inference returns a function call            |
+| `onFunctionCallOutput`         | its own function call runner returns a result                |
+| `onExternalFunctionCallOutput` | another agent's function call runner returns a result        |
+| `onReasoning`                  | its own inference returns a reasoning item                   |
+| `onExternalReasoning`          | another agent's inference returns a reasoning item           |
+| `onModelMessage`               | its own inference returns an assistant message               |
+| `onExternalModelMessage`       | another agent's inference returns an assistant message       |
 
 Every handler defaults to a no-op — override only the ones you care about.
 
@@ -60,6 +60,17 @@ The easiest way to build **and control** an agent loop is to override three hand
 ````ts
 
 export class CustomAgent extends BaseAgentParticipant {
+
+	constructor(
+		inputSource: InputStream,
+		inferenceRunner: InferenceRunner,
+		functionCallRunner: FunctionCallRunner,
+		private readonly environment: AgenticEnvironment,
+		private readonly context: ModelContext,
+		private readonly model: GenerativeModel,
+	) {
+		super(inputSource, inferenceRunner, functionCallRunner)
+	}
 
 	async onMessage(message: string): Promise<void> {
 		this.context.addContextItem(UserMessageItem.create(message))
