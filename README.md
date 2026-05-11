@@ -1,6 +1,6 @@
 # Mozaik
 
-**Mozaik** is an open-source TypeScript framework for building reactive AI agents that share an **agentic environment** instead of being orchestrated through rigid workflows.
+**Mozaik** is TypeScript framework for building reactive agents. It provides the easiest way to build collaborative, **event-driven agents** that can work together in parallel.
 
 ![npm downloads](https://img.shields.io/npm/dt/@mozaik-ai/core) ![npm downloads weekly](https://img.shields.io/npm/dw/@mozaik-ai/core) ![npm version](https://img.shields.io/npm/v/@mozaik-ai/core)
 
@@ -25,17 +25,21 @@ OPENAI_API_KEY=your-openai-key-here
 
 ## The agentic environment
 
-`AgenticEnvironment` is a broadcast bus for typed events. `Participant`s `join()` it, and anything produced by one participant is delivered to every subscriber through a **dedicated typed callback** — one per event kind, with separate handlers for items the participant emitted itself versus items emitted by someone else:
+`AgenticEnvironment` is where everything happens. `Participant`s `join()` it, and from that moment on they can **listen to messages and events** flowing through the environment by overriding any of the handlers below:
 
-| Producer call                             | Self handler           | External handler                          |
-| ----------------------------------------- | ---------------------- | ----------------------------------------- |
-| `deliverFunctionCall(source, item)`       | `onFunctionCall`       | `onExternalFunctionCall(source, …)`       |
-| `deliverFunctionCallOutput(source, item)` | `onFunctionCallOutput` | `onExternalFunctionCallOutput(source, …)` |
-| `deliverReasoning(source, item)`          | `onReasoning`          | `onExternalReasoning(source, …)`          |
-| `deliverModelMessage(source, item)`       | `onModelMessage`       | `onExternalModelMessage(source, …)`       |
-| `deliverMessage(source, message)`         | _(not delivered)_      | `onMessage(message)`                      |
+| Handler                         | Triggered when…                                                |
+| ------------------------------- | -------------------------------------------------------------- |
+| `onMessage`                     | another participant sends a plain-text message                 |
+| `onFunctionCall`                | the participant itself produces a function call                |
+| `onExternalFunctionCall`        | another participant produces a function call                   |
+| `onFunctionCallOutput`          | the participant itself produces a function call output         |
+| `onExternalFunctionCallOutput`  | another participant produces a function call output            |
+| `onReasoning`                   | the participant itself produces reasoning                      |
+| `onExternalReasoning`           | another participant produces reasoning                         |
+| `onModelMessage`                | the participant itself produces a model message                |
+| `onExternalModelMessage`        | another participant produces a model message                   |
 
-Messages are plain `string`s exchanged between participants. Every other event flows as a typed `ContextItem` (`FunctionCallItem`, `FunctionCallOutputItem`, `ReasoningItem`, `ModelMessageItem`).
+Every handler defaults to a no-op — override only the ones you care about.
 
 ```mermaid
 flowchart LR
