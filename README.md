@@ -4,7 +4,7 @@
 
 ![npm downloads](https://img.shields.io/npm/dt/@mozaik-ai/core) ![npm downloads weekly](https://img.shields.io/npm/dw/@mozaik-ai/core) ![npm version](https://img.shields.io/npm/v/@mozaik-ai/core)
 
-In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and produces typed events — function calls, function call outputs, reasoning, model messages, and plain-text messages — into the environment. Every other participant sees those events in real time and can react, intercept, or stay silent — without any central scheduler.
+In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and produces events into the environment: plain-text **messages** for conversational input/output, and typed `ContextItem`s for model internals (function calls, function call outputs, reasoning, model messages). Every other participant sees those events in real time and can react, intercept, or stay silent — without any central scheduler.
 
 ---
 
@@ -27,13 +27,13 @@ OPENAI_API_KEY=your-openai-key-here
 
 `AgenticEnvironment` is a broadcast bus for typed events. `Participant`s `join()` it, and anything produced by one participant is delivered to every subscriber through a **dedicated typed callback** — one per event kind, with separate handlers for items the participant emitted itself versus items emitted by someone else:
 
-| Producer call                            | Self handler            | External handler                          |
-| ---------------------------------------- | ----------------------- | ----------------------------------------- |
-| `deliverFunctionCall(source, item)`      | `onFunctionCall`        | `onExternalFunctionCall(source, …)`       |
-| `deliverFunctionCallOutput(source, item)`| `onFunctionCallOutput`  | `onExternalFunctionCallOutput(source, …)` |
-| `deliverReasoning(source, item)`         | `onReasoning`           | `onExternalReasoning(source, …)`          |
-| `deliverModelMessage(source, item)`      | `onModelMessage`        | `onExternalModelMessage(source, …)`       |
-| `deliverMessage(source, message)`        | _(not delivered)_       | `onMessage(message)`                      |
+| Producer call                             | Self handler           | External handler                          |
+| ----------------------------------------- | ---------------------- | ----------------------------------------- |
+| `deliverFunctionCall(source, item)`       | `onFunctionCall`       | `onExternalFunctionCall(source, …)`       |
+| `deliverFunctionCallOutput(source, item)` | `onFunctionCallOutput` | `onExternalFunctionCallOutput(source, …)` |
+| `deliverReasoning(source, item)`          | `onReasoning`          | `onExternalReasoning(source, …)`          |
+| `deliverModelMessage(source, item)`       | `onModelMessage`       | `onExternalModelMessage(source, …)`       |
+| `deliverMessage(source, message)`         | _(not delivered)_      | `onMessage(message)`                      |
 
 Messages are plain `string`s exchanged between participants. Every other event flows as a typed `ContextItem` (`FunctionCallItem`, `FunctionCallOutputItem`, `ReasoningItem`, `ModelMessageItem`).
 
@@ -53,14 +53,29 @@ flowchart LR
 
 Mozaik ships two ready-to-use participants:
 
-| Participant            | Capabilities                                              | Pulls from                                            |
-| ---------------------- | --------------------------------------------------------- | ----------------------------------------------------- |
-| `BaseHumanParticipant` | `InputCapable`                                            | `InputStream`                                         |
-| `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputStream`, `InferenceRunner`, `FunctionCallRunner`|
+| Participant            | Capabilities                                              | Pulls from                                             |
+| ---------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
+| `BaseHumanParticipant` | `InputCapable`                                            | `InputStream`                                          |
+| `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputStream`, `InferenceRunner`, `FunctionCallRunner` |
 
-Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields, items are streamed into the environment one-by-one through the matching typed `deliverX` method. For example, `runInference` dispatches each yielded item to `deliverReasoning`, `deliverFunctionCall`, or `deliverModelMessage`:
+Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields, every yielded value is forwarded into the environment through the matching typed `deliverX` method.
 
-```81:100:src/application/agent.ts
+`streamInput` pulls plain-text messages from an `InputStream` and routes each one to `deliverMessage` — participants exchange raw text on the wire, not `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` envelopes:
+
+```ts
+	async streamInput(environment: AgenticEnvironment): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
+
+		const stream = this.inputSource.stream()
+		for await (const message of stream) {
+			await environment.deliverMessage(this, message)
+		}
+	}
+```
+
+`runInference` does the same for model output, dispatching each yielded item to `deliverReasoning`, `deliverFunctionCall`, or `deliverModelMessage`:
+
+```ts
 	async runInference(
 		environment: AgenticEnvironment,
 		context: ModelContext,
@@ -126,7 +141,7 @@ Instead of a single catch-all callback, `Participant` exposes **one typed handle
 
 The intercept surface, taken from `Participant`:
 
-```38:54:src/domain/agentic-environment/participant.ts
+```ts
 	abstract onFunctionCall(item: FunctionCallItem): Promise<void>
 
 	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void>
@@ -158,13 +173,7 @@ Plain conversational input flows as a `string` through `onMessage` — participa
 A passive observer subclasses `Participant` and overrides only the handlers it cares about:
 
 ```ts
-import {
-	Participant,
-	FunctionCallItem,
-	FunctionCallOutputItem,
-	ReasoningItem,
-	ModelMessageItem,
-} from "@mozaik-ai/core"
+import { Participant, FunctionCallItem, FunctionCallOutputItem, ReasoningItem, ModelMessageItem } from "@mozaik-ai/core"
 
 export class TranscriptLogger extends Participant {
 	async onMessage(message: string): Promise<void> {
@@ -296,7 +305,15 @@ const response = await runtime.infer(new InferenceRequest(new Gpt54(), context))
 
 ### Custom `InputStream`
 
-An `InputStream` yields plain `string` messages, which are then broadcast to every other participant through `onMessage`:
+An `InputStream` is the minimal text-source contract a participant uses to feed messages into the environment:
+
+```ts
+export interface InputStream {
+	stream(signal?: AbortSignal): AsyncIterable<string>
+}
+```
+
+Each yielded string is delivered to every other participant through `onMessage(message: string)`. This keeps the wire format dead simple: participants exchange text, and each one decides how to turn that text into a `ContextItem` for its own `ModelContext`.
 
 ```ts
 import { InputStream } from "@mozaik-ai/core"
@@ -322,7 +339,7 @@ export class QueueInputStream implements InputStream {
 }
 ```
 
-Use it for stdin, websockets, an HTTP queue, or anything that produces messages over time. Participants decide for themselves what to do with the string — e.g. wrap it in a `UserMessageItem` before adding it to a `ModelContext`.
+Use it for stdin, websockets, an HTTP queue, or anything that produces text over time. A reactive agent typically wraps the incoming string in a `UserMessageItem` inside `onMessage` before adding it to its `ModelContext` — see the [Reactive agent](#reactive-agent) example above.
 
 ### Custom `InferenceRunner`
 
