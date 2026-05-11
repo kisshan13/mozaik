@@ -1,12 +1,7 @@
 {
 	"name": "@mozaik-ai/core",
-<<<<<<< Updated upstream
 	"version": "3.7.0",
 	"description": "A TypeScript framework for building reactive agents",
-=======
-	"version": "3.6.6",
-	"description": "A TypeScript framework for building event-driven AI agents",
->>>>>>> Stashed changes
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
 	"types": "dist/index.d.ts",

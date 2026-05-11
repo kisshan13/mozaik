@@ -3,9 +3,6 @@ import { AgenticEnvironment } from "./agentic-environment"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
-import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
-import { DeveloperMessageItem } from "@domain/model-context/context-item/client-item/developer-message"
-import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
 
 export abstract class Participant {
 	private environments: AgenticEnvironment[] = []
@@ -54,15 +51,5 @@ export abstract class Participant {
 
 	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void>
 
-	abstract onUserMessage(item: UserMessageItem): Promise<void>
-
-	abstract onExternalUserMessage(source: Participant, item: UserMessageItem): Promise<void>
-
-	abstract onDeveloperMessage(item: DeveloperMessageItem): Promise<void>
-
-	abstract onExternalDeveloperMessage(source: Participant, item: DeveloperMessageItem): Promise<void>
-
-	abstract onSystemMessage(item: SystemMessageItem): Promise<void>
-
-	abstract onExternalSystemMessage(source: Participant, item: SystemMessageItem): Promise<void>
+	abstract onMessage(message: string): Promise<void>
 }

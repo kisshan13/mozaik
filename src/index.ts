@@ -24,7 +24,7 @@ import { BaseAgentParticipant } from "@app/agent"
 import { BaseHumanParticipant } from "@app/human"
 import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
 import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
-import { InputItemSource } from "@domain/agentic-environment/input-source"
+import { InputStream } from "@domain/agentic-environment/input-stream"
 import { OpenAIInferenceRunner } from "@app/openai-inference-runner"
 import { DefaultFunctionCallRunner } from "@app/function-call-runner"
 import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
@@ -56,7 +56,7 @@ export {
 	FunctionCallRunner,
 	InferenceRunner,
 	DefaultFunctionCallRunner,
-	InputItemSource,
+	InputStream,
 	AgenticEnvironment,
 	Participant,
 	BaseAgentParticipant,

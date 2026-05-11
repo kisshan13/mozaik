@@ -1,8 +1,5 @@
 import { Participant } from "@domain/agentic-environment/participant"
-import { DeveloperMessageItem } from "@domain/model-context/context-item/client-item/developer-message"
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
-import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
-import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
@@ -23,7 +20,7 @@ export class AgenticEnvironment {
 		for (const subscriber of this.subscribers) {
 			if (subscriber === source) {
 				subscriber.onFunctionCall(item)
-			}else{
+			} else {
 				subscriber.onExternalFunctionCall(source, item)
 			}
 		}
@@ -33,7 +30,7 @@ export class AgenticEnvironment {
 		for (const subscriber of this.subscribers) {
 			if (subscriber === source) {
 				subscriber.onModelMessage(item)
-			}else{
+			} else {
 				subscriber.onExternalModelMessage(source, item)
 			}
 		}
@@ -43,7 +40,7 @@ export class AgenticEnvironment {
 		for (const subscriber of this.subscribers) {
 			if (subscriber === source) {
 				subscriber.onReasoning(item)
-			}else{
+			} else {
 				subscriber.onExternalReasoning(source, item)
 			}
 		}
@@ -53,42 +50,17 @@ export class AgenticEnvironment {
 		for (const subscriber of this.subscribers) {
 			if (subscriber === source) {
 				subscriber.onFunctionCallOutput(item)
-			}else{
+			} else {
 				subscriber.onExternalFunctionCallOutput(source, item)
 			}
 		}
 	}
 
-	deliverUserMessage(source: Participant, item: UserMessageItem): void {
+	deliverMessage(source: Participant, message: string): void {
 		for (const subscriber of this.subscribers) {
+			if (subscriber === source) continue
 
-			if (subscriber === source) {
-				subscriber.onUserMessage(item)
-			}else{
-				subscriber.onExternalUserMessage(source, item)
-			}
-		}
-	}
-
-	deliverDeveloperMessage(source: Participant, item: DeveloperMessageItem): void {
-		for (const subscriber of this.subscribers) {
-
-			if (subscriber === source) {
-			subscriber.onDeveloperMessage(item)
-			}else{
-				subscriber.onExternalDeveloperMessage(source, item)
-			}
-		}
-	}
-
-	deliverSystemMessage(source: Participant, item: SystemMessageItem): void {
-		for (const subscriber of this.subscribers) {
-
-			if (subscriber === source) {
-				subscriber.onSystemMessage(item)
-			}else{
-				subscriber.onExternalSystemMessage(source, item)
-			}
+			subscriber.onMessage(message)
 		}
 	}
 
