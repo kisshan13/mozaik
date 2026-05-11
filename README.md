@@ -58,20 +58,26 @@ flowchart LR
 The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
 
 ````ts
-async onMessage(message: string): Promise<void> {
-	this.context.addContextItem(UserMessageItem.create(message))
-	this.runInference(this.environment, this.context, this.model)
+
+export class CustomAgent extends BaseAgentParticipant {
+
+	async onMessage(message: string): Promise<void> {
+		this.context.addContextItem(UserMessageItem.create(message))
+		this.runInference(this.environment, this.context, this.model)
+	}
+
+	async onFunctionCall(item: FunctionCallItem): Promise<void> {
+		this.context.addContextItem(item)
+		this.executeFunctionCall(this.environment, item)
+	}
+
+	async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
+		this.context.addContextItem(item)
+		this.runInference(this.environment, this.context, this.model)
+	}
 }
 
-async onFunctionCall(item: FunctionCallItem): Promise<void> {
-	this.context.addContextItem(item)
-	this.executeFunctionCall(this.environment, item)
-}
-
-async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
-	this.context.addContextItem(item)
-	this.runInference(this.environment, this.context, this.model)
-}
+```
 ---
 
 ## Non-blocking participants
