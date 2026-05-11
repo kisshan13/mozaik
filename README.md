@@ -129,7 +129,7 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ---
 
-## Intercepting events from other participants
+## Reacting to external events
 
 Participants can listen to external events and react by overriding methods like `onMessage`, `onExternalFunctionCall`, `onExternalFunctionCallOutput`, `onExternalReasoning`, and `onExternalModelMessage`.
 
