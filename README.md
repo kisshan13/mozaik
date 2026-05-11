@@ -58,48 +58,6 @@ Mozaik ships two ready-to-use participants:
 | `BaseHumanParticipant` | `InputCapable`                                            | `InputStream`                                          |
 | `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputStream`, `InferenceRunner`, `FunctionCallRunner` |
 
-Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields, every yielded value is forwarded into the environment through the matching typed `deliverX` method.
-
-`streamInput` pulls plain-text messages from an `InputStream` and routes each one to `deliverMessage` — participants exchange raw text on the wire, not `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` envelopes:
-
-```ts
-	async streamInput(environment: AgenticEnvironment): Promise<void> {
-		if (!this.isJoinedTo(environment)) return
-
-		const stream = this.inputSource.stream()
-		for await (const message of stream) {
-			await environment.deliverMessage(this, message)
-		}
-	}
-```
-
-`runInference` does the same for model output, dispatching each yielded item to `deliverReasoning`, `deliverFunctionCall`, or `deliverModelMessage`:
-
-```ts
-	async runInference(
-		environment: AgenticEnvironment,
-		context: ModelContext,
-		model: GenerativeModel,
-		signal?: AbortSignal,
-	): Promise<void> {
-		if (!this.isJoinedTo(environment)) return
-
-		const stream = this.inferenceRunner.run(context, model, signal)
-
-		for await (const item of stream) {
-			if (item.type === "reasoning") {
-				await environment.deliverReasoning(this, item)
-			} else if (item.type === "function_call") {
-				await environment.deliverFunctionCall(this, item)
-			} else if (item.type === "message" && item.role === "assistant") {
-				await environment.deliverModelMessage(this, item)
-			}
-		}
-	}
-```
-
-Because each call is a fresh promise that wraps an async iterable, multiple participants can act on the same environment **concurrently**:
-
 ```ts
 import {
 	AgenticEnvironment,
