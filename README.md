@@ -53,42 +53,6 @@ flowchart LR
 
 ---
 
-## Agent Loop Implementation
-
-The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
-
-```ts
-export class CustomAgent extends BaseAgentParticipant {
-	constructor(
-		inputSource: InputStream,
-		inferenceRunner: InferenceRunner,
-		functionCallRunner: FunctionCallRunner,
-		private readonly environment: AgenticEnvironment,
-		private readonly context: ModelContext,
-		private readonly model: GenerativeModel,
-	) {
-		super(inputSource, inferenceRunner, functionCallRunner)
-	}
-
-	async onMessage(message: string): Promise<void> {
-		this.context.addContextItem(UserMessageItem.create(message))
-		this.runInference(this.environment, this.context, this.model)
-	}
-
-	async onFunctionCall(item: FunctionCallItem): Promise<void> {
-		this.context.addContextItem(item)
-		this.executeFunctionCall(this.environment, item)
-	}
-
-	async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
-		this.context.addContextItem(item)
-		this.runInference(this.environment, this.context, this.model)
-	}
-}
-```
-
----
-
 ## Non-blocking participants
 
 Mozaik ships two ready-to-use participants:
@@ -126,6 +90,42 @@ agent.runInference(environment, context, model)
 ```
 
 The environment fans every item out to every subscriber synchronously and without awaiting them, so a slow listener never blocks producers or other listeners.
+
+---
+
+## Agent Loop Implementation
+
+The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
+
+```ts
+export class CustomAgent extends BaseAgentParticipant {
+	constructor(
+		inputSource: InputStream,
+		inferenceRunner: InferenceRunner,
+		functionCallRunner: FunctionCallRunner,
+		private readonly environment: AgenticEnvironment,
+		private readonly context: ModelContext,
+		private readonly model: GenerativeModel,
+	) {
+		super(inputSource, inferenceRunner, functionCallRunner)
+	}
+
+	async onMessage(message: string): Promise<void> {
+		this.context.addContextItem(UserMessageItem.create(message))
+		this.runInference(this.environment, this.context, this.model)
+	}
+
+	async onFunctionCall(item: FunctionCallItem): Promise<void> {
+		this.context.addContextItem(item)
+		this.executeFunctionCall(this.environment, item)
+	}
+
+	async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
+		this.context.addContextItem(item)
+		this.runInference(this.environment, this.context, this.model)
+	}
+}
+```
 
 ---
 
