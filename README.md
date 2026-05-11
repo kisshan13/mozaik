@@ -27,17 +27,17 @@ OPENAI_API_KEY=your-openai-key-here
 
 `AgenticEnvironment` is where everything happens. `Participant`s `join()` it, and from that moment on they can **listen to messages and events** flowing through the environment by overriding any of the handlers below:
 
-| Handler                         | Triggered when…                                                |
-| ------------------------------- | -------------------------------------------------------------- |
-| `onMessage`                     | another participant sends a plain-text message                 |
-| `onFunctionCall`                | the participant itself produces a function call                |
-| `onExternalFunctionCall`        | another participant produces a function call                   |
-| `onFunctionCallOutput`          | the participant itself produces a function call output         |
-| `onExternalFunctionCallOutput`  | another participant produces a function call output            |
-| `onReasoning`                   | the participant itself produces reasoning                      |
-| `onExternalReasoning`           | another participant produces reasoning                         |
-| `onModelMessage`                | the participant itself produces a model message                |
-| `onExternalModelMessage`        | another participant produces a model message                   |
+| Handler                        | Triggered when…                                        |
+| ------------------------------ | ------------------------------------------------------ |
+| `onMessage`                    | another participant sends a plain-text message         |
+| `onFunctionCall`               | the participant itself produces a function call        |
+| `onExternalFunctionCall`       | another participant produces a function call           |
+| `onFunctionCallOutput`         | the participant itself produces a function call output |
+| `onExternalFunctionCallOutput` | another participant produces a function call output    |
+| `onReasoning`                  | the participant itself produces reasoning              |
+| `onExternalReasoning`          | another participant produces reasoning                 |
+| `onModelMessage`               | the participant itself produces a model message        |
+| `onExternalModelMessage`       | another participant produces a model message           |
 
 Every handler defaults to a no-op — override only the ones you care about.
 
@@ -51,6 +51,27 @@ flowchart LR
     Env -->|"onExternal*"| Observer
 ```
 
+---
+
+## Agent Loop Implementation
+
+The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
+
+````ts
+async onMessage(message: string): Promise<void> {
+	this.context.addContextItem(UserMessageItem.create(message))
+	this.runInference(this.environment, this.context, this.model)
+}
+
+async onFunctionCall(item: FunctionCallItem): Promise<void> {
+	this.context.addContextItem(item)
+	this.executeFunctionCall(this.environment, item)
+}
+
+async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
+	this.context.addContextItem(item)
+	this.runInference(this.environment, this.context, this.model)
+}
 ---
 
 ## Non-blocking participants
@@ -87,7 +108,7 @@ const model = new Gpt54Mini()
 // Both participants produce items in parallel — neither awaits the other.
 human.streamInput(environment)
 agent.runInference(environment, context, model)
-```
+````
 
 The environment fans every item out to every subscriber synchronously and without awaiting them, so a slow listener never blocks producers or other listeners.
 
