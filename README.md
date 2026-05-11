@@ -139,28 +139,6 @@ Instead of a single catch-all callback, `Participant` exposes **one typed handle
 - **React** to its own outputs via the self handlers (e.g. execute a `FunctionCallItem` it just produced), or to others' outputs via the external handlers.
 - **Ignore** events it doesn't care about — every handler defaults to a no-op in the bundled participants.
 
-The intercept surface, taken from `Participant`:
-
-```ts
-	abstract onFunctionCall(item: FunctionCallItem): Promise<void>
-
-	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void>
-
-	abstract onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void>
-
-	abstract onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void>
-
-	abstract onReasoning(item: ReasoningItem): Promise<void>
-
-	abstract onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void>
-
-	abstract onModelMessage(item: ModelMessageItem): Promise<void>
-
-	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void>
-
-	abstract onMessage(message: string): Promise<void>
-```
-
 The typed `ContextItem`s involved are defined in [src/domain/model-context/context-item](src/domain/model-context/context-item):
 
 - Client-produced: `FunctionCallOutputItem` (and `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` when building a `ModelContext` directly)
