@@ -76,8 +76,7 @@ export class CustomAgent extends BaseAgentParticipant {
 		this.runInference(this.environment, this.context, this.model)
 	}
 }
-
-```
+````
 ---
 
 ## Non-blocking participants
