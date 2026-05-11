@@ -1,5 +1,11 @@
 import { Participant } from "@domain/agentic-environment/participant"
-import { ContextItem } from "@domain/model-context/context-item/context-item"
+import { DeveloperMessageItem } from "@domain/model-context/context-item/client-item/developer-message"
+import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
+import { SystemMessageItem } from "@domain/model-context/context-item/client-item/system-message"
+import { UserMessageItem } from "@domain/model-context/context-item/client-item/user-message"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
+import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 
 export class AgenticEnvironment {
 	protected subscribers: Participant[] = []
@@ -13,12 +19,75 @@ export class AgenticEnvironment {
 		this.subscribers = this.subscribers.filter((p) => p !== user)
 	}
 
-	deliverContextItem(source: Participant, item: ContextItem): void {
+	deliverFunctionCall(source: Participant, item: FunctionCallItem): void {
 		for (const subscriber of this.subscribers) {
 			if (subscriber === source) {
-				subscriber.onInternalContextItem(item)
-			} else {
-				subscriber.onExternalContextItem(source, item)
+				subscriber.onFunctionCall(item)
+			}else{
+				subscriber.onExternalFunctionCall(source, item)
+			}
+		}
+	}
+
+	deliverModelMessage(source: Participant, item: ModelMessageItem): void {
+		for (const subscriber of this.subscribers) {
+			if (subscriber === source) {
+				subscriber.onModelMessage(item)
+			}else{
+				subscriber.onExternalModelMessage(source, item)
+			}
+		}
+	}
+
+	deliverReasoning(source: Participant, item: ReasoningItem): void {
+		for (const subscriber of this.subscribers) {
+			if (subscriber === source) {
+				subscriber.onReasoning(item)
+			}else{
+				subscriber.onExternalReasoning(source, item)
+			}
+		}
+	}
+
+	deliverFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): void {
+		for (const subscriber of this.subscribers) {
+			if (subscriber === source) {
+				subscriber.onFunctionCallOutput(item)
+			}else{
+				subscriber.onExternalFunctionCallOutput(source, item)
+			}
+		}
+	}
+
+	deliverUserMessage(source: Participant, item: UserMessageItem): void {
+		for (const subscriber of this.subscribers) {
+
+			if (subscriber === source) {
+				subscriber.onUserMessage(item)
+			}else{
+				subscriber.onExternalUserMessage(source, item)
+			}
+		}
+	}
+
+	deliverDeveloperMessage(source: Participant, item: DeveloperMessageItem): void {
+		for (const subscriber of this.subscribers) {
+
+			if (subscriber === source) {
+			subscriber.onDeveloperMessage(item)
+			}else{
+				subscriber.onExternalDeveloperMessage(source, item)
+			}
+		}
+	}
+
+	deliverSystemMessage(source: Participant, item: SystemMessageItem): void {
+		for (const subscriber of this.subscribers) {
+
+			if (subscriber === source) {
+				subscriber.onSystemMessage(item)
+			}else{
+				subscriber.onExternalSystemMessage(source, item)
 			}
 		}
 	}
