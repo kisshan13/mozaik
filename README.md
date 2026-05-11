@@ -347,6 +347,12 @@ You now own input, inference, and tool execution end-to-end while keeping the sa
 
 ---
 
+## Made with Mozaik
+
+- **[baro](https://github.com/Lotus015/baro)** — a Claude agent orchestrator where ten specialized participants (planner, executors, reviewer, fixer, librarian, auditor, and more) work fully concurrently on the same goal, like a team collaborating in real time instead of a single agent doing everything alone.
+
+---
+
 ## Author & License
 
 Created by the [JigJoy](https://jigjoy.io) team.  
