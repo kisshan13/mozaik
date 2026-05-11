@@ -4,7 +4,7 @@
 
 ![npm downloads](https://img.shields.io/npm/dt/@mozaik-ai/core) ![npm downloads weekly](https://img.shields.io/npm/dw/@mozaik-ai/core) ![npm version](https://img.shields.io/npm/v/@mozaik-ai/core)
 
-In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and streams typed `ContextItem`s into the environment. Every other participant sees those items in real time and can react, intercept, or stay silent — without any central scheduler.
+In Mozaik, humans, agents, observers, and tools are all `Participant`s of the same `AgenticEnvironment`. Each participant runs **non-blocking** and produces typed events — function calls, function call outputs, reasoning, model messages, and plain-text messages — into the environment. Every other participant sees those events in real time and can react, intercept, or stay silent — without any central scheduler.
 
 ---
 
@@ -25,16 +25,26 @@ OPENAI_API_KEY=your-openai-key-here
 
 ## The agentic environment
 
-`AgenticEnvironment` is a broadcast bus for typed context items. `Participant`s `join()` it, and any item produced by one participant is delivered to every subscriber's `onContextItem(source, item)` callback.
+`AgenticEnvironment` is a broadcast bus for typed events. `Participant`s `join()` it, and anything produced by one participant is delivered to every subscriber through a **dedicated typed callback** — one per event kind, with separate handlers for items the participant emitted itself versus items emitted by someone else:
+
+| Producer call                            | Self handler            | External handler                          |
+| ---------------------------------------- | ----------------------- | ----------------------------------------- |
+| `deliverFunctionCall(source, item)`      | `onFunctionCall`        | `onExternalFunctionCall(source, …)`       |
+| `deliverFunctionCallOutput(source, item)`| `onFunctionCallOutput`  | `onExternalFunctionCallOutput(source, …)` |
+| `deliverReasoning(source, item)`         | `onReasoning`           | `onExternalReasoning(source, …)`          |
+| `deliverModelMessage(source, item)`      | `onModelMessage`        | `onExternalModelMessage(source, …)`       |
+| `deliverMessage(source, message)`        | _(not delivered)_       | `onMessage(message)`                      |
+
+Messages are plain `string`s exchanged between participants. Every other event flows as a typed `ContextItem` (`FunctionCallItem`, `FunctionCallOutputItem`, `ReasoningItem`, `ModelMessageItem`).
 
 ```mermaid
 flowchart LR
     Human[BaseHumanParticipant] -->|streamInput| Env(("AgenticEnvironment"))
     Agent[BaseAgentParticipant] -->|"runInference / executeFunctionCall"| Env
     Observer[Custom Participant] -->|join| Env
-    Env -->|onContextItem| Human
-    Env -->|onContextItem| Agent
-    Env -->|onContextItem| Observer
+    Env -->|"onMessage / onExternal*"| Human
+    Env -->|"onFunctionCall / onReasoning / …"| Agent
+    Env -->|"onExternal*"| Observer
 ```
 
 ---
@@ -43,24 +53,34 @@ flowchart LR
 
 Mozaik ships two ready-to-use participants:
 
-| Participant            | Capabilities                                              | Pulls from                                                 |
-| ---------------------- | --------------------------------------------------------- | ---------------------------------------------------------- |
-| `BaseHumanParticipant` | `InputCapable`                                            | `InputItemSource`                                          |
-| `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputItemSource`, `InferenceRunner`, `FunctionCallRunner` |
+| Participant            | Capabilities                                              | Pulls from                                            |
+| ---------------------- | --------------------------------------------------------- | ----------------------------------------------------- |
+| `BaseHumanParticipant` | `InputCapable`                                            | `InputStream`                                         |
+| `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputStream`, `InferenceRunner`, `FunctionCallRunner`|
 
-Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields items they are streamed into the environment one-by-one through the `deliverStream` helper:
+Each capability method is **non-blocking**: it returns `Promise<void>`, and as the underlying generator yields, items are streamed into the environment one-by-one through the matching typed `deliverX` method. For example, `runInference` dispatches each yielded item to `deliverReasoning`, `deliverFunctionCall`, or `deliverModelMessage`:
 
-```5:14:src/application/deliver-stream.ts
-export async function deliverStream<T extends ContextItem>(
-    environment: AgenticEnvironment,
-    initiator: Participant,
-    stream: AsyncIterable<T>,
-  ): Promise<void> {
+```81:100:src/application/agent.ts
+	async runInference(
+		environment: AgenticEnvironment,
+		context: ModelContext,
+		model: GenerativeModel,
+		signal?: AbortSignal,
+	): Promise<void> {
+		if (!this.isJoinedTo(environment)) return
 
-    for await (const item of stream) {
-        await environment.deliverContextItem(initiator, item);
-    }
-}
+		const stream = this.inferenceRunner.run(context, model, signal)
+
+		for await (const item of stream) {
+			if (item.type === "reasoning") {
+				await environment.deliverReasoning(this, item)
+			} else if (item.type === "function_call") {
+				await environment.deliverFunctionCall(this, item)
+			} else if (item.type === "message" && item.role === "assistant") {
+				await environment.deliverModelMessage(this, item)
+			}
+		}
+	}
 ```
 
 Because each call is a fresh promise that wraps an async iterable, multiple participants can act on the same environment **concurrently**:
@@ -96,53 +116,106 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ---
 
-## Intercepting items from other participants
+## Intercepting events from other participants
 
-`onContextItem(source, item)` is the single intercept point. A participant can:
+Instead of a single catch-all callback, `Participant` exposes **one typed handler per event kind**, with a clear split between events the participant emitted itself and events emitted by someone else. A participant can:
 
-- **Observe** items from other participants (telemetry, audit, UI streaming).
-- **React** to items by triggering its own capabilities (turn a `UserMessageItem` into an inference run, turn a `FunctionCallItem` into a tool execution).
-- **Ignore** items it doesn't care about — it is just a method call.
+- **Observe** events from other participants via the `onExternal*` family (telemetry, audit, UI streaming) and `onMessage` for plain-text messages.
+- **React** to its own outputs via the self handlers (e.g. execute a `FunctionCallItem` it just produced), or to others' outputs via the external handlers.
+- **Ignore** events it doesn't care about — every handler defaults to a no-op in the bundled participants.
 
-Items are discriminated by the `ContextItem` subclass and, for messages, the `role` field. The full taxonomy is in [src/domain/model-context/context-item](src/domain/model-context/context-item):
+The intercept surface, taken from `Participant`:
 
-- Client-produced: `UserMessageItem`, `DeveloperMessageItem`, `SystemMessageItem`, `FunctionCallOutputItem`
+```38:54:src/domain/agentic-environment/participant.ts
+	abstract onFunctionCall(item: FunctionCallItem): Promise<void>
+
+	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void>
+
+	abstract onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void>
+
+	abstract onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void>
+
+	abstract onReasoning(item: ReasoningItem): Promise<void>
+
+	abstract onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void>
+
+	abstract onModelMessage(item: ModelMessageItem): Promise<void>
+
+	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void>
+
+	abstract onMessage(message: string): Promise<void>
+```
+
+The typed `ContextItem`s involved are defined in [src/domain/model-context/context-item](src/domain/model-context/context-item):
+
+- Client-produced: `FunctionCallOutputItem` (and `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` when building a `ModelContext` directly)
 - Model-produced: `ModelMessageItem`, `FunctionCallItem`, `ReasoningItem`
+
+Plain conversational input flows as a `string` through `onMessage` — participants exchange messages without committing to a specific `ContextItem` shape on the wire.
 
 ### Passive observer
 
+A passive observer subclasses `Participant` and overrides only the handlers it cares about:
+
 ```ts
-import { Participant, ContextItem } from "@mozaik-ai/core"
+import {
+	Participant,
+	FunctionCallItem,
+	FunctionCallOutputItem,
+	ReasoningItem,
+	ModelMessageItem,
+} from "@mozaik-ai/core"
 
 export class TranscriptLogger extends Participant {
-	async onContextItem(source: Participant, item: ContextItem): Promise<void> {
-		console.log(`[${source.constructor.name}]`, item.toJSON())
+	async onMessage(message: string): Promise<void> {
+		console.log("[message]", message)
 	}
+
+	async onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> {
+		console.log(`[${source.constructor.name}] function_call`, item.toJSON())
+	}
+
+	async onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> {
+		console.log(`[${source.constructor.name}] function_call_output`, item.toJSON())
+	}
+
+	async onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> {
+		console.log(`[${source.constructor.name}] reasoning`, item.toJSON())
+	}
+
+	async onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> {
+		console.log(`[${source.constructor.name}] model_message`, item.toJSON())
+	}
+
+	// Self-emitted handlers (onFunctionCall, onReasoning, …) can be no-ops for a pure observer.
+	async onFunctionCall(): Promise<void> {}
+	async onFunctionCallOutput(): Promise<void> {}
+	async onReasoning(): Promise<void> {}
+	async onModelMessage(): Promise<void> {}
 }
 ```
 
 ### Reactive agent
 
-A reactive agent extends `BaseAgentParticipant` and uses incoming items from _other_ participants to decide when to run inference or execute a tool call:
+A reactive agent extends `BaseAgentParticipant` and overrides the handlers it wants to react on. Each handler is already a no-op in the base class, so only the relevant ones need bodies:
 
 ```ts
 import {
 	BaseAgentParticipant,
 	Participant,
-	ContextItem,
 	UserMessageItem,
 	FunctionCallItem,
 	AgenticEnvironment,
 	ModelContext,
 	GenerativeModel,
-	InputItemSource,
+	InputStream,
 	InferenceRunner,
 	FunctionCallRunner,
 } from "@mozaik-ai/core"
 
 export class ReactiveAgent extends BaseAgentParticipant {
 	constructor(
-		inputSource: InputItemSource,
+		inputSource: InputStream,
 		inferenceRunner: InferenceRunner,
 		functionCallRunner: FunctionCallRunner,
 		private readonly environment: AgenticEnvironment,
@@ -152,28 +225,40 @@ export class ReactiveAgent extends BaseAgentParticipant {
 		super(inputSource, inferenceRunner, functionCallRunner)
 	}
 
-	async onContextItem(source: Participant, item: ContextItem): Promise<void> {
-		if (source === this) return
+	// A message from a human (or any other participant) → record it and think.
+	async onMessage(message: string): Promise<void> {
+		this.context.addContextItem(UserMessageItem.create(message))
+		this.runInference(this.environment, this.context, this.model)
+	}
 
+	// The agent just produced a function call → execute it.
+	async onFunctionCall(item: FunctionCallItem): Promise<void> {
 		this.context.addContextItem(item)
+		this.executeFunctionCall(this.environment, item)
+	}
 
-		if (item instanceof UserMessageItem) {
-			this.runInference(this.environment, this.context, this.model)
-			return
-		}
+	// The tool just produced an output → feed it back and run inference again.
+	async onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
+		this.context.addContextItem(item)
+		this.runInference(this.environment, this.context, this.model)
+	}
 
-		if (item instanceof FunctionCallItem) {
-			this.executeFunctionCall(this.environment, item)
-			return
-		}
+	// Keep the local context in sync with model-emitted reasoning and replies.
+	async onReasoning(item: ReasoningItem): Promise<void> {
+		this.context.addContextItem(item)
+	}
+
+	async onModelMessage(item: ModelMessageItem): Promise<void> {
+		this.context.addContextItem(item)
 	}
 }
 ```
 
-Two things to note:
+Three things to note:
 
-1. The agent never `await`s its own capability calls inside `onContextItem` — the methods are non-blocking, so the environment keeps delivering items while inference and tool execution run in the background.
-2. Behaviors compose by **reaction**, not orchestration. Add a second agent that listens for `ModelMessageItem`s and you get a critique loop. Add a `TranscriptLogger` and you get a UI stream. Neither change touches the existing participants.
+1. The split between self handlers and `onExternal*` handlers means a participant can encode "act on my own outputs" separately from "observe others", without inspecting `source` by hand.
+2. The agent never `await`s its own capability calls inside the handlers — those methods are non-blocking, so the environment keeps delivering events while inference and tool execution run in the background.
+3. Behaviors compose by **reaction**, not orchestration. Add a second agent that overrides `onExternalModelMessage` and you get a critique loop. Add a `TranscriptLogger` and you get a UI stream. Neither change touches the existing participants.
 
 ---
 
@@ -194,7 +279,7 @@ await repo.save(context)
 
 Implement `ModelContextRepository` to plug in any storage backend.
 
-The default OpenAI provider is `OpenAIResponses`, implementing the [OpenResponses](https://www.openresponses.org/) spec. It maps `ModelContext` to the OpenAI Responses API and back into typed `ContextItem`s. Bundled models: `Gpt54`, `Gpt54Mini`, `Gpt54Nano`.
+The default OpenAI provider is `OpenAIResponses`, implementing the [OpenResponses](https://www.openresponses.org/) spec. It maps `ModelContext` to the OpenAI Responses API and back into typed `ContextItem`s. Bundled models: `Gpt54`, `Gpt54Mini`, `Gpt54Nano`, `Gpt55`.
 
 ```ts
 import { OpenAIResponses, InferenceRequest, Gpt54 } from "@mozaik-ai/core"
@@ -207,26 +292,26 @@ const response = await runtime.infer(new InferenceRequest(new Gpt54(), context))
 
 ## Advanced: overriding generators
 
-`BaseAgentParticipant` and `BaseHumanParticipant` are deliberately thin shells around three generator interfaces. Swap any of them to change _how_ items are produced without touching the environment, the participants, or any consumers.
+`BaseAgentParticipant` and `BaseHumanParticipant` are deliberately thin shells around three generator interfaces. Swap any of them to change _how_ events are produced without touching the environment, the participants, or any consumers.
 
-### Custom `InputItemSource`
+### Custom `InputStream`
+
+An `InputStream` yields plain `string` messages, which are then broadcast to every other participant through `onMessage`:
 
 ```ts
-import { InputItemSource, UserMessageItem, DeveloperMessageItem, SystemMessageItem } from "@mozaik-ai/core"
+import { InputStream } from "@mozaik-ai/core"
 
-type InputItem = UserMessageItem | DeveloperMessageItem | SystemMessageItem
-
-export class QueueInputSource implements InputItemSource {
-	private readonly queue: InputItem[] = []
+export class QueueInputStream implements InputStream {
+	private readonly queue: string[] = []
 	private resolveNext?: () => void
 
-	push(item: InputItem) {
-		this.queue.push(item)
+	push(message: string) {
+		this.queue.push(message)
 		this.resolveNext?.()
 		this.resolveNext = undefined
 	}
 
-	async *stream(signal?: AbortSignal): AsyncIterable<InputItem> {
+	async *stream(signal?: AbortSignal): AsyncIterable<string> {
 		while (!signal?.aborted) {
 			while (this.queue.length > 0) {
 				yield this.queue.shift()!
@@ -237,7 +322,7 @@ export class QueueInputSource implements InputItemSource {
 }
 ```
 
-Use it for stdin, websockets, an HTTP queue, or anything that produces user/developer/system messages over time.
+Use it for stdin, websockets, an HTTP queue, or anything that produces messages over time. Participants decide for themselves what to do with the string — e.g. wrap it in a `UserMessageItem` before adding it to a `ModelContext`.
 
 ### Custom `InferenceRunner`
 
@@ -297,7 +382,7 @@ export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
 import { BaseAgentParticipant, AgenticEnvironment } from "@mozaik-ai/core"
 
 const agent = new BaseAgentParticipant(
-	new QueueInputSource(),
+	new QueueInputStream(),
 	new OpenAIInferenceRunner(),
 	new ToolRegistryFunctionCallRunner(tools),
 )
