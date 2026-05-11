@@ -135,7 +135,7 @@ Participants can listen to external events and react by overriding methods like 
 
 ### Passive observer
 
-A passive observer subclasses `Participant` and overrides only the handlers it cares about:
+You can create observers that don't run inference themselves but watch what's happening in the conversation and take side actions (logging, metrics, persistence, etc.). Subclass `Participant` and override only the handlers you care about:
 
 ```ts
 import { Participant, FunctionCallItem, FunctionCallOutputItem, ReasoningItem, ModelMessageItem } from "@mozaik-ai/core"
