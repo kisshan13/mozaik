@@ -27,17 +27,17 @@ OPENAI_API_KEY=your-openai-key-here
 
 `AgenticEnvironment` is where everything happens. `Participant`s `join()` it, and from that moment on they can **listen to messages and events** flowing through the environment by overriding any of the handlers below:
 
-| Handler                        | Triggered when…                                              |
-| ------------------------------ | ------------------------------------------------------------ |
-| `onMessage`                    | any participant sends a message                              |
-| `onFunctionCall`               | its own inference returns a function call                    |
-| `onExternalFunctionCall`       | another agent's inference returns a function call            |
-| `onFunctionCallOutput`         | its own function call runner returns a result                |
-| `onExternalFunctionCallOutput` | another agent's function call runner returns a result        |
-| `onReasoning`                  | its own inference returns a reasoning item                   |
-| `onExternalReasoning`          | another agent's inference returns a reasoning item           |
-| `onModelMessage`               | its own inference returns an assistant message               |
-| `onExternalModelMessage`       | another agent's inference returns an assistant message       |
+| Handler                        | Triggered when…                                        |
+| ------------------------------ | ------------------------------------------------------ |
+| `onMessage`                    | any participant sends a message                        |
+| `onFunctionCall`               | its own inference returns a function call              |
+| `onExternalFunctionCall`       | another agent's inference returns a function call      |
+| `onFunctionCallOutput`         | its own function call runner returns a result          |
+| `onExternalFunctionCallOutput` | another agent's function call runner returns a result  |
+| `onReasoning`                  | its own inference returns a reasoning item             |
+| `onExternalReasoning`          | another agent's inference returns a reasoning item     |
+| `onModelMessage`               | its own inference returns an assistant message         |
+| `onExternalModelMessage`       | another agent's inference returns an assistant message |
 
 Every handler defaults to a no-op — override only the ones you care about.
 
@@ -57,10 +57,8 @@ flowchart LR
 
 The easiest way to build **and control** an agent loop is to override three handlers on `BaseAgentParticipant`:
 
-````ts
-
+```ts
 export class CustomAgent extends BaseAgentParticipant {
-
 	constructor(
 		inputSource: InputStream,
 		inferenceRunner: InferenceRunner,
@@ -87,7 +85,8 @@ export class CustomAgent extends BaseAgentParticipant {
 		this.runInference(this.environment, this.context, this.model)
 	}
 }
-````
+```
+
 ---
 
 ## Non-blocking participants
@@ -124,7 +123,7 @@ const model = new Gpt54Mini()
 // Both participants produce items in parallel — neither awaits the other.
 human.streamInput(environment)
 agent.runInference(environment, context, model)
-````
+```
 
 The environment fans every item out to every subscriber synchronously and without awaiting them, so a slow listener never blocks producers or other listeners.
 
@@ -132,18 +131,18 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ## Intercepting events from other participants
 
-Instead of a single catch-all callback, `Participant` exposes **one typed handler per event kind**, with a clear split between events the participant emitted itself and events emitted by someone else. A participant can:
+A `Participant` has **one handler per event type**, in two flavors:
 
-- **Observe** events from other participants via the `onExternal*` family (telemetry, audit, UI streaming) and `onMessage` for plain-text messages.
-- **React** to its own outputs via the self handlers (e.g. execute a `FunctionCallItem` it just produced), or to others' outputs via the external handlers.
-- **Ignore** events it doesn't care about — every handler defaults to a no-op in the bundled participants.
+- `on*` — handles events the participant emitted itself (e.g. run a `FunctionCallItem` you just produced).
+- `onExternal*` — handles events emitted by other participants (e.g. log, stream to a UI, react to their output).
+- `onMessage` — handles plain-text messages (a `string`) from anyone.
 
-The typed `ContextItem`s involved are defined in [src/domain/model-context/context-item](src/domain/model-context/context-item):
+Override only the handlers you care about; the rest default to no-ops.
 
-- Client-produced: `FunctionCallOutputItem` (and `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` when building a `ModelContext` directly)
-- Model-produced: `ModelMessageItem`, `FunctionCallItem`, `ReasoningItem`
+The event payloads are `ContextItem`s defined in [src/domain/model-context/context-item](src/domain/model-context/context-item):
 
-Plain conversational input flows as a `string` through `onMessage` — participants exchange messages without committing to a specific `ContextItem` shape on the wire.
+- From clients: `FunctionCallOutputItem` (plus `UserMessageItem` / `DeveloperMessageItem` / `SystemMessageItem` when building a `ModelContext`)
+- From models: `ModelMessageItem`, `FunctionCallItem`, `ReasoningItem`
 
 ### Passive observer
 
