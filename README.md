@@ -229,96 +229,48 @@ const response = await runtime.infer(new InferenceRequest(new Gpt54(), context))
 
 ---
 
-## Advanced: overriding generators
+## Overriding Generators
 
-`BaseAgentParticipant` and `BaseHumanParticipant` are deliberately thin shells around three generator interfaces. Swap any of them to change _how_ events are produced without touching the environment, the participants, or any consumers.
+Mozaik uses generators for inference, function calls, and message streams — that's what lets the system emit events incrementally so participants can react to them as they arrive. Swap any generator to change _how_ events are produced.
 
 ### Custom `InputStream`
-
-An `InputStream` is the minimal text-source contract a participant uses to feed messages into the environment:
-
-```ts
-export interface InputStream {
-	stream(signal?: AbortSignal): AsyncIterable<string>
-}
-```
-
-Each yielded string is delivered to every other participant through `onMessage(message: string)`. This keeps the wire format dead simple: participants exchange text, and each one decides how to turn that text into a `ContextItem` for its own `ModelContext`.
 
 ```ts
 import { InputStream } from "@mozaik-ai/core"
 
-export class QueueInputStream implements InputStream {
-	private readonly queue: string[] = []
-	private resolveNext?: () => void
-
-	push(message: string) {
-		this.queue.push(message)
-		this.resolveNext?.()
-		this.resolveNext = undefined
-	}
-
-	async *stream(signal?: AbortSignal): AsyncIterable<string> {
-		while (!signal?.aborted) {
-			while (this.queue.length > 0) {
-				yield this.queue.shift()!
-			}
-			await new Promise<void>((resolve) => (this.resolveNext = resolve))
-		}
+export class HelloInputStream implements InputStream {
+	async *stream(): AsyncIterable<string> {
+		yield "Hello"
+		yield "World"
 	}
 }
 ```
 
-Use it for stdin, websockets, an HTTP queue, or anything that produces text over time. A reactive agent typically wraps the incoming string in a `UserMessageItem` inside `onMessage` before adding it to its `ModelContext` — see the [Reactive agent](#reactive-agent) example above.
+Each yielded string is delivered to other participants through `onMessage(message: string)`.
 
 ### Custom `InferenceRunner`
 
-Wrap any model runtime — including `OpenAIResponses` — and decide how its output becomes a stream of items. Here we expand a single `InferenceResponse` into per-item delivery:
-
 ```ts
-import {
-	InferenceRunner,
-	InferenceRequest,
-	ModelContext,
-	GenerativeModel,
-	OpenAIResponses,
-	ReasoningItem,
-	FunctionCallItem,
-	ModelMessageItem,
-} from "@mozaik-ai/core"
-
-type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
+import { InferenceRunner, InferenceRequest, ModelContext, GenerativeModel, OpenAIResponses } from "@mozaik-ai/core"
 
 export class OpenAIInferenceRunner implements InferenceRunner {
 	private readonly runtime = new OpenAIResponses()
 
-	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
+	async *run(context: ModelContext, model: GenerativeModel) {
 		const response = await this.runtime.infer(new InferenceRequest(model, context))
-		for (const item of response.contextItems) {
-			yield item as InferenceItem
-		}
+		yield* response.contextItems
 	}
 }
 ```
 
-Replace the body with a streaming runtime and items will flow into the environment as soon as the model produces them.
-
 ### Custom `FunctionCallRunner`
 
-Resolve a `FunctionCallItem` against a tool registry and yield its output:
-
 ```ts
-import { FunctionCallRunner, FunctionCallItem, FunctionCallOutputItem, Tool } from "@mozaik-ai/core"
+import { FunctionCallRunner, FunctionCallItem, FunctionCallOutputItem } from "@mozaik-ai/core"
 
-export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
-	constructor(private readonly tools: Tool[]) {}
-
-	async *run(call: FunctionCallItem, signal?: AbortSignal): AsyncIterable<FunctionCallOutputItem> {
-		const tool = this.tools.find((t) => t.name === call.name)
-		if (!tool) throw new Error(`Unknown tool: ${call.name}`)
-
-		const result = await tool.invoke(JSON.parse(call.args))
-		yield FunctionCallOutputItem.create(call.callId, JSON.stringify(result))
+export class EchoFunctionCallRunner implements FunctionCallRunner {
+	async *run(call: FunctionCallItem) {
+		yield FunctionCallOutputItem.create(call.callId, call.args)
 	}
 }
 ```
@@ -329,15 +281,13 @@ export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
 import { BaseAgentParticipant, AgenticEnvironment } from "@mozaik-ai/core"
 
 const agent = new BaseAgentParticipant(
-	new QueueInputStream(),
+	new HelloInputStream(),
 	new OpenAIInferenceRunner(),
-	new ToolRegistryFunctionCallRunner(tools),
+	new EchoFunctionCallRunner(),
 )
 
 agent.join(new AgenticEnvironment())
 ```
-
-You now own input, inference, and tool execution end-to-end while keeping the same `Participant` contract — and any other participant in the environment can still observe and react to everything the agent emits.
 
 ---
 
