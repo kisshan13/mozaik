@@ -318,6 +318,29 @@ agent.join(new AgenticEnvironment())
 
 - **[baro](https://github.com/Lotus015/baro)** — a Claude agent orchestrator where ten specialized participants (planner, executors, reviewer, fixer, librarian, auditor, and more) work fully concurrently on the same goal, like a team collaborating in real time instead of a single agent doing everything alone.
 
+```mermaid
+flowchart LR
+    Conductor[Conductor] -->|"RunStart / LevelCompute / StorySpawn"| Bus(("Mozaik Bus"))
+    Factory[StoryFactory] -->|"spawn StoryAgent"| Bus
+    Story[StoryAgent] -->|"StoryResult / retries"| Bus
+    Librarian[Librarian] -->|"index exploration outputs"| Bus
+    Sentry[Sentry] -->|"flag file conflicts"| Bus
+    Critic[Critic] -->|"per-turn verdict"| Bus
+    Surgeon[Surgeon] -->|"emit ReplanItem"| Bus
+    Operator[Operator] -->|"bridge TUI commands"| Bus
+    Auditor[Auditor] -->|"write JSONL log"| Bus
+    Cartographer[Cartographer] -->|"emit UI frames"| Bus
+    Bus -->|"StorySpawnRequest"| Factory
+    Bus -->|"StoryResult / LevelCompleted"| Conductor
+    Bus -->|"tool calls"| Librarian
+    Bus -->|"Edit/Write calls"| Sentry
+    Bus -->|"agent turns"| Critic
+    Bus -->|"terminal failure"| Surgeon
+    Bus -->|"user input"| Operator
+    Bus -->|"all events"| Auditor
+    Bus -->|"all events"| Cartographer
+```
+
 ---
 
 ## Author & License
