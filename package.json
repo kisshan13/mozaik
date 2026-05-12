@@ -36,11 +36,13 @@
 	"keywords": [
 		"agentic-environment",
 		"reactive-agents",
+		"collaborative-agents",
 		"non-blocking agents",
 		"event-driven agents",
 		"ai-infrastructure",
 		"ai-developer-tools",
 		"context-management",
+		"agent-swarms",
 		"llm-framework",
 		"openai",
 		"typescript framework"
