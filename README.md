@@ -250,27 +250,50 @@ Each yielded string is delivered to other participants through `onMessage(messag
 
 ### Custom `InferenceRunner`
 
+An `InferenceRunner` can yield `ReasoningItem`, `FunctionCallItem`, and `ModelMessageItem`.
+
 ```ts
-import { InferenceRunner, InferenceRequest, ModelContext, GenerativeModel, OpenAIResponses } from "@mozaik-ai/core"
+import {
+	InferenceRunner,
+	InferenceRequest,
+	ModelContext,
+	GenerativeModel,
+	OpenAIResponses,
+	ReasoningItem,
+	FunctionCallItem,
+	ModelMessageItem,
+} from "@mozaik-ai/core"
+
+type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
 
 export class OpenAIInferenceRunner implements InferenceRunner {
 	private readonly runtime = new OpenAIResponses()
 
-	async *run(context: ModelContext, model: GenerativeModel) {
+	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
 		const response = await this.runtime.infer(new InferenceRequest(model, context))
-		yield* response.contextItems
+		for (const item of response.contextItems) {
+			yield item as InferenceItem
+		}
 	}
 }
 ```
 
 ### Custom `FunctionCallRunner`
 
-```ts
-import { FunctionCallRunner, FunctionCallItem, FunctionCallOutputItem } from "@mozaik-ai/core"
+A `FunctionCallRunner` can only produce `FunctionCallOutputItem`.
 
-export class EchoFunctionCallRunner implements FunctionCallRunner {
-	async *run(call: FunctionCallItem) {
-		yield FunctionCallOutputItem.create(call.callId, call.args)
+```ts
+import { FunctionCallRunner, FunctionCallItem, FunctionCallOutputItem, Tool } from "@mozaik-ai/core"
+
+export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
+	constructor(private readonly tools: Tool[]) {}
+
+	async *run(call: FunctionCallItem, signal?: AbortSignal): AsyncIterable<FunctionCallOutputItem> {
+		const tool = this.tools.find((t) => t.name === call.name)
+		if (!tool) throw new Error(`Unknown tool: ${call.name}`)
+
+		const result = await tool.invoke(JSON.parse(call.args))
+		yield FunctionCallOutputItem.create(call.callId, JSON.stringify(result))
 	}
 }
 ```
@@ -283,7 +306,7 @@ import { BaseAgentParticipant, AgenticEnvironment } from "@mozaik-ai/core"
 const agent = new BaseAgentParticipant(
 	new HelloInputStream(),
 	new OpenAIInferenceRunner(),
-	new EchoFunctionCallRunner(),
+	new ToolRegistryFunctionCallRunner(tools),
 )
 
 agent.join(new AgenticEnvironment())
