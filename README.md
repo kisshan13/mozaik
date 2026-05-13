@@ -315,6 +315,12 @@ agent.join(new AgenticEnvironment())
 
 ---
 
+## Examples
+
+Working examples are available here: [mozaik-examples](https://github.com/jigjoy-ai/mozaik-examples).
+
+---
+
 ## Made with Mozaik
 
 - **[baro](https://github.com/Lotus015/baro)** — a Claude agent orchestrator where ten specialized participants (planner, executors, reviewer, fixer, librarian, auditor, and more) work fully concurrently on the same goal, like a team collaborating in real time instead of a single agent doing everything alone.
