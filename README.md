@@ -199,6 +199,7 @@ export class TranscriptLogger extends Participant {
 	async onModelMessage(): Promise<void> {}
 }
 ```
+
 ---
 
 ## Context and models (reference)
@@ -342,6 +343,10 @@ flowchart LR
 ```
 
 ---
+
+## Contributing
+
+Contributions are welcome. Please read the [Contributing Guidelines](./CONTRIBUTING.md) before opening an issue or pull request.
 
 ## Author & License
 
