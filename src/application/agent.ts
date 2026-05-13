@@ -24,45 +24,23 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 		this.functionCallRunner = functionCallRunner
 	}
 
-	onInternalContextItem(item: ContextItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onFunctionCall(item: FunctionCallItem) {}
 
-	onFunctionCall(item: FunctionCallItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onExternalFunctionCall(source: Participant, item: FunctionCallItem) {}
 
-	onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onFunctionCallOutput(item: FunctionCallOutputItem) {}
 
-	onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem) {}
 
-	onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onReasoning(item: ReasoningItem) {}
 
-	onReasoning(item: ReasoningItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onExternalReasoning(source: Participant, item: ReasoningItem) {}
 
-	onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onModelMessage(item: ModelMessageItem) {}
 
-	onModelMessage(item: ModelMessageItem): Promise<void> {
-		return Promise.resolve()
-	}
+	onExternalModelMessage(source: Participant, item: ModelMessageItem) {}
 
-	onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> {
-		return Promise.resolve()
-	}
-
-	onMessage(message: string): Promise<void> {
-		return Promise.resolve()
-	}
+	onMessage(message: string) {}
 
 	async executeFunctionCall(
 		environment: AgenticEnvironment,

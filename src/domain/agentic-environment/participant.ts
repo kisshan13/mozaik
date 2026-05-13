@@ -35,21 +35,21 @@ export abstract class Participant {
 
 	// abstract onParticipantLeft(participant: Participant): Promise<void>
 
-	abstract onFunctionCall(item: FunctionCallItem): Promise<void>
+	abstract onFunctionCall(item: FunctionCallItem): Promise<void> | void
 
-	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void>
+	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> | void
 
-	abstract onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void>
+	abstract onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> | void
 
-	abstract onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void>
+	abstract onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> | void
 
-	abstract onReasoning(item: ReasoningItem): Promise<void>
+	abstract onReasoning(item: ReasoningItem): Promise<void> | void
 
-	abstract onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void>
+	abstract onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> | void
 
-	abstract onModelMessage(item: ModelMessageItem): Promise<void>
+	abstract onModelMessage(item: ModelMessageItem): Promise<void> | void
 
-	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void>
+	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> | void
 
-	abstract onMessage(message: string): Promise<void>
+	abstract onMessage(message: string): Promise<void> | void
 }
