@@ -28,6 +28,7 @@ import { InputStream } from "@domain/agentic-environment/input-stream"
 import { OpenAIInferenceRunner } from "@app/openai-inference-runner"
 import { DefaultFunctionCallRunner } from "@app/function-call-runner"
 import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
+import { BaseObserverParticipant } from "@app/observer"
 
 export {
 	ModelContext,
@@ -61,5 +62,6 @@ export {
 	Participant,
 	BaseAgentParticipant,
 	BaseHumanParticipant,
+	BaseObserverParticipant,
 	OpenAIInferenceRunner,
 }
