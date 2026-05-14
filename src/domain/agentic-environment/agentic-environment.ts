@@ -78,10 +78,10 @@ export class AgenticEnvironment {
 		}
 	}
 
-	start() {
+	async start() {
 		this.isActive = true
 		while (this.isActive) {
-			setTimeout(() => {}, 100)
+			await new Promise((resolve) => setTimeout(resolve, 100))
 		}
 	}
 
