@@ -31,13 +31,13 @@ export abstract class Participant {
 		return this.environments
 	}
 
-	abstract onParticipantJoined(participant: Participant, environment: AgenticEnvironment): Promise<void> | void
+	abstract onParticipantJoined(participant: Participant): Promise<void> | void
 
-	abstract onParticipantLeft(participant: Participant, environment: AgenticEnvironment): Promise<void> | void
+	abstract onParticipantLeft(participant: Participant): Promise<void> | void
 
-	abstract onJoined(environment: AgenticEnvironment): Promise<void> | void
+	abstract onJoined(): Promise<void> | void
 
-	abstract onLeft(environment: AgenticEnvironment): Promise<void> | void
+	abstract onLeft(): Promise<void> | void
 
 	abstract onFunctionCall(item: FunctionCallItem): Promise<void> | void
 

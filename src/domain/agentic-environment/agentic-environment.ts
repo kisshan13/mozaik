@@ -12,9 +12,9 @@ export class AgenticEnvironment {
 		this.subscribers.push(subscriber)
 		for (const subscriber of this.subscribers) {
 			if (subscriber === subscriber) {
-				subscriber.onJoined(this)
+				subscriber.onJoined()
 			} else {
-				subscriber.onParticipantJoined(subscriber, this)
+				subscriber.onParticipantJoined(subscriber)
 			}
 		}
 	}
@@ -23,9 +23,9 @@ export class AgenticEnvironment {
 		this.subscribers = this.subscribers.filter((p) => p !== subscriber)
 		for (const subscriber of this.subscribers) {
 			if (subscriber === subscriber) {
-				subscriber.onLeft(this)
+				subscriber.onLeft()
 			} else {
-				subscriber.onParticipantLeft(subscriber, this)
+				subscriber.onParticipantLeft(subscriber)
 			}
 		}
 	}

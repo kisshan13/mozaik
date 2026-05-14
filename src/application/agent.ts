@@ -23,9 +23,9 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 		this.functionCallRunner = functionCallRunner
 	}
 
-	onJoined(environment: AgenticEnvironment) {}
+	onJoined() {}
 
-	onLeft(environment: AgenticEnvironment) {}
+	onLeft() {}
 
 	onParticipantJoined(participant: Participant) {}
 
