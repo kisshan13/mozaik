@@ -10,10 +10,24 @@ export class AgenticEnvironment {
 
 	subscribe(subscriber: Participant) {
 		this.subscribers.push(subscriber)
+		for (const subscriber of this.subscribers) {
+			if (subscriber === subscriber) {
+				subscriber.onJoined(this)
+			} else {
+				subscriber.onParticipantJoined(subscriber, this)
+			}
+		}
 	}
 
-	unsubscribe(user: Participant) {
-		this.subscribers = this.subscribers.filter((p) => p !== user)
+	unsubscribe(subscriber: Participant) {
+		this.subscribers = this.subscribers.filter((p) => p !== subscriber)
+		for (const subscriber of this.subscribers) {
+			if (subscriber === subscriber) {
+				subscriber.onLeft(this)
+			} else {
+				subscriber.onParticipantLeft(subscriber, this)
+			}
+		}
 	}
 
 	deliverFunctionCall(source: Participant, item: FunctionCallItem): void {
@@ -64,10 +78,10 @@ export class AgenticEnvironment {
 		}
 	}
 
-	async start() {
+	start() {
 		this.isActive = true
 		while (this.isActive) {
-			await new Promise((resolve) => setTimeout(resolve, 100))
+			setTimeout(() => {}, 100)
 		}
 	}
 

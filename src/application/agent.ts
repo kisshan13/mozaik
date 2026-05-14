@@ -2,7 +2,6 @@ import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environm
 import { FunctionCallCapable, InferenceCapable, InputCapable } from "@domain/agentic-environment/capabilities"
 import { Participant } from "@domain/agentic-environment/participant"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
-import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelContext } from "@domain/model-context/model-context"
 import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
@@ -23,6 +22,14 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 		this.inferenceRunner = inferenceRunner
 		this.functionCallRunner = functionCallRunner
 	}
+
+	onJoined(environment: AgenticEnvironment) {}
+
+	onLeft(environment: AgenticEnvironment) {}
+
+	onParticipantJoined(participant: Participant) {}
+
+	onParticipantLeft(participant: Participant) {}
 
 	onFunctionCall(item: FunctionCallItem) {}
 

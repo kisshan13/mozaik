@@ -15,6 +15,14 @@ export class BaseHumanParticipant extends Participant implements InputCapable {
 		this.inputSource = inputSource
 	}
 
+	onJoined(environment: AgenticEnvironment) {}
+	
+	onLeft(environment: AgenticEnvironment) {}
+
+	onParticipantJoined(participant: Participant, environment: AgenticEnvironment) {}
+
+	onParticipantLeft(participant: Participant, environment: AgenticEnvironment) {}
+
 	onMessage(message: string) {}
 
 	onFunctionCall(item: FunctionCallItem) {}

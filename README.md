@@ -29,6 +29,10 @@ OPENAI_API_KEY=your-openai-key-here
 
 | Handler                        | Triggered when…                                        |
 | ------------------------------ | ------------------------------------------------------ |
+| `onJoined`                     | this participant joins an environment                  |
+| `onLeft`                       | this participant leaves an environment                 |
+| `onParticipantJoined`          | another participant joins the same environment         |
+| `onParticipantLeft`            | another participant leaves the same environment        |
 | `onMessage`                    | any participant sends a message                        |
 | `onFunctionCall`               | its own inference returns a function call              |
 | `onExternalFunctionCall`       | another agent's inference returns a function call      |
@@ -49,6 +53,7 @@ flowchart LR
     Env -->|"onMessage / onExternal*"| Human
     Env -->|"onFunctionCall / onReasoning / …"| Agent
     Env -->|"onExternal*"| Observer
+    Env -->|"onJoined / onLeft / onParticipant*"| All
 ```
 
 ---
@@ -157,6 +162,38 @@ Three things to note:
 1. The split between self handlers and `onExternal*` handlers means a participant can encode "act on my own outputs" separately from "observe others", without inspecting `source` by hand.
 2. The agent never `await`s its own capability calls inside the handlers — those methods are non-blocking, so the environment keeps delivering events while inference and tool execution run in the background.
 3. Behaviors compose by **reaction**, not orchestration. Add a second agent that overrides `onExternalModelMessage` and you get a critique loop. Add a `TranscriptLogger` and you get a UI stream. Neither change touches the existing participants.
+
+---
+
+## Lifecycle hooks
+
+Every participant receives lifecycle notifications when it or others join/leave an environment:
+
+```ts
+export class TeamAgent extends BaseAgentParticipant {
+	// Called when this participant joins an environment.
+	onJoined(environment: AgenticEnvironment): void {
+		console.log("I joined the environment")
+	}
+
+	// Called when this participant leaves an environment.
+	onLeft(environment: AgenticEnvironment): void {
+		console.log("I left the environment")
+	}
+
+	// Called when another participant joins the same environment.
+	onParticipantJoined(participant: Participant, environment: AgenticEnvironment): void {
+		console.log(`${participant.constructor.name} joined`)
+	}
+
+	// Called when another participant leaves the same environment.
+	onParticipantLeft(participant: Participant, environment: AgenticEnvironment): void {
+		console.log(`${participant.constructor.name} left`)
+	}
+}
+```
+
+This lets participants react to membership changes — for example, an agent could start inference only after a required collaborator has joined, or clean up shared state when someone leaves.
 
 ---
 
