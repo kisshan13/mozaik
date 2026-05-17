@@ -1,7 +1,9 @@
 name: Release and publish to npm
 
+# pull_request_target: runs in base-repo context so secrets (e.g. NPM_TOKEN) are available
+# when merging PRs from forks. We only ever checkout `main`, not untrusted PR head refs.
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
     types:
@@ -10,7 +12,6 @@ on:
 permissions:
   contents: write
   pull-requests: read
-  id-token: write
 
 jobs:
   release:
@@ -190,7 +191,13 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --ignore-scripts
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "NPM_TOKEN is not set. Add repository secret NPM_TOKEN (npm automation token) under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
+          npm publish --access public --ignore-scripts
 
       - name: Commit version bump and push to main
         run: |
