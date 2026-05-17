@@ -1,0 +1,59 @@
+import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
+import { AgenticEnvironment } from "./agentic-environment"
+import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
+import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
+import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+
+export abstract class Participant {
+	private environments: AgenticEnvironment[] = []
+
+	join(environment: AgenticEnvironment) {
+		if (this.isJoinedTo(environment)) {
+			return
+		}
+		environment.subscribe(this)
+		this.environments.push(environment)
+	}
+
+	leave(environment: AgenticEnvironment) {
+		if (!this.isJoinedTo(environment)) {
+			return
+		}
+		environment.unsubscribe(this)
+		this.environments = this.environments.filter((e) => e !== environment)
+	}
+
+	protected isJoinedTo(environment: AgenticEnvironment): boolean {
+		return this.environments.includes(environment)
+	}
+
+	getEnvironments(): AgenticEnvironment[] {
+		return this.environments
+	}
+
+	abstract onParticipantJoined(participant: Participant): Promise<void> | void
+
+	abstract onParticipantLeft(participant: Participant): Promise<void> | void
+
+	abstract onJoined(): Promise<void> | void
+
+	abstract onLeft(): Promise<void> | void
+
+	abstract onFunctionCall(item: FunctionCallItem): Promise<void> | void
+
+	abstract onExternalFunctionCall(source: Participant, item: FunctionCallItem): Promise<void> | void
+
+	abstract onFunctionCallOutput(item: FunctionCallOutputItem): Promise<void> | void
+
+	abstract onExternalFunctionCallOutput(source: Participant, item: FunctionCallOutputItem): Promise<void> | void
+
+	abstract onReasoning(item: ReasoningItem): Promise<void> | void
+
+	abstract onExternalReasoning(source: Participant, item: ReasoningItem): Promise<void> | void
+
+	abstract onModelMessage(item: ModelMessageItem): Promise<void> | void
+
+	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> | void
+
+	abstract onMessage(message: string): Promise<void> | void
+}
