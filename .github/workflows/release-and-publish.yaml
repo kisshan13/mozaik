@@ -221,8 +221,27 @@ jobs:
                     echo "NPM_TOKEN is not set. Add repository secret NPM_TOKEN (npm automation token) under Settings → Secrets and variables → Actions."
                     exit 1
                   fi
+                  if [ -f .npmrc ]; then
+                    sed -i '/^\/\/registry\.npmjs\.org\/:_authToken=/d' .npmrc
+                  fi
                   npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
-                  npm publish --access public --ignore-scripts
+
+                  PKG_NAME=$(node -p "require('./package.json').name")
+                  echo "npm whoami (account used for publish):"
+                  npm whoami
+                  echo "Package name: $PKG_NAME"
+                  echo "Published versions (read-only check):"
+                  npm view "$PKG_NAME" versions --json || true
+
+                  if ! npm publish --access public --ignore-scripts; then
+                    echo ""
+                    echo "Publish failed. npm often returns HTTP 404 for PUT when the token is valid but is NOT allowed to publish this scope/package."
+                    echo "Fix on npmjs.com (not in this repo):"
+                    echo "  - Open npm → Access → Organizations → @mozaik-ai → Members: the account from 'npm whoami' must have publish rights."
+                    echo "  - Or replace NPM_TOKEN with a token from an owner/maintainer of @mozaik-ai/core."
+                    echo "  - Granular tokens: grant Read and Write for package '@mozaik-ai/core' (and authorize SSO for the org if required)."
+                    exit 1
+                  fi
 
             - name: Commit version bump and push to main
               run: |
