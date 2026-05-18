@@ -102,6 +102,8 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: npm ci
@@ -178,12 +180,35 @@ jobs:
             fi
           fi
 
-      - name: Bump package version (local only)
+      - name: Resolve release version and sync package.json
+        id: release_version
         run: |
-          VERSION="${{ steps.version.outputs.next }}"
-          NPM_VER="${VERSION#v}"
+          set -euo pipefail
+          COMPUTED="${{ steps.version.outputs.next }}"
+          COMPUTED_NUM="${COMPUTED#v}"
+          PKG=$(node -p "require('./package.json').version")
 
-          npm version "$NPM_VER" --no-git-tag-version
+          echo "Computed from tag + label: $COMPUTED_NUM"
+          echo "package.json on main: $PKG"
+
+          # If package.json was bumped in the merged PR, it may already match (or exceed) the computed bump.
+          if [ "$(printf '%s\n' "$PKG" "$COMPUTED_NUM" | sort -V | tail -1)" = "$PKG" ] && [ "$PKG" != "$COMPUTED_NUM" ]; then
+            NEXT_NUM="$PKG"
+            echo "Using package.json version $NEXT_NUM (newer than computed $COMPUTED_NUM)."
+          else
+            NEXT_NUM="$COMPUTED_NUM"
+          fi
+
+          NEXT="v$NEXT_NUM"
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Release version: $NEXT"
+
+          if [ "$PKG" != "$NEXT_NUM" ]; then
+            echo "Applying npm version $NEXT_NUM (was $PKG)."
+            npm version "$NEXT_NUM" --no-git-tag-version
+          else
+            echo "package.json already at $NEXT_NUM; skipping npm version."
+          fi
 
       - name: Build package
         run: npm run build
@@ -201,16 +226,20 @@ jobs:
 
       - name: Commit version bump and push to main
         run: |
-          VERSION="${{ steps.version.outputs.next }}"
+          VERSION="${{ steps.release_version.outputs.next }}"
 
           git add package.json package-lock.json
-          git commit -m "chore: release $VERSION"
-          git push origin main
+          if git diff --staged --quiet; then
+            echo "No changes to commit (version files already match $VERSION on main)."
+          else
+            git commit -m "chore: release $VERSION"
+            git push origin main
+          fi
 
       - name: Generate release notes with AI
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          VERSION: ${{ steps.version.outputs.next }}
+          VERSION: ${{ steps.release_version.outputs.next }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_BODY: ${{ github.event.pull_request.body }}
@@ -332,7 +361,7 @@ jobs:
 
       - name: Create and push version tag
         run: |
-          VERSION="${{ steps.version.outputs.next }}"
+          VERSION="${{ steps.release_version.outputs.next }}"
 
           git tag "$VERSION"
           git push origin "$VERSION"
@@ -341,7 +370,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.version.outputs.next }}"
+          VERSION="${{ steps.release_version.outputs.next }}"
 
           gh release create "$VERSION" \
             --target main \
