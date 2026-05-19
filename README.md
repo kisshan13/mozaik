@@ -10,8 +10,22 @@ In Mozaik, humans, agents, observers, and tools are all `Participant`s of the sa
 
 ## Installation
 
+**npm**
+
+```bash
+npm install @mozaik-ai/core
+```
+
+**yarn**
+
 ```bash
 yarn add @mozaik-ai/core
+```
+
+**pnpm**
+
+```bash
+pnpm add @mozaik-ai/core
 ```
 
 ## API Key Configuration
