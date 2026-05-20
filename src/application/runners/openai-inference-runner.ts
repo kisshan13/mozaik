@@ -6,9 +6,10 @@ import { FunctionCallItem } from "@domain/model-context/context-item/model-item/
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { ModelContext } from "@domain/model-context/model-context"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 import OpenAI from "openai"
 
-type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
+type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent<unknown>
 
 export class OpenAIInferenceRunner implements InferenceRunner {
 	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
@@ -52,7 +53,7 @@ export class OpenAIInferenceRunner implements InferenceRunner {
 				if (signal?.aborted) {
 					break
 				}
-				yield event as unknown as InferenceItem
+				yield new SemanticEvent(event.type, event)
 			}
 		} else {
 			const contextItems = this.extractContextItems(response)

@@ -9,6 +9,7 @@ import { FunctionCallOutputItem } from "@domain/model-context/context-item/clien
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { Agent } from "@domain/agentic-environment/participants/agent"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export class BaseAgent extends Agent {
 	private inferenceRunner: InferenceRunner
@@ -46,6 +47,10 @@ export class BaseAgent extends Agent {
 
 	onMessage(message: string) {}
 
+	onInternalEvent(item: SemanticEvent<unknown>) {}
+
+	onExternalEvent(source: Participant, item: SemanticEvent<unknown>) {}
+
 	async executeFunctionCall(
 		environment: AgenticEnvironment,
 		functionCallItem: FunctionCallItem,
@@ -71,12 +76,14 @@ export class BaseAgent extends Agent {
 		const stream = this.inferenceRunner.run(context, model, signal)
 
 		for await (const item of stream) {
-			if (item.type === "reasoning") {
+			if (item instanceof ReasoningItem) {
 				environment.deliverReasoning(this, item)
-			} else if (item.type === "function_call") {
+			} else if (item instanceof FunctionCallItem) {
 				environment.deliverFunctionCall(this, item)
-			} else if (item.type === "message" && item.role === "assistant") {
+			} else if (item instanceof ModelMessageItem) {
 				environment.deliverModelMessage(this, item)
+			} else if (item instanceof SemanticEvent) {
+				environment.deliverSemanticEvent(this, item)
 			}
 		}
 	}

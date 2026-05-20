@@ -4,6 +4,7 @@ import { FunctionCallOutputItem } from "@domain/model-context/context-item/clien
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export class BaseHuman extends Human {
 	onJoined() {}
@@ -31,4 +32,8 @@ export class BaseHuman extends Human {
 	onExternalReasoning(source: Participant, item: ReasoningItem) {}
 
 	onExternalModelMessage(source: Participant, item: ModelMessageItem) {}
+
+	onInternalEvent(item: SemanticEvent<unknown>) {}
+
+	onExternalEvent(source: Participant, item: SemanticEvent<unknown>) {}
 }

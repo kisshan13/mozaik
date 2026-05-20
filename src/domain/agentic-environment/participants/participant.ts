@@ -3,6 +3,7 @@ import { AgenticEnvironment } from "../agentic-environment"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export abstract class Participant {
 	private environments: AgenticEnvironment[] = []
@@ -56,4 +57,8 @@ export abstract class Participant {
 	abstract onExternalModelMessage(source: Participant, item: ModelMessageItem): Promise<void> | void
 
 	abstract onMessage(message: string): Promise<void> | void
+
+	abstract onInternalEvent(item: SemanticEvent<unknown>): Promise<void> | void
+
+	abstract onExternalEvent(source: Participant, item: SemanticEvent<unknown>): Promise<void> | void
 }

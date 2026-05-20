@@ -4,6 +4,7 @@ import { FunctionCallOutputItem } from "@domain/model-context/context-item/clien
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export class BaseObserver extends Observer {
 	onFunctionCall(item: FunctionCallItem) {}
@@ -19,4 +20,6 @@ export class BaseObserver extends Observer {
 	onLeft() {}
 	onParticipantJoined(participant: Participant) {}
 	onParticipantLeft(participant: Participant) {}
+	onInternalEvent(item: SemanticEvent<unknown>) {}
+	onExternalEvent(source: Participant, item: SemanticEvent<unknown>) {}
 }
