@@ -1,7 +1,8 @@
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 
 export interface StreamingCapability {
-	streaming: true
+	setStreaming(streaming: boolean): void
+	getStreaming(): boolean
 }
 
 export type StreamingModel = GenerativeModel & StreamingCapability
