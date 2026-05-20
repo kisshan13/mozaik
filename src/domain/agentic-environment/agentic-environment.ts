@@ -1,8 +1,9 @@
-import { Participant } from "@domain/agentic-environment/participant"
+import { Participant } from "@domain/agentic-environment/participants/participant"
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export class AgenticEnvironment {
 	protected subscribers: Participant[] = []
@@ -75,6 +76,16 @@ export class AgenticEnvironment {
 			if (subscriber === source) continue
 
 			subscriber.onMessage(message)
+		}
+	}
+
+	deliverSemanticEvent(source: Participant, item: SemanticEvent<unknown>): void {
+		for (const subscriber of this.subscribers) {
+			if (subscriber === source) {
+				subscriber.onInternalEvent(item)
+			} else {
+				subscriber.onExternalEvent(source, item)
+			}
 		}
 	}
 

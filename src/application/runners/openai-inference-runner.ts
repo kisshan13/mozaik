@@ -1,32 +1,30 @@
-import { ModelContext } from "@domain/model-context/model-context"
+import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
+import { GenerativeModel } from "@domain/generative-model/generative-model"
+import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
-import { InferenceRequest } from "@domain/generative-model/inference-request"
-import { InferenceResponse } from "@domain/generative-model/inference-response"
-import { ModelRuntime } from "@domain/generative-model/runtime/model-runtime"
-import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
+import { ModelContext } from "@domain/model-context/model-context"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 import OpenAI from "openai"
 
-export class OpenAIResponses implements ModelRuntime {
-	private readonly client: OpenAI
-	constructor() {
-		this.client = new OpenAI()
-	}
+type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent<unknown>
 
-	async infer(inferenceRequest: InferenceRequest): Promise<InferenceResponse> {
-		const input = this.mapContextToRequest(inferenceRequest.context)
+export class OpenAIInferenceRunner implements InferenceRunner {
+	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
+		const input = this.mapContextToRequest(context)
 
-		const specification = inferenceRequest.model.specification
+		const specification = model.specification
 
 		let request: any = {
 			model: specification.name,
 			input: input,
+			stream: model.getStreaming(),
 		}
 
-		if (specification.supportFunctionCalling && inferenceRequest.model.getTools().length > 0) {
-			request.tools = inferenceRequest.model.getTools().map((tool) => {
+		if (specification.supportFunctionCalling && model.getTools().length > 0) {
+			request.tools = model.getTools().map((tool) => {
 				return {
 					type: tool.type,
 					name: tool.name,
@@ -38,15 +36,36 @@ export class OpenAIResponses implements ModelRuntime {
 
 		if (specification.supportReasoningEffort) {
 			request.reasoning = {
-				effort: inferenceRequest.model.getReasoningEffort(),
+				effort: model.getReasoningEffort(),
 			}
 		}
 
-		const response = await this.client.responses.create(request)
+		if (!specification.supportStreaming && model.getStreaming()) {
+			throw new Error("Streaming is not supported for this model")
+		}
 
-		const contextItems = this.extractContextItems(response)
-		const tokenUsage = this.extractTokenUsage(response)
-		return new InferenceResponse(contextItems, tokenUsage)
+		const openai = new OpenAI()
+
+		const response: any = await openai.responses.create(request)
+
+		if (specification.supportStreaming && model.getStreaming()) {
+			for await (const event of response) {
+				if (signal?.aborted) {
+					break
+				}
+				yield new SemanticEvent(event.type, event)
+			}
+		} else {
+			const contextItems = this.extractContextItems(response)
+			const tokenUsage = this.extractTokenUsage(response)
+
+			for (const item of contextItems) {
+				if (signal?.aborted) {
+					break
+				}
+				yield item as InferenceItem
+			}
+		}
 	}
 
 	extractTokenUsage(response: OpenAI.Responses.Response): TokenUsage | undefined {

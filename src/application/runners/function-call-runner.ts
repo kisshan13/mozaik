@@ -1,4 +1,4 @@
-import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
+import { FunctionCallRunner } from "@domain/agentic-environment/runners/function-call-runner"
 import { Tool } from "@domain/generative-model/tool"
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"

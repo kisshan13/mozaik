@@ -1,24 +1,22 @@
 import { AgenticEnvironment } from "@domain/agentic-environment/agentic-environment"
-import { FunctionCallCapable, InferenceCapable, InputCapable } from "@domain/agentic-environment/capabilities"
-import { Participant } from "@domain/agentic-environment/participant"
+import { Participant } from "@domain/agentic-environment/participants/participant"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelContext } from "@domain/model-context/model-context"
-import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
-import { FunctionCallRunner } from "@domain/agentic-environment/function-call-runner"
-import { InputStream } from "@domain/agentic-environment/input-stream"
+import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
+import { FunctionCallRunner } from "@domain/agentic-environment/runners/function-call-runner"
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
+import { Agent } from "@domain/agentic-environment/participants/agent"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
-export class BaseAgentParticipant extends Participant implements InputCapable, InferenceCapable, FunctionCallCapable {
-	private inputSource: InputStream
+export class BaseAgent extends Agent {
 	private inferenceRunner: InferenceRunner
 	private functionCallRunner: FunctionCallRunner
 
-	constructor(inputSource: InputStream, inferenceRunner: InferenceRunner, functionCallRunner: FunctionCallRunner) {
+	constructor(inferenceRunner: InferenceRunner, functionCallRunner: FunctionCallRunner) {
 		super()
-		this.inputSource = inputSource
 		this.inferenceRunner = inferenceRunner
 		this.functionCallRunner = functionCallRunner
 	}
@@ -49,6 +47,10 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 
 	onMessage(message: string) {}
 
+	onInternalEvent(item: SemanticEvent<unknown>) {}
+
+	onExternalEvent(source: Participant, item: SemanticEvent<unknown>) {}
+
 	async executeFunctionCall(
 		environment: AgenticEnvironment,
 		functionCallItem: FunctionCallItem,
@@ -59,7 +61,7 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 		const stream = this.functionCallRunner.run(functionCallItem, signal)
 
 		for await (const item of stream) {
-			await environment.deliverFunctionCallOutput(this, item)
+			environment.deliverFunctionCallOutput(this, item)
 		}
 	}
 
@@ -74,22 +76,15 @@ export class BaseAgentParticipant extends Participant implements InputCapable, I
 		const stream = this.inferenceRunner.run(context, model, signal)
 
 		for await (const item of stream) {
-			if (item.type === "reasoning") {
-				await environment.deliverReasoning(this, item)
-			} else if (item.type === "function_call") {
-				await environment.deliverFunctionCall(this, item)
-			} else if (item.type === "message" && item.role === "assistant") {
-				await environment.deliverModelMessage(this, item)
+			if (item instanceof ReasoningItem) {
+				environment.deliverReasoning(this, item)
+			} else if (item instanceof FunctionCallItem) {
+				environment.deliverFunctionCall(this, item)
+			} else if (item instanceof ModelMessageItem) {
+				environment.deliverModelMessage(this, item)
+			} else if (item instanceof SemanticEvent) {
+				environment.deliverSemanticEvent(this, item)
 			}
-		}
-	}
-
-	async streamInput(environment: AgenticEnvironment): Promise<void> {
-		if (!this.isJoinedTo(environment)) return
-
-		const stream = this.inputSource.stream()
-		for await (const message of stream) {
-			await environment.deliverMessage(this, message)
 		}
 	}
 }
