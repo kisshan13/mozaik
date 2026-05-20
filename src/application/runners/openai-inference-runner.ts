@@ -1,4 +1,4 @@
-import { InferenceRunner } from "@domain/agentic-environment/inference-runner"
+import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import { ContextItem } from "@domain/model-context/context-item/context-item"
@@ -11,9 +11,7 @@ import OpenAI from "openai"
 type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
 
 export class OpenAIInferenceRunner implements InferenceRunner {
-
 	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
-
 		const input = this.mapContextToRequest(context)
 
 		const specification = model.specification
@@ -47,8 +45,8 @@ export class OpenAIInferenceRunner implements InferenceRunner {
 
 		const openai = new OpenAI()
 
-		const response: any  = await openai.responses.create(request)
-		
+		const response: any = await openai.responses.create(request)
+
 		if (specification.supportStreaming && model.getStreaming()) {
 			for await (const event of response) {
 				if (signal?.aborted) {
@@ -56,21 +54,17 @@ export class OpenAIInferenceRunner implements InferenceRunner {
 				}
 				yield event as unknown as InferenceItem
 			}
-		}else {
+		} else {
 			const contextItems = this.extractContextItems(response)
 			const tokenUsage = this.extractTokenUsage(response)
-	
+
 			for (const item of contextItems) {
 				if (signal?.aborted) {
 					break
 				}
 				yield item as InferenceItem
 			}
-			
 		}
-
-
-
 	}
 
 	extractTokenUsage(response: OpenAI.Responses.Response): TokenUsage | undefined {

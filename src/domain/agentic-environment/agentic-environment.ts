@@ -1,4 +1,4 @@
-import { Participant } from "@domain/agentic-environment/participant"
+import { Participant } from "@domain/agentic-environment/participants/participant"
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"

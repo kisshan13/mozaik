@@ -1,5 +1,5 @@
 import { FunctionCallOutputItem } from "@domain/model-context/context-item/client-item/function-call-output"
-import { AgenticEnvironment } from "./agentic-environment"
+import { AgenticEnvironment } from "../agentic-environment"
 import { ReasoningItem } from "@domain/model-context/context-item/model-item/reasoning"
 import { ModelMessageItem } from "@domain/model-context/context-item/model-item/model-message"
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
