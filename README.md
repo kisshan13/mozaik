@@ -56,13 +56,15 @@ OPENAI_API_KEY=your-openai-key-here
 | `onExternalReasoning`          | another agent's inference returns a reasoning item     |
 | `onModelMessage`               | its own inference returns an assistant message         |
 | `onExternalModelMessage`       | another agent's inference returns an assistant message |
+| `onInternalEvent`              | its own inference emits a semantic stream event        |
+| `onExternalEvent`              | another participant emits a semantic stream event      |
 
 Every handler defaults to a no-op — override only the ones you care about.
 
 ```mermaid
 flowchart LR
-    Human[BaseHumanParticipant] -->|streamInput| Env(("AgenticEnvironment"))
-    Agent[BaseAgentParticipant] -->|"runInference / executeFunctionCall"| Env
+    Human[BaseHuman] -->|sendMessage| Env(("AgenticEnvironment"))
+    Agent[BaseAgent] -->|"runInference / executeFunctionCall"| Env
     Observer[Custom Participant] -->|join| Env
     Env -->|"onMessage / onExternal*"| Human
     Env -->|"onFunctionCall / onReasoning / …"| Agent
@@ -74,26 +76,29 @@ flowchart LR
 
 ## Non-blocking participants
 
-Mozaik ships two ready-to-use participants:
+Mozaik ships three ready-to-use participants:
 
-| Participant            | Capabilities                                              | Pulls from                                             |
-| ---------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
-| `BaseHumanParticipant` | `InputCapable`                                            | `InputStream`                                          |
-| `BaseAgentParticipant` | `InputCapable`, `InferenceCapable`, `FunctionCallCapable` | `InputStream`, `InferenceRunner`, `FunctionCallRunner` |
+| Participant     | Role |
+| --------------- | ---- |
+| `BaseHuman`     | Sends messages with `sendMessage(environment, text)` |
+| `BaseAgent`     | Runs inference and function calls via `InferenceRunner` and `FunctionCallRunner` |
+| `BaseObserver`  | Listens only; no inference |
 
 ```ts
 import {
 	AgenticEnvironment,
-	BaseAgentParticipant,
-	BaseHumanParticipant,
+	BaseAgent,
+	BaseHuman,
+	OpenAIInferenceRunner,
+	DefaultFunctionCallRunner,
 	Gpt54Mini,
 	ModelContext,
 } from "@mozaik-ai/core"
 
 const environment = new AgenticEnvironment()
 
-const human = new BaseHumanParticipant(humanInputSource)
-const agent = new BaseAgentParticipant(agentInputSource, inferenceRunner, functionCallRunner)
+const human = new BaseHuman()
+const agent = new BaseAgent(new OpenAIInferenceRunner(), new DefaultFunctionCallRunner())
 
 human.join(environment)
 agent.join(environment)
@@ -104,7 +109,7 @@ const context = ModelContext.create("demo")
 const model = new Gpt54Mini()
 
 // Both participants produce items in parallel — neither awaits the other.
-human.streamInput(environment)
+human.sendMessage(environment, "Hello")
 agent.runInference(environment, context, model)
 ```
 
@@ -114,32 +119,33 @@ The environment fans every item out to every subscriber synchronously and withou
 
 ## Reactive agent
 
-A reactive agent extends `BaseAgentParticipant` and overrides the handlers it wants to react on. Each handler is already a no-op in the base class, so only the relevant ones need bodies:
+A reactive agent extends `BaseAgent` and overrides the handlers it wants to react on. Each handler is already a no-op in the base class, so only the relevant ones need bodies:
 
 ```ts
 import {
-	BaseAgentParticipant,
+	BaseAgent,
 	Participant,
 	UserMessageItem,
 	FunctionCallItem,
+	FunctionCallOutputItem,
+	ReasoningItem,
+	ModelMessageItem,
 	AgenticEnvironment,
 	ModelContext,
 	GenerativeModel,
-	InputStream,
 	InferenceRunner,
 	FunctionCallRunner,
 } from "@mozaik-ai/core"
 
-export class ReactiveAgent extends BaseAgentParticipant {
+export class ReactiveAgent extends BaseAgent {
 	constructor(
-		inputSource: InputStream,
 		inferenceRunner: InferenceRunner,
 		functionCallRunner: FunctionCallRunner,
 		private readonly environment: AgenticEnvironment,
 		private readonly context: ModelContext,
 		private readonly model: GenerativeModel,
 	) {
-		super(inputSource, inferenceRunner, functionCallRunner)
+		super(inferenceRunner, functionCallRunner)
 	}
 
 	// A message from a human (or any other participant) → record it and think.
@@ -179,12 +185,29 @@ Three things to note:
 
 ---
 
+## Streaming and semantic events
+
+Enable streaming on a model that supports it, then run inference as usual:
+
+```ts
+const model = new Gpt54Mini()
+model.setStreaming(true)
+
+await agent.runInference(environment, context, model)
+```
+
+With streaming enabled, `OpenAIInferenceRunner` emits **`SemanticEvent`** chunks (provider `type` + `data`) into the environment. The producing agent receives `onInternalEvent`; everyone else receives `onExternalEvent(source, event)`. Use these handlers to drive a live UI—for example, print text deltas from `response.output_text.delta` events.
+
+`setStreaming(true)` on a model without `supportStreaming` throws before the API is called.
+
+---
+
 ## Lifecycle hooks
 
 Every participant receives lifecycle notifications when it or others join/leave an environment:
 
 ```ts
-export class TeamAgent extends BaseAgentParticipant {
+export class TeamAgent extends BaseAgent {
 	// Called when this participant joins an environment.
 	onJoined(environment: AgenticEnvironment): void {
 		console.log("I joined the environment")
@@ -270,64 +293,41 @@ await repo.save(context)
 
 Implement `ModelContextRepository` to plug in any storage backend.
 
-The default OpenAI provider is `OpenAIResponses`, implementing the [OpenResponses](https://www.openresponses.org/) spec. It maps `ModelContext` to the OpenAI Responses API and back into typed `ContextItem`s. Bundled models: `Gpt54`, `Gpt54Mini`, `Gpt54Nano`, `Gpt55`.
+The default inference path is `OpenAIInferenceRunner`, which maps `ModelContext` to the OpenAI Responses API and back into typed `ContextItem`s (and `SemanticEvent`s when streaming). Bundled models: `Gpt54`, `Gpt54Mini`, `Gpt54Nano`, `Gpt55`.
 
 ```ts
-import { OpenAIResponses, InferenceRequest, Gpt54 } from "@mozaik-ai/core"
+import { OpenAIInferenceRunner, DefaultFunctionCallRunner, Gpt54, ModelContext } from "@mozaik-ai/core"
 
-const runtime = new OpenAIResponses()
-const response = await runtime.infer(new InferenceRequest(new Gpt54(), context))
+const runner = new OpenAIInferenceRunner()
+const context = ModelContext.create("demo")
+
+for await (const item of runner.run(context, new Gpt54())) {
+	// ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent
+}
 ```
 
 ---
 
 ## Overriding Generators
 
-Mozaik uses generators for inference, function calls, and message streams — that's what lets the system emit events incrementally so participants can react to them as they arrive. Swap any generator to change _how_ events are produced.
+Mozaik uses async generators for inference and function calls — that's what lets the system emit events incrementally so participants can react to them as they arrive. Swap any runner to change _how_ events are produced.
 
-### Custom `InputStream`
-
-```ts
-import { InputStream } from "@mozaik-ai/core"
-
-export class HelloInputStream implements InputStream {
-	async *stream(): AsyncIterable<string> {
-		yield "Hello"
-		yield "World"
-	}
-}
-```
-
-Each yielded string is delivered to other participants through `onMessage(message: string)`.
+Humans send text with `sendMessage(environment, message)`; other participants receive it via `onMessage`.
 
 ### Custom `InferenceRunner`
 
-An `InferenceRunner` can yield `ReasoningItem`, `FunctionCallItem`, and `ModelMessageItem`.
+An `InferenceRunner` can yield `ReasoningItem`, `FunctionCallItem`, `ModelMessageItem`, and `SemanticEvent` (when streaming).
 
 ```ts
 import {
 	InferenceRunner,
-	InferenceRequest,
 	ModelContext,
 	GenerativeModel,
-	OpenAIResponses,
-	ReasoningItem,
-	FunctionCallItem,
-	ModelMessageItem,
+	OpenAIInferenceRunner,
 } from "@mozaik-ai/core"
 
-type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem
-
-export class OpenAIInferenceRunner implements InferenceRunner {
-	private readonly runtime = new OpenAIResponses()
-
-	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
-		const response = await this.runtime.infer(new InferenceRequest(model, context))
-		for (const item of response.contextItems) {
-			yield item as InferenceItem
-		}
-	}
-}
+// Use the bundled runner, or implement InferenceRunner for another provider.
+const runner: InferenceRunner = new OpenAIInferenceRunner()
 ```
 
 ### Custom `FunctionCallRunner`
@@ -353,13 +353,9 @@ export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
 ### Wiring it together
 
 ```ts
-import { BaseAgentParticipant, AgenticEnvironment } from "@mozaik-ai/core"
+import { BaseAgent, AgenticEnvironment, OpenAIInferenceRunner } from "@mozaik-ai/core"
 
-const agent = new BaseAgentParticipant(
-	new HelloInputStream(),
-	new OpenAIInferenceRunner(),
-	new ToolRegistryFunctionCallRunner(tools),
-)
+const agent = new BaseAgent(new OpenAIInferenceRunner(), new ToolRegistryFunctionCallRunner(tools))
 
 agent.join(new AgenticEnvironment())
 ```
