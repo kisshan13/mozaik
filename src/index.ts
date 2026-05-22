@@ -28,12 +28,14 @@ import { BaseObserver } from "@app/participants/observer"
 import { Human } from "@domain/agentic-environment/participants/human"
 import { Agent } from "@domain/agentic-environment/participants/agent"
 import { Observer } from "@domain/agentic-environment/participants/observer"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
 export {
 	ModelContext,
 	ModelContextRepository,
 	InMemoryModelContextRepository,
 	ContextItem,
+	SemanticEvent,
 	UserMessageItem,
 	DeveloperMessageItem,
 	SystemMessageItem,

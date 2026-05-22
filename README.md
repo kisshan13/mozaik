@@ -78,11 +78,11 @@ flowchart LR
 
 Mozaik ships three ready-to-use participants:
 
-| Participant     | Role |
-| --------------- | ---- |
-| `BaseHuman`     | Sends messages with `sendMessage(environment, text)` |
-| `BaseAgent`     | Runs inference and function calls via `InferenceRunner` and `FunctionCallRunner` |
-| `BaseObserver`  | Listens only; no inference |
+| Participant    | Role                                                                             |
+| -------------- | -------------------------------------------------------------------------------- |
+| `BaseHuman`    | Sends messages with `sendMessage(environment, text)`                             |
+| `BaseAgent`    | Runs inference and function calls via `InferenceRunner` and `FunctionCallRunner` |
+| `BaseObserver` | Listens only; no inference                                                       |
 
 ```ts
 import {
@@ -99,18 +99,18 @@ const environment = new AgenticEnvironment()
 
 const human = new BaseHuman()
 const agent = new BaseAgent(new OpenAIInferenceRunner(), new DefaultFunctionCallRunner())
+const observer = new BaseObserver()
 
 human.join(environment)
 agent.join(environment)
+observer.join(environment)
 
 environment.start()
 
 const context = ModelContext.create("demo")
 const model = new Gpt54Mini()
 
-// Both participants produce items in parallel — neither awaits the other.
 human.sendMessage(environment, "Hello")
-agent.runInference(environment, context, model)
 ```
 
 The environment fans every item out to every subscriber synchronously and without awaiting them, so a slow listener never blocks producers or other listeners.
@@ -319,12 +319,7 @@ Humans send text with `sendMessage(environment, message)`; other participants re
 An `InferenceRunner` can yield `ReasoningItem`, `FunctionCallItem`, `ModelMessageItem`, and `SemanticEvent` (when streaming).
 
 ```ts
-import {
-	InferenceRunner,
-	ModelContext,
-	GenerativeModel,
-	OpenAIInferenceRunner,
-} from "@mozaik-ai/core"
+import { InferenceRunner, ModelContext, GenerativeModel, OpenAIInferenceRunner } from "@mozaik-ai/core"
 
 // Use the bundled runner, or implement InferenceRunner for another provider.
 const runner: InferenceRunner = new OpenAIInferenceRunner()
