@@ -184,18 +184,37 @@ Three things to note:
 
 ## Streaming and semantic events
 
-Enable streaming on a model that supports it, then run inference as usual:
+When inference runs with streaming enabled (`model.setStreaming(true)` on a model that supports it), the runner does not wait for the full response. As the provider emits chunks, `OpenAIInferenceRunner` yields **`SemanticEvent`** items (`type` + `data`) and the environment delivers each one to **every** joined participant immediately — the same fan-out as messages and context items. Participants react in real time by overriding the stream handlers; no participant needs to poll or share a callback.
+
+The producing participant receives `onInternalEvent`; everyone else receives `onExternalEvent(source, event)`:
 
 ```ts
-const model = new Gpt54Mini()
-model.setStreaming(true)
+import { BaseAgent, Participant, SemanticEvent } from "@mozaik-ai/core"
 
-await agent.runInference(environment, context, model)
+// Agent that runs streaming inference — can observe its own stream chunks.
+export class StreamingAgent extends BaseAgent {
+	async onInternalEvent(event: SemanticEvent<unknown>): Promise<void> {
+		if (event.type === "response.output_text.delta") {
+			// e.g. keep a local buffer of partial output
+		}
+	}
+}
+
+// Any other participant — UI, logger, second agent — reacts to another's stream.
+export class LiveTranscript extends Participant {
+	async onExternalEvent(source: Participant, event: SemanticEvent<unknown>): Promise<void> {
+		if (event.type === "response.output_text.delta") {
+			const { delta } = event.data as { delta: string }
+			process.stdout.write(delta)
+		}
+	}
+
+	// Self-emitted stream events are unused for a pure observer.
+	async onInternalEvent(): Promise<void> {}
+}
 ```
 
-With streaming enabled, `OpenAIInferenceRunner` emits **`SemanticEvent`** chunks (provider `type` + `data`) into the environment. The producing agent receives `onInternalEvent`; everyone else receives `onExternalEvent(source, event)`. Use these handlers to drive a live UI—for example, print text deltas from `response.output_text.delta` events.
-
-`setStreaming(true)` on a model without `supportStreaming` throws before the API is called.
+Enable streaming on the model before calling `runInference` as usual. `setStreaming(true)` on a model without `supportStreaming` throws before the API is called.
 
 ---
 
