@@ -345,16 +345,6 @@ export class ToolRegistryFunctionCallRunner implements FunctionCallRunner {
 }
 ```
 
-### Wiring it together
-
-```ts
-import { BaseAgent, AgenticEnvironment, OpenAIInferenceRunner } from "@mozaik-ai/core"
-
-const agent = new BaseAgent(new OpenAIInferenceRunner(), new ToolRegistryFunctionCallRunner(tools))
-
-agent.join(new AgenticEnvironment())
-```
-
 ---
 
 ## Examples
