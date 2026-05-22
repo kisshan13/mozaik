@@ -107,9 +107,6 @@ observer.join(environment)
 
 environment.start()
 
-const context = ModelContext.create("demo")
-const model = new Gpt54Mini()
-
 human.sendMessage(environment, "Hello")
 ```
 
