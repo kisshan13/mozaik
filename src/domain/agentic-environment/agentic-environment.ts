@@ -9,25 +9,30 @@ export class AgenticEnvironment {
 	protected subscribers: Participant[] = []
 	private isActive = false
 
-	subscribe(subscriber: Participant) {
-		this.subscribers.push(subscriber)
+	subscribe(participant: Participant) {
+		this.subscribers.push(participant)
 		for (const subscriber of this.subscribers) {
-			if (subscriber === subscriber) {
-				subscriber.onJoined()
+			if (participant === subscriber) {
+				participant.onJoined()
 			} else {
-				subscriber.onParticipantJoined(subscriber)
+				subscriber.onParticipantJoined(participant)
 			}
 		}
 	}
 
-	unsubscribe(subscriber: Participant) {
-		this.subscribers = this.subscribers.filter((p) => p !== subscriber)
+	unsubscribe(participant: Participant) {
+		const exists = this.subscribers.includes(participant)
+	
+		if (!exists) {
+			return
+		}
+	
+		participant.onLeft()
+	
+		this.subscribers = this.subscribers.filter((p) => p !== participant)
+	
 		for (const subscriber of this.subscribers) {
-			if (subscriber === subscriber) {
-				subscriber.onLeft()
-			} else {
-				subscriber.onParticipantLeft(subscriber)
-			}
+			subscriber.onParticipantLeft(participant)
 		}
 	}
 
