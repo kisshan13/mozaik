@@ -11,6 +11,8 @@ import { ReasoningItem } from "@domain/model-context/context-item/model-item/rea
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelRuntime } from "@domain/generative-model/runtime/model-runtime"
+import { StreamingRuntime } from "@domain/generative-model/runtime/streaming-runtime"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import OpenAI from "openai"
 
@@ -23,7 +25,7 @@ const DEEPSEEK_BASE_URL = "https://api.deepseek.com"
  * mode is toggled with the `thinking` body field; chain-of-thought is
  * returned in `reasoning_content` alongside `content`.
  */
-export class DeepSeekChatCompletions implements ModelRuntime {
+export class DeepSeekChatCompletions implements ModelRuntime, StreamingRuntime {
 	private readonly client: OpenAI
 
 	constructor() {
@@ -34,6 +36,31 @@ export class DeepSeekChatCompletions implements ModelRuntime {
 	}
 
 	async infer(inferenceRequest: InferenceRequest): Promise<InferenceResponse> {
+		const response = await this.client.chat.completions.create(this.buildRequest(inferenceRequest))
+
+		const contextItems = this.extractContextItems(response)
+		const tokenUsage = this.extractTokenUsage(response)
+		return new InferenceResponse(contextItems, tokenUsage)
+	}
+
+	async *stream(
+		inferenceRequest: InferenceRequest,
+		signal?: AbortSignal,
+	): AsyncIterable<ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent<unknown>> {
+		const stream: any = await this.client.chat.completions.create({
+			...this.buildRequest(inferenceRequest),
+			stream: true,
+		})
+
+		for await (const event of stream) {
+			if (signal?.aborted) {
+				break
+			}
+			yield new SemanticEvent(event.object ?? "chat.completion.chunk", event)
+		}
+	}
+
+	private buildRequest(inferenceRequest: InferenceRequest): any {
 		const specification = inferenceRequest.model.specification
 
 		const request: any = {
@@ -64,11 +91,7 @@ export class DeepSeekChatCompletions implements ModelRuntime {
 			}
 		}
 
-		const response = await this.client.chat.completions.create(request)
-
-		const contextItems = this.extractContextItems(response)
-		const tokenUsage = this.extractTokenUsage(response)
-		return new InferenceResponse(contextItems, tokenUsage)
+		return request
 	}
 
 	extractTokenUsage(response: any): TokenUsage | undefined {
