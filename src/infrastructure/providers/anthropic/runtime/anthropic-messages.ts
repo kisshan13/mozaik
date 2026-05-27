@@ -11,10 +11,12 @@ import { ReasoningItem } from "@domain/model-context/context-item/model-item/rea
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { ModelRuntime } from "@domain/generative-model/runtime/model-runtime"
+import { StreamingRuntime } from "@domain/generative-model/runtime/streaming-runtime"
+import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import Anthropic from "@anthropic-ai/sdk"
 
-export class AnthropicMessages implements ModelRuntime {
+export class AnthropicMessages implements ModelRuntime, StreamingRuntime {
 	private readonly client: Anthropic
 
 	constructor() {
@@ -22,6 +24,31 @@ export class AnthropicMessages implements ModelRuntime {
 	}
 
 	async infer(inferenceRequest: InferenceRequest): Promise<InferenceResponse> {
+		const response = await this.client.messages.create(this.buildRequest(inferenceRequest))
+
+		const contextItems = this.extractContextItems(response)
+		const tokenUsage = this.extractTokenUsage(response)
+		return new InferenceResponse(contextItems, tokenUsage)
+	}
+
+	async *stream(
+		inferenceRequest: InferenceRequest,
+		signal?: AbortSignal,
+	): AsyncIterable<ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent<unknown>> {
+		const stream: any = await this.client.messages.create({
+			...this.buildRequest(inferenceRequest),
+			stream: true,
+		})
+
+		for await (const event of stream) {
+			if (signal?.aborted) {
+				break
+			}
+			yield new SemanticEvent(event.type, event)
+		}
+	}
+
+	private buildRequest(inferenceRequest: InferenceRequest): any {
 		const { messages, system } = this.mapContextToRequest(inferenceRequest.context)
 
 		const specification = inferenceRequest.model.specification
@@ -58,11 +85,7 @@ export class AnthropicMessages implements ModelRuntime {
 			}
 		}
 
-		const response = await this.client.messages.create(request)
-
-		const contextItems = this.extractContextItems(response)
-		const tokenUsage = this.extractTokenUsage(response)
-		return new InferenceResponse(contextItems, tokenUsage)
+		return request
 	}
 
 	extractTokenUsage(response: Anthropic.Messages.Message): TokenUsage | undefined {
