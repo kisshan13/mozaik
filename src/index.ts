@@ -38,6 +38,9 @@ import { AnthropicMessages } from "@infra/providers/anthropic/runtime/anthropic-
 import { ClaudeOpus47 } from "@infra/providers/anthropic/models/claude-4-7-opus"
 import { ClaudeSonnet46 } from "@infra/providers/anthropic/models/claude-4-6-sonnet"
 import { ClaudeHaiku45 } from "@infra/providers/anthropic/models/claude-4-5-haiku"
+import { DeepSeekChatCompletions } from "@infra/providers/deepseek/runtime/deepseek-chat-completions"
+import { DeepSeekV4Flash } from "@infra/providers/deepseek/models/deepseek-v4-flash"
+import { DeepSeekV4Pro } from "@infra/providers/deepseek/models/deepseek-v4-pro"
 
 export {
 	ModelContext,
@@ -82,4 +85,7 @@ export {
 	ClaudeOpus47,
 	ClaudeSonnet46,
 	ClaudeHaiku45,
+	DeepSeekChatCompletions,
+	DeepSeekV4Flash,
+	DeepSeekV4Pro,
 }
