@@ -43,6 +43,10 @@ import { DeepSeekChatCompletions } from "@infra/providers/deepseek/runtime/deeps
 import { DeepSeekInferenceRunner } from "@app/runners/deepseek-inference-runner"
 import { DeepSeekV4Flash } from "@infra/providers/deepseek/models/deepseek-v4-flash"
 import { DeepSeekV4Pro } from "@infra/providers/deepseek/models/deepseek-v4-pro"
+import { GeminiGenerateContent } from "@infra/providers/gemini/runtime/gemini-generate-content"
+import { GeminiInferenceRunner } from "@app/runners/gemini-inference-runner"
+import { Gemini35Flash } from "@infra/providers/gemini/models/gemini-3-5-flash"
+import { Gemini31Pro } from "@infra/providers/gemini/models/gemini-3-1-pro"
 
 export {
 	ModelContext,
@@ -92,4 +96,8 @@ export {
 	DeepSeekInferenceRunner,
 	DeepSeekV4Flash,
 	DeepSeekV4Pro,
+	GeminiGenerateContent,
+	GeminiInferenceRunner,
+	Gemini35Flash,
+	Gemini31Pro,
 }
