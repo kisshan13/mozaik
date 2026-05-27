@@ -22,6 +22,7 @@ import { BaseHuman } from "@app/participants/human"
 import { FunctionCallRunner } from "@domain/agentic-environment/runners/function-call-runner"
 import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
 import { OpenAIInferenceRunner } from "@app/runners/openai-inference-runner"
+import { AnthropicInferenceRunner } from "@app/runners/anthropic-inference-runner"
 import { DefaultFunctionCallRunner } from "@app/runners/function-call-runner"
 import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
 import { BaseObserver } from "@app/participants/observer"
@@ -77,6 +78,7 @@ export {
 	BaseHuman,
 	BaseObserver,
 	OpenAIInferenceRunner,
+	AnthropicInferenceRunner,
 	ModelRuntime,
 	StreamingRuntime,
 	InferenceRequest,
