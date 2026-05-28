@@ -17,6 +17,10 @@ export class Gemini31Pro implements GenerativeModel {
 
 	private streaming: boolean = false
 
+	private readonly effort: GeminiReasoningEffort = new GeminiReasoningEffort(
+		this.specification.defaultReasoningEffort,
+	)
+
 	setStreaming(streaming: boolean): void {
 		this.streaming = streaming
 	}
@@ -32,10 +36,6 @@ export class Gemini31Pro implements GenerativeModel {
 	getTools(): Tool[] {
 		return this.tools
 	}
-
-	private readonly effort: GeminiReasoningEffort = new GeminiReasoningEffort(
-		this.specification.defaultReasoningEffort,
-	)
 
 	setReasoningEffort(effort: GeminiReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)

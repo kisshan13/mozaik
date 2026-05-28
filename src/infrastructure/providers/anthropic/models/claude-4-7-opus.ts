@@ -17,6 +17,10 @@ export class ClaudeOpus47 implements GenerativeModel {
 
 	private streaming: boolean = false
 
+	private readonly effort: AnthropicReasoningEffort = new AnthropicReasoningEffort(
+		this.specification.defaultReasoningEffort,
+	)
+
 	setStreaming(streaming: boolean): void {
 		this.streaming = streaming
 	}
@@ -32,10 +36,6 @@ export class ClaudeOpus47 implements GenerativeModel {
 	getTools(): Tool[] {
 		return this.tools
 	}
-
-	private readonly effort: AnthropicReasoningEffort = new AnthropicReasoningEffort(
-		this.specification.defaultReasoningEffort,
-	)
 
 	setReasoningEffort(effort: AnthropicReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)

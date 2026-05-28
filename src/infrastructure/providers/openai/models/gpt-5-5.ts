@@ -17,6 +17,10 @@ export class Gpt55 implements GenerativeModel {
 
 	private streaming: boolean = false
 
+	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(
+		this.specification.defaultReasoningEffort,
+	)
+
 	setStreaming(streaming: boolean): void {
 		this.streaming = streaming
 	}
@@ -32,10 +36,6 @@ export class Gpt55 implements GenerativeModel {
 	getTools(): Tool[] {
 		return this.tools
 	}
-
-	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(
-		this.specification.defaultReasoningEffort,
-	)
 
 	setReasoningEffort(effort: OpenAIReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)

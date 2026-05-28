@@ -17,6 +17,10 @@ export class DeepSeekV4Pro implements GenerativeModel {
 
 	private streaming: boolean = false
 
+	private readonly effort: DeepSeekReasoningEffort = new DeepSeekReasoningEffort(
+		this.specification.defaultReasoningEffort,
+	)
+
 	setStreaming(streaming: boolean): void {
 		this.streaming = streaming
 	}
@@ -32,10 +36,6 @@ export class DeepSeekV4Pro implements GenerativeModel {
 	getTools(): Tool[] {
 		return this.tools
 	}
-
-	private readonly effort: DeepSeekReasoningEffort = new DeepSeekReasoningEffort(
-		this.specification.defaultReasoningEffort,
-	)
 
 	setReasoningEffort(effort: DeepSeekReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)
