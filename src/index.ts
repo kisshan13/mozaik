@@ -21,8 +21,7 @@ import { BaseAgent } from "@app/participants/agent"
 import { BaseHuman } from "@app/participants/human"
 import { FunctionCallRunner } from "@domain/agentic-environment/runners/function-call-runner"
 import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
-import { OpenAIInferenceRunner } from "@app/runners/openai-inference-runner"
-import { AnthropicInferenceRunner } from "@app/runners/anthropic-inference-runner"
+import { DefaultInferenceRunner } from "@app/runners/inference-runner"
 import { DefaultFunctionCallRunner } from "@app/runners/function-call-runner"
 import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
 import { BaseObserver } from "@app/participants/observer"
@@ -40,11 +39,9 @@ import { ClaudeOpus47 } from "@infra/providers/anthropic/models/claude-4-7-opus"
 import { ClaudeSonnet46 } from "@infra/providers/anthropic/models/claude-4-6-sonnet"
 import { ClaudeHaiku45 } from "@infra/providers/anthropic/models/claude-4-5-haiku"
 import { DeepSeekChatCompletions } from "@infra/providers/deepseek/runtime/deepseek-chat-completions"
-import { DeepSeekInferenceRunner } from "@app/runners/deepseek-inference-runner"
 import { DeepSeekV4Flash } from "@infra/providers/deepseek/models/deepseek-v4-flash"
 import { DeepSeekV4Pro } from "@infra/providers/deepseek/models/deepseek-v4-pro"
 import { GeminiGenerateContent } from "@infra/providers/gemini/runtime/gemini-generate-content"
-import { GeminiInferenceRunner } from "@app/runners/gemini-inference-runner"
 import { Gemini35Flash } from "@infra/providers/gemini/models/gemini-3-5-flash"
 import { Gemini31Pro } from "@infra/providers/gemini/models/gemini-3-1-pro"
 
@@ -81,10 +78,9 @@ export {
 	BaseAgent,
 	BaseHuman,
 	BaseObserver,
-	OpenAIInferenceRunner,
-	AnthropicInferenceRunner,
 	ModelRuntime,
 	StreamingRuntime,
+	DefaultInferenceRunner,
 	InferenceRequest,
 	InferenceResponse,
 	OpenAIResponses,
@@ -93,11 +89,9 @@ export {
 	ClaudeSonnet46,
 	ClaudeHaiku45,
 	DeepSeekChatCompletions,
-	DeepSeekInferenceRunner,
 	DeepSeekV4Flash,
 	DeepSeekV4Pro,
 	GeminiGenerateContent,
-	GeminiInferenceRunner,
 	Gemini35Flash,
 	Gemini31Pro,
 }

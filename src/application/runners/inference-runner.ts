@@ -18,10 +18,8 @@ type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem | Seman
  * through its constructor. The runner never instantiates a provider
  * client itself — wiring happens at the composition root.
  *
- * Name retained for backward compatibility; the runner works with any
- * `ModelRuntime`, not just OpenAI.
  */
-export class OpenAIInferenceRunner implements InferenceRunner {
+export class DefaultInferenceRunner implements InferenceRunner {
 	constructor(private readonly runtime: ModelRuntime) {}
 
 	async *run(context: ModelContext, model: GenerativeModel, signal?: AbortSignal): AsyncIterable<InferenceItem> {
