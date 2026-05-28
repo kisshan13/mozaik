@@ -98,6 +98,33 @@ Put implementation details here, such as:
 
 Infrastructure code may depend on the domain and application layers, but the domain layer should not depend on infrastructure.
 
+## Testing
+
+Mozaik uses [rstest](https://rstest.rs) as its testing framework.
+
+Run the full suite with a single command:
+
+```bash
+npm test
+```
+
+Other useful commands:
+
+```bash
+npm run test:watch        # re-run tests on change
+npm run test:unit         # only tests/unit
+npm run test:integration  # only tests/integration
+```
+
+Tests live under `tests/`, mirroring the layered architecture:
+
+- `tests/unit` — fast, isolated tests for a single unit of behavior (domain rules, model specifications, provider helpers). No network, file system, or real provider calls.
+- `tests/integration` — tests that exercise several units together, such as mapping a `ModelContext` through a provider runtime. These still run offline; stub the provider SDK rather than making real API calls.
+
+Test files use the `*.test.ts` (or `*.spec.ts`) suffix and import internal modules through the same `@domain`, `@app`, and `@infra` aliases as the source. `tests/setup.ts` seeds dummy provider credentials so runtime clients can be constructed without real secrets.
+
+Per the domain guidelines above, domain code should be testable without mocking external systems. Please include tests when you change behavior.
+
 ## Pull requests
 
 When opening a pull request, please keep it focused.
