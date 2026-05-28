@@ -35,6 +35,7 @@ import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
 import { AnthropicMessages } from "@infra/providers/anthropic/runtime/anthropic-messages"
+import { ClaudeOpus48 } from "@infra/providers/anthropic/models/claude-4-8-opus"
 import { ClaudeOpus47 } from "@infra/providers/anthropic/models/claude-4-7-opus"
 import { ClaudeSonnet46 } from "@infra/providers/anthropic/models/claude-4-6-sonnet"
 import { ClaudeHaiku45 } from "@infra/providers/anthropic/models/claude-4-5-haiku"
@@ -85,6 +86,7 @@ export {
 	InferenceResponse,
 	OpenAIResponses,
 	AnthropicMessages,
+	ClaudeOpus48,
 	ClaudeOpus47,
 	ClaudeSonnet46,
 	ClaudeHaiku45,
