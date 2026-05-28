@@ -20,4 +20,15 @@ export default defineConfig({
 			"@infra": "./src/infrastructure",
 		},
 	},
+	// Coverage is opt-in via the --coverage flag (npm run test:coverage).
+	// These settings shape the report when it runs.
+	coverage: {
+		provider: "istanbul",
+		// Measure the framework source across all three layers.
+		include: ["src/**/*.ts"],
+		// index.ts is a re-export barrel with no executable logic.
+		exclude: ["src/index.ts"],
+		reporters: ["text", "html", "lcov"],
+		reportsDirectory: "./coverage",
+	},
 })

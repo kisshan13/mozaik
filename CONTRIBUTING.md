@@ -114,7 +114,12 @@ Other useful commands:
 npm run test:watch        # re-run tests on change
 npm run test:unit         # only tests/unit
 npm run test:integration  # only tests/integration
+npm run test:coverage     # run with a coverage report
 ```
+
+### Coverage
+
+`npm run test:coverage` collects coverage with the istanbul provider and writes reports to `coverage/` (text summary in the terminal, browsable `html`, and `lcov` for tooling). Coverage measures the framework source under `src/` across the domain, application, and infrastructure layers. The `coverage/` directory is git-ignored.
 
 Tests live under `tests/`, mirroring the layered architecture:
 
