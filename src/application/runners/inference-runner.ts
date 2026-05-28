@@ -12,12 +12,10 @@ import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-eve
 type InferenceItem = ReasoningItem | FunctionCallItem | ModelMessageItem | SemanticEvent<unknown>
 
 /**
- * Application-layer inference runner. Provider-agnostic: it depends on
+ * Provider-agnostic inference runner: it depends on
  * the {@link ModelRuntime} domain port and receives a concrete
  * infrastructure adapter (OpenAIResponses, AnthropicMessages, …)
- * through its constructor. The runner never instantiates a provider
- * client itself — wiring happens at the composition root.
- *
+ * through its constructor.
  */
 export class DefaultInferenceRunner implements InferenceRunner {
 	constructor(private readonly runtime: ModelRuntime) {}
