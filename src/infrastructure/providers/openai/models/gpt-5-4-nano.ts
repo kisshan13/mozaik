@@ -15,11 +15,11 @@ export class Gpt54Nano implements GenerativeModel {
 
 	private tools: Tool[] = []
 
+	private streaming: boolean = false
+
 	private readonly effort: OpenAIReasoningEffort = new OpenAIReasoningEffort(
 		this.specification.defaultReasoningEffort,
 	)
-
-	private streaming: boolean = false
 
 	setStreaming(streaming: boolean): void {
 		this.streaming = streaming

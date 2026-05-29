@@ -21,7 +21,7 @@ import { BaseAgent } from "@app/participants/agent"
 import { BaseHuman } from "@app/participants/human"
 import { FunctionCallRunner } from "@domain/agentic-environment/runners/function-call-runner"
 import { InferenceRunner } from "@domain/agentic-environment/runners/inference-runner"
-import { OpenAIInferenceRunner } from "@app/runners/openai-inference-runner"
+import { DefaultInferenceRunner } from "@app/runners/inference-runner"
 import { DefaultFunctionCallRunner } from "@app/runners/function-call-runner"
 import { Gpt55 } from "@infra/providers/openai/models/gpt-5-5"
 import { BaseObserver } from "@app/participants/observer"
@@ -34,10 +34,17 @@ import { StreamingRuntime } from "@domain/generative-model/runtime/streaming-run
 import { InferenceRequest } from "@domain/generative-model/inference-request"
 import { InferenceResponse } from "@domain/generative-model/inference-response"
 import { OpenAIResponses } from "@infra/providers/openai/runtime/openai-responses"
+import { OpenAICompatibleChatCompletions } from "@infra/providers/openai/runtime/openai-compatible-chat-completions"
 import { AnthropicMessages } from "@infra/providers/anthropic/runtime/anthropic-messages"
+import { ClaudeOpus48 } from "@infra/providers/anthropic/models/claude-4-8-opus"
 import { ClaudeOpus47 } from "@infra/providers/anthropic/models/claude-4-7-opus"
 import { ClaudeSonnet46 } from "@infra/providers/anthropic/models/claude-4-6-sonnet"
 import { ClaudeHaiku45 } from "@infra/providers/anthropic/models/claude-4-5-haiku"
+import { DeepSeekV4Flash } from "@infra/providers/deepseek/models/deepseek-v4-flash"
+import { DeepSeekV4Pro } from "@infra/providers/deepseek/models/deepseek-v4-pro"
+import { GeminiGenerateContent } from "@infra/providers/gemini/runtime/gemini-generate-content"
+import { Gemini35Flash } from "@infra/providers/gemini/models/gemini-3-5-flash"
+import { Gemini31Pro } from "@infra/providers/gemini/models/gemini-3-1-pro"
 
 export {
 	ModelContext,
@@ -72,14 +79,21 @@ export {
 	BaseAgent,
 	BaseHuman,
 	BaseObserver,
-	OpenAIInferenceRunner,
 	ModelRuntime,
 	StreamingRuntime,
+	DefaultInferenceRunner,
 	InferenceRequest,
 	InferenceResponse,
 	OpenAIResponses,
+	OpenAICompatibleChatCompletions,
 	AnthropicMessages,
+	ClaudeOpus48,
 	ClaudeOpus47,
 	ClaudeSonnet46,
 	ClaudeHaiku45,
+	DeepSeekV4Flash,
+	DeepSeekV4Pro,
+	GeminiGenerateContent,
+	Gemini35Flash,
+	Gemini31Pro,
 }

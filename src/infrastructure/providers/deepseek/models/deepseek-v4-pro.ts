@@ -1,15 +1,15 @@
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { Tool } from "@domain/generative-model/tool"
-import { AnthropicReasoningEffort, AnthropicReasoningEffortType } from "@infra/providers/anthropic/reasoning-effort"
+import { DeepSeekReasoningEffort, DeepSeekReasoningEffortType } from "@infra/providers/deepseek/reasoning-effort"
 
-export class ClaudeOpus47 implements GenerativeModel {
+export class DeepSeekV4Pro implements GenerativeModel {
 	readonly specification = {
-		name: "claude-opus-4-7",
+		name: "deepseek-v4-pro",
 		supportReasoningEffort: true,
-		defaultReasoningEffort: "none" as AnthropicReasoningEffortType,
+		defaultReasoningEffort: "high" as DeepSeekReasoningEffortType,
 		supportStreaming: true,
-		contextWindowSize: 200_000,
-		maxOutputTokens: 32_000,
+		contextWindowSize: 1_000_000,
+		maxOutputTokens: 384_000,
 		supportFunctionCalling: true,
 	}
 
@@ -17,7 +17,7 @@ export class ClaudeOpus47 implements GenerativeModel {
 
 	private streaming: boolean = false
 
-	private readonly effort: AnthropicReasoningEffort = new AnthropicReasoningEffort(
+	private readonly effort: DeepSeekReasoningEffort = new DeepSeekReasoningEffort(
 		this.specification.defaultReasoningEffort,
 	)
 
@@ -37,11 +37,11 @@ export class ClaudeOpus47 implements GenerativeModel {
 		return this.tools
 	}
 
-	setReasoningEffort(effort: AnthropicReasoningEffortType): void {
+	setReasoningEffort(effort: DeepSeekReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)
 	}
 
-	getReasoningEffort(): AnthropicReasoningEffortType {
+	getReasoningEffort(): DeepSeekReasoningEffortType {
 		return this.effort.getReasoningEffort()
 	}
 }

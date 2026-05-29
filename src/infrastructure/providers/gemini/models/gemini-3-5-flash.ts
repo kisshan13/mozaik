@@ -1,15 +1,15 @@
 import { GenerativeModel } from "@domain/generative-model/generative-model"
 import { Tool } from "@domain/generative-model/tool"
-import { AnthropicReasoningEffort, AnthropicReasoningEffortType } from "@infra/providers/anthropic/reasoning-effort"
+import { GeminiReasoningEffort, GeminiReasoningEffortType } from "@infra/providers/gemini/reasoning-effort"
 
-export class ClaudeOpus47 implements GenerativeModel {
+export class Gemini35Flash implements GenerativeModel {
 	readonly specification = {
-		name: "claude-opus-4-7",
+		name: "gemini-3.5-flash",
 		supportReasoningEffort: true,
-		defaultReasoningEffort: "none" as AnthropicReasoningEffortType,
+		defaultReasoningEffort: "medium" as GeminiReasoningEffortType,
 		supportStreaming: true,
-		contextWindowSize: 200_000,
-		maxOutputTokens: 32_000,
+		contextWindowSize: 1_048_576,
+		maxOutputTokens: 64_000,
 		supportFunctionCalling: true,
 	}
 
@@ -17,7 +17,7 @@ export class ClaudeOpus47 implements GenerativeModel {
 
 	private streaming: boolean = false
 
-	private readonly effort: AnthropicReasoningEffort = new AnthropicReasoningEffort(
+	private readonly effort: GeminiReasoningEffort = new GeminiReasoningEffort(
 		this.specification.defaultReasoningEffort,
 	)
 
@@ -37,11 +37,11 @@ export class ClaudeOpus47 implements GenerativeModel {
 		return this.tools
 	}
 
-	setReasoningEffort(effort: AnthropicReasoningEffortType): void {
+	setReasoningEffort(effort: GeminiReasoningEffortType): void {
 		this.effort.setReasoningEffort(effort)
 	}
 
-	getReasoningEffort(): AnthropicReasoningEffortType {
+	getReasoningEffort(): GeminiReasoningEffortType {
 		return this.effort.getReasoningEffort()
 	}
 }
