@@ -5,8 +5,11 @@ import { ModelMessageItem } from "@domain/model-context/context-item/model-item/
 import { FunctionCallItem } from "@domain/model-context/context-item/model-item/function-call"
 import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-event"
 
+type ParticipantClassConstructor = new (...args: any[]) => Participant;
+
 export abstract class Participant {
 	private environments: AgenticEnvironment[] = []
+	protected listens: ParticipantClassConstructor[] = []
 
 	join(environment: AgenticEnvironment) {
 		if (this.isJoinedTo(environment)) {
@@ -30,6 +33,10 @@ export abstract class Participant {
 
 	getEnvironments(): AgenticEnvironment[] {
 		return this.environments
+	}
+
+	getListeners(): ParticipantClassConstructor[] {
+		return this.listens
 	}
 
 	abstract onParticipantJoined(participant: Participant): Promise<void> | void
