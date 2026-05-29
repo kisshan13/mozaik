@@ -16,23 +16,56 @@ import { SemanticEvent } from "@domain/model-context/semantic-event/semantic-eve
 import { InputTokenDetails, OutputTokenDetails, TokenUsage } from "@domain/generative-model/token-usage"
 import OpenAI from "openai"
 
-const DEEPSEEK_BASE_URL = "https://api.deepseek.com"
+/**
+ * Optional connection config. When omitted, the `openai` SDK reads
+ * `OPENAI_API_KEY` and `OPENAI_BASE_URL` from the environment, so the
+ * default-constructed runtime targets whatever `OPENAI_BASE_URL` points
+ * at (real OpenAI when unset). Provider presets (e.g. DeepSeek) pass an
+ * explicit base URL + credential.
+ */
+export interface OpenAICompatibleConfig {
+	baseURL?: string
+	apiKey?: string
+	/**
+	 * Extra request-body fields merged into every `chat.completions`
+	 * call. This is how provider-specific quirks are handled **without
+	 * a per-provider subclass in mozaik** — the consumer supplies the
+	 * vendor-only fields (e.g. DeepSeek's `{ thinking: { type } }`,
+	 * safety flags, routing hints). Standard fields the runtime already
+	 * sets (`model`, `messages`, `tools`, `reasoning_effort`) take
+	 * precedence and are not overwritten.
+	 */
+	extraBody?: Record<string, unknown>
+}
 
 /**
- * DeepSeek V4 adapter. DeepSeek is OpenAI **Chat Completions** compatible
- * (not the Responses API), so this reuses the `openai` SDK pointed at
- * DeepSeek's base URL and the `DEEPSEEK_API_KEY` credential. Thinking
- * mode is toggled with the `thinking` body field; chain-of-thought is
- * returned in `reasoning_content` alongside `content`.
+ * Generic adapter for any **OpenAI Chat Completions**-compatible
+ * endpoint — real OpenAI, DeepSeek, Xiaomi MiMo, OpenRouter, vLLM,
+ * Ollama, etc. It speaks `/chat/completions` (not the Responses API),
+ * which is the dialect third-party OpenAI-compatible providers expose.
+ *
+ * The base URL and credential are configurable; everything else (the
+ * `ModelContext` ⇄ chat-message conversion, tool-call round-trip, token
+ * usage extraction) is provider-agnostic. Provider-specific request
+ * shaping (e.g. DeepSeek's `thinking` field) is supplied by the
+ * consumer via {@link OpenAICompatibleConfig.extraBody} — mozaik stays
+ * generic and gains no per-provider subclasses.
+ *
+ * Was `DeepSeekChatCompletions`; generalized so consumers can point it
+ * at any OpenAI-compatible endpoint.
  */
-export class DeepSeekChatCompletions implements ModelRuntime, StreamingRuntime {
+export class OpenAICompatibleChatCompletions implements ModelRuntime, StreamingRuntime {
 	private readonly client: OpenAI
+	private readonly extraBody: Record<string, unknown>
 
-	constructor() {
+	constructor(config: OpenAICompatibleConfig = {}) {
+		// Passing `undefined` for baseURL/apiKey lets the SDK fall back
+		// to OPENAI_BASE_URL / OPENAI_API_KEY from the environment.
 		this.client = new OpenAI({
-			baseURL: DEEPSEEK_BASE_URL,
-			apiKey: process.env.DEEPSEEK_API_KEY,
+			baseURL: config.baseURL,
+			apiKey: config.apiKey,
 		})
+		this.extraBody = config.extraBody ?? {}
 	}
 
 	async infer(inferenceRequest: InferenceRequest): Promise<InferenceResponse> {
@@ -60,10 +93,13 @@ export class DeepSeekChatCompletions implements ModelRuntime, StreamingRuntime {
 		}
 	}
 
-	private buildRequest(inferenceRequest: InferenceRequest): any {
+	buildRequest(inferenceRequest: InferenceRequest): any {
 		const specification = inferenceRequest.model.specification
 
+		// Consumer-supplied vendor quirks first, so the standard fields
+		// below win on key collisions.
 		const request: any = {
+			...this.extraBody,
 			model: specification.name,
 			messages: this.mapContextToRequest(inferenceRequest.context),
 		}
@@ -81,14 +117,12 @@ export class DeepSeekChatCompletions implements ModelRuntime, StreamingRuntime {
 			})
 		}
 
+		// `reasoning_effort` is a standard OpenAI Chat Completions field;
+		// emit it when the model declares reasoning support. Anything
+		// non-standard (e.g. DeepSeek's `thinking` wrapper) is the
+		// consumer's job via `extraBody`.
 		if (specification.supportReasoningEffort) {
-			const effort = inferenceRequest.model.getReasoningEffort()
-			if (effort === "none") {
-				request.thinking = { type: "disabled" }
-			} else {
-				request.thinking = { type: "enabled" }
-				request.reasoning_effort = effort
-			}
+			request.reasoning_effort = inferenceRequest.model.getReasoningEffort()
 		}
 
 		return request
